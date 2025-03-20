@@ -8,9 +8,12 @@ const helmet = require('helmet');
 const path = require('path');
 const WebSocketServer = require('./websocket');
 const { mysqlPool, connectMongoDB } = require('./config/database');
+
+// Import routes
 const authRoutes = require('./routes/auth');
 const eczemaRoutes = require('./routes/eczema');
-//const consultationRoutes = require('./routes/consultation');
+const doctorRoutes = require('./routes/doctors');
+const appointmentRoutes = require('./routes/appointments');
 const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
@@ -31,7 +34,7 @@ connectMongoDB();
   }
 })();
 
-// Initialize WebSocket server
+// Initialize WebSocket server for real-time updates
 const wsServer = new WebSocketServer(server);
 
 // Middleware
@@ -50,18 +53,28 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/eczema', eczemaRoutes);
-//app.use('/api/consultations', consultationRoutes);
+app.use('/api/doctors', doctorRoutes);
+app.use('/api/appointments', appointmentRoutes);
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok',
     mysql: mysqlPool.pool.pool.state === 'authenticated',
-    mongodb: mongoose.connection.readyState === 1
+    mongodb: mongoose.connection.readyState === 1,
+    websocket: wsServer.wss.clients.size
   });
 });
 
-// Error handling
-app.use(errorHandler);
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({
+        success: false,
+        message: 'Something went wrong!',
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+});
 
 // Handle 404
 app.use((req, res) => {
@@ -71,7 +84,7 @@ app.use((req, res) => {
   });
 });
 
-// Handle MongoDB connection errors after initial connection
+// Handle MongoDB connection events
 mongoose.connection.on('error', err => {
   console.error('MongoDB connection error:', err);
 });
@@ -84,7 +97,7 @@ mongoose.connection.on('reconnected', () => {
   console.log('MongoDB reconnected');
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/health`);
