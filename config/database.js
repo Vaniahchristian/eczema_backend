@@ -1,29 +1,40 @@
 const mysql = require('mysql2/promise');
 const mongoose = require('mongoose');
 
+// Determine environment
+const isTest = process.env.NODE_ENV === 'test';
+
 // MySQL Configuration
 const mysqlConfig = {
   host: process.env.MYSQL_HOST || 'localhost',
   user: process.env.MYSQL_USER || 'root',
   password: process.env.MYSQL_PASSWORD || '',
-  database: 'eczema'
+  database: isTest ? 'eczema_test' : (process.env.MYSQL_DATABASE || 'eczema')
 };
 
 // MongoDB Configuration
 const mongoConfig = {
-  url: process.env.MONGODB_URI || 'mongodb://localhost:27017/eczema_nosql'
+  url: process.env.MONGODB_URI || 'mongodb+srv://admin:0754092850@todoapp.aqby3.mongodb.net/TRY'
 };
 
 // Create MySQL connection pool
 const mysqlPool = mysql.createPool(mysqlConfig);
 
+// Test MySQL connection
+const testMySQLConnection = async () => {
+  try {
+    await mysqlPool.query('SELECT 1');
+    console.log('MySQL connected successfully');
+  } catch (error) {
+    console.error('MySQL connection error:', error);
+    process.exit(1);
+  }
+};
+
 // Connect to MongoDB
 const connectMongoDB = async () => {
   try {
-    await mongoose.connect(mongoConfig.url, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    await mongoose.connect(mongoConfig.url);
     console.log('MongoDB connected successfully');
   } catch (error) {
     console.error('MongoDB connection error:', error);
@@ -31,7 +42,15 @@ const connectMongoDB = async () => {
   }
 };
 
+// Initialize databases
+const initializeDatabases = async () => {
+  await testMySQLConnection();
+  await connectMongoDB();
+};
+
 module.exports = {
   mysqlPool,
-  connectMongoDB
+  connectMongoDB,
+  initializeDatabases,
+  isTest
 };

@@ -1,5 +1,16 @@
 const mongoose = require('mongoose');
 
+const treatmentSchema = new mongoose.Schema({
+  type: String,
+  description: String,
+  priority: Number
+}, { _id: false });
+
+const lifestyleRecommendationSchema = new mongoose.Schema({
+  category: String,
+  recommendations: [String]
+}, { _id: false });
+
 const diagnosisSchema = new mongoose.Schema({
   diagnosisId: {
     type: String,
@@ -44,15 +55,8 @@ const diagnosisSchema = new mongoose.Schema({
     modelVersion: String
   },
   recommendations: {
-    treatments: [{
-      type: String,
-      description: String,
-      priority: Number
-    }],
-    lifestyle: [{
-      category: String,
-      recommendations: [String]
-    }],
+    treatments: [treatmentSchema],
+    lifestyle: [lifestyleRecommendationSchema],
     triggers: [String],
     precautions: [String]
   },
