@@ -1,7 +1,10 @@
-const EczemaRecord = require('../models/EczemaRecord');
+const { Mongo } = require('../models');
+const { Diagnosis, Analytics, Advisory } = Mongo;
 const sharp = require('sharp');
+const path = require('path');
+const fs = require('fs').promises;
 
-// Dummy function to simulate eczema analysis
+// Analyze eczema image using ML model (simulated for now)
 const analyzeEczemaImage = async (imagePath) => {
   // Simulate processing delay
   await new Promise(resolve => setTimeout(resolve, 1000));
@@ -13,42 +16,74 @@ const analyzeEczemaImage = async (imagePath) => {
   
   return {
     severity: severities[randomIndex],
-    confidence: confidence
+    confidence: confidence,
+    areas_affected: ['elbow', 'knee'].sort(() => Math.random() - 0.5),
+    symptoms: ['redness', 'itching', 'dryness'].sort(() => Math.random() - 0.5)
   };
 };
 
 exports.analyzeImage = async (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ message: 'No image file provided' });
+      return res.status(400).json({
+        success: false,
+        message: 'Please upload an image'
+      });
     }
 
-    // Get analysis from dummy function
-    const analysis = await analyzeEczemaImage(req.file.path);
-    
-    // Create new eczema record
-    const record = await EczemaRecord.create({
-      patient: req.user.id,
-      imagePath: req.file.path,
+    // Process image with sharp
+    const processedImagePath = path.join('uploads', `processed_${req.file.filename}`);
+    await sharp(req.file.path)
+      .resize(800, 800, { fit: 'inside' })
+      .jpeg({ quality: 80 })
+      .toFile(processedImagePath);
+
+    // Analyze the processed image
+    const analysis = await analyzeEczemaImage(processedImagePath);
+
+    // Create diagnosis record in MongoDB
+    const diagnosis = await Diagnosis.create({
+      patient_id: req.user.user_id,
+      image_path: processedImagePath,
+      original_image_path: req.file.path,
       severity: analysis.severity,
-      confidence: analysis.confidence,
-      date: new Date()
+      confidence_score: analysis.confidence,
+      areas_affected: analysis.areas_affected,
+      symptoms: analysis.symptoms,
+      analyzed_at: new Date()
     });
 
-    res.status(201).json({
+    // Update analytics
+    await Analytics.create({
+      diagnosis_id: diagnosis._id,
+      patient_id: req.user.user_id,
+      severity: analysis.severity,
+      model_version: '1.0',
+      processing_time_ms: 1000, // Simulated processing time
+      confidence_score: analysis.confidence
+    });
+
+    // Get relevant advisory content
+    const advisory = await Advisory.findOne({ severity: analysis.severity });
+
+    res.status(200).json({
       success: true,
       data: {
+        diagnosis_id: diagnosis._id,
         severity: analysis.severity,
         confidence: analysis.confidence,
-        recordId: record._id
+        areas_affected: analysis.areas_affected,
+        symptoms: analysis.symptoms,
+        recommendations: advisory ? advisory.recommendations : [],
+        image_url: `/uploads/processed_${req.file.filename}`
       }
     });
-
   } catch (error) {
-    console.error('Error in analyzeImage:', error);
+    console.error('Image analysis error:', error);
     res.status(500).json({
       success: false,
-      error: 'Error processing image'
+      message: 'Error analyzing image',
+      error: error.message
     });
   }
 };
@@ -56,57 +91,71 @@ exports.analyzeImage = async (req, res) => {
 exports.updateSymptoms = async (req, res) => {
   try {
     const { recordId } = req.params;
-    const { symptoms } = req.body;
+    const { symptoms, severity } = req.body;
 
-    const record = await EczemaRecord.findOne({
-      _id: recordId,
-      patient: req.user.id
-    });
-
-    if (!record) {
-      return res.status(404).json({ message: 'Record not found' });
+    const diagnosis = await Diagnosis.findById(recordId);
+    
+    if (!diagnosis) {
+      return res.status(404).json({
+        success: false,
+        message: 'Diagnosis record not found'
+      });
     }
 
-    record.symptoms.push(...symptoms);
-    await record.save();
-
-    res.json({ success: true, data: record });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
-  }
-};
-
-exports.addTreatment = async (req, res) => {
-  try {
-    const { recordId } = req.params;
-    const { treatment } = req.body;
-
-    const record = await EczemaRecord.findOne({
-      _id: recordId,
-      patient: req.user.id
-    });
-
-    if (!record) {
-      return res.status(404).json({ message: 'Record not found' });
+    if (diagnosis.patient_id !== req.user.user_id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to update this record'
+      });
     }
 
-    record.treatments.push(treatment);
-    await record.save();
+    diagnosis.symptoms = symptoms;
+    diagnosis.severity = severity;
+    diagnosis.updated_at = new Date();
+    await diagnosis.save();
 
-    res.json({ success: true, data: record });
+    res.json({
+      success: true,
+      data: diagnosis
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error('Update symptoms error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating symptoms',
+      error: error.message
+    });
   }
 };
 
 exports.getPatientHistory = async (req, res) => {
   try {
-    const records = await EczemaRecord.find({ patient: req.user.id })
-      .sort('-createdAt')
-      .populate('patient', 'firstName lastName');
+    const diagnoses = await Diagnosis.find({ 
+      patient_id: req.user.user_id 
+    }).sort({ analyzed_at: -1 });
 
-    res.json({ success: true, data: records });
+    const analytics = await Analytics.find({
+      patient_id: req.user.user_id
+    }).sort({ created_at: -1 });
+
+    res.json({
+      success: true,
+      data: {
+        diagnoses,
+        analytics: analytics.map(a => ({
+          diagnosis_id: a.diagnosis_id,
+          severity: a.severity,
+          confidence_score: a.confidence_score,
+          analyzed_at: a.created_at
+        }))
+      }
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error('Get history error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching patient history',
+      error: error.message
+    });
   }
 };

@@ -1,0 +1,231 @@
+{
+	"info": {
+		"_postman_id": "e8f23d9f-5c12-4e6c-b2c3-9a8b7c6d5e4f",
+		"name": "Eczema Diagnosis API",
+		"description": "API endpoints for the Eczema Diagnosis Advisory System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000/api",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"Test123!\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"dateOfBirth\": \"1990-01-01\",\n    \"gender\": \"male\",\n    \"phoneNumber\": \"+1234567890\",\n    \"address\": \"123 Test St, City, Country\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "register"]
+						},
+						"description": "Register a new user"
+					}
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.data && jsonData.data.token) {",
+									"    pm.environment.set(\"token\", jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"Test123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login with user credentials"
+					}
+				},
+				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/profile",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "profile"]
+						},
+						"description": "Get authenticated user's profile"
+					}
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"John Updated\",\n    \"lastName\": \"Doe Updated\",\n    \"phoneNumber\": \"+1987654321\",\n    \"address\": \"456 Updated St, City, Country\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/profile",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "profile"]
+						},
+						"description": "Update user profile information"
+					}
+				}
+			]
+		},
+		{
+			"name": "Eczema Diagnosis",
+			"item": [
+				{
+					"name": "Analyze Image",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/path/to/your/image.jpg",
+									"description": "Image file to analyze (JPG/PNG, max 5MB)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/eczema/analyze",
+							"host": ["{{base_url}}"],
+							"path": ["eczema", "analyze"]
+						},
+						"description": "Upload and analyze an eczema image"
+					}
+				},
+				{
+					"name": "Update Diagnosis Symptoms",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"symptoms\": [\"itching\", \"redness\", \"dryness\"],\n    \"severity\": \"moderate\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/eczema/diagnosis/:recordId/symptoms",
+							"host": ["{{base_url}}"],
+							"path": ["eczema", "diagnosis", ":recordId", "symptoms"],
+							"variable": [
+								{
+									"key": "recordId",
+									"value": "REPLACE_WITH_DIAGNOSIS_ID",
+									"description": "ID of the diagnosis record"
+								}
+							]
+						},
+						"description": "Update symptoms for a specific diagnosis"
+					}
+				},
+				{
+					"name": "Get Patient History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/eczema/history",
+							"host": ["{{base_url}}"],
+							"path": ["eczema", "history"]
+						},
+						"description": "Get patient's diagnosis history"
+					}
+				}
+			]
+		},
+		{
+			"name": "System",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						},
+						"description": "Check system health status"
+					}
+				}
+			]
+		}
+	]
+}

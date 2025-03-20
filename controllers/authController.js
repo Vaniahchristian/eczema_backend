@@ -1,85 +1,75 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 const bcrypt = require('bcryptjs');
-
+const { MySQL } = require('../models');
+const { User } = MySQL;
 
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET || 'your-secret-key', {
-    expiresIn: '30d'
+    expiresIn: process.env.JWT_EXPIRES_IN || '7d'
   });
 };
 
 exports.register = async (req, res) => {
   try {
-    const { email, password, firstName, lastName, role } = req.body;
+    const { email, password, firstName, lastName, role, dateOfBirth, gender, phoneNumber, address } = req.body;
 
     // Validate required fields
-    if (!email || !password || !firstName || !lastName) {
+    if (!email || !password || !firstName || !lastName || !dateOfBirth || !gender) {
       return res.status(400).json({ 
         success: false,
-        message: 'Please provide all required fields: email, password, firstName, lastName' 
-      });
-    }
-
-    // Check if email is valid
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please provide a valid email address'
-      });
-    }
-
-    // Check if password is strong enough
-    if (password.length < 6) {
-      return res.status(400).json({
-        success: false,
-        message: 'Password must be at least 6 characters long'
+        message: 'Please provide all required fields' 
       });
     }
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findByEmail(email);
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: 'Email is already registered'
+        message: 'User already exists with this email'
       });
     }
 
-    // Create new user
-    const user = new User({
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const password_hash = await bcrypt.hash(password, salt);
+
+    // Create user
+    const userId = await User.create({
       email,
-      password, // Password will be hashed by the pre-save middleware
-      firstName,
-      lastName,
-      role: role || 'patient'
+      password_hash,
+      role: role || 'patient',
+      first_name: firstName,
+      last_name: lastName,
+      date_of_birth: dateOfBirth,
+      gender,
+      phone_number: phoneNumber,
+      address
     });
 
-    // Save user to database
-    await user.save();
-
     // Generate token
-    const token = generateToken(user._id);
+    const token = generateToken(userId);
 
-    // Send response
     res.status(201).json({
       success: true,
-      token,
-      user: {
-        id: user._id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role
+      message: 'User registered successfully',
+      data: {
+        token,
+        user: {
+          id: userId,
+          email,
+          role: role || 'patient',
+          firstName,
+          lastName
+        }
       }
     });
   } catch (error) {
-    console.error('Register error:', error);
-    res.status(500).json({ 
+    console.error('Registration error:', error);
+    res.status(500).json({
       success: false,
-      message: 'Registration failed', 
-      error: error.message 
+      message: 'Error registering user',
+      error: error.message
     });
   }
 };
@@ -96,8 +86,8 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Find user and include password for comparison
-    const user = await User.findOne({ email }).select('+password');
+    // Find user
+    const user = await User.findByEmail(email);
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -105,8 +95,8 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Check password
-    const isMatch = await user.comparePassword(password);
+    // Verify password
+    const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
       return res.status(401).json({
         success: false,
@@ -115,25 +105,27 @@ exports.login = async (req, res) => {
     }
 
     // Generate token
-    const token = generateToken(user._id);
+    const token = generateToken(user.user_id);
 
-    // Send response
     res.json({
       success: true,
-      token,
-      user: {
-        id: user._id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role
+      message: 'Login successful',
+      data: {
+        token,
+        user: {
+          id: user.user_id,
+          email: user.email,
+          role: user.role,
+          firstName: user.first_name,
+          lastName: user.last_name
+        }
       }
     });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({
       success: false,
-      message: 'Login failed',
+      message: 'Error during login',
       error: error.message
     });
   }
@@ -149,25 +141,18 @@ exports.getProfile = async (req, res) => {
       });
     }
 
+    // Remove sensitive data
+    const { password_hash, ...userProfile } = user;
+
     res.json({
       success: true,
-      user: {
-        id: user._id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        dateOfBirth: user.dateOfBirth,
-        medicalHistory: user.medicalHistory,
-        specialization: user.specialization,
-        licenseNumber: user.licenseNumber
-      }
+      data: userProfile
     });
   } catch (error) {
     console.error('Get profile error:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to get profile',
+      message: 'Error fetching profile',
       error: error.message
     });
   }
@@ -175,45 +160,30 @@ exports.getProfile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    const updates = req.body;
-    
-    // Prevent updating sensitive fields
-    delete updates.password;
-    delete updates.email;
-    delete updates.role;
+    const { firstName, lastName, phoneNumber, address } = req.body;
+    const userId = req.user.id;
 
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
-      { $set: updates },
-      { new: true, runValidators: true }
-    );
+    // Update user profile
+    await User.update(userId, {
+      first_name: firstName,
+      last_name: lastName,
+      phone_number: phoneNumber,
+      address
+    });
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found'
-      });
-    }
+    const updatedUser = await User.findById(userId);
+    const { password_hash, ...userProfile } = updatedUser;
 
     res.json({
       success: true,
-      user: {
-        id: user._id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        dateOfBirth: user.dateOfBirth,
-        medicalHistory: user.medicalHistory,
-        specialization: user.specialization,
-        licenseNumber: user.licenseNumber
-      }
+      message: 'Profile updated successfully',
+      data: userProfile
     });
   } catch (error) {
     console.error('Update profile error:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to update profile',
+      message: 'Error updating profile',
       error: error.message
     });
   }
