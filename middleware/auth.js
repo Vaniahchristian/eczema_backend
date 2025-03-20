@@ -28,9 +28,15 @@ exports.protect = async (req, res, next) => {
         });
       }
 
-      // Remove sensitive data
-      const { password_hash, ...userProfile } = user;
-      req.user = userProfile;
+      // Set user info in request, maintaining the user_id
+      req.user = {
+        id: user.user_id,
+        email: user.email,
+        role: user.role,
+        firstName: user.first_name,
+        lastName: user.last_name
+      };
+      
       next();
     } catch (err) {
       return res.status(401).json({
@@ -52,7 +58,7 @@ exports.authorize = (...roles) => {
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({
         success: false,
-        message: `Role ${req.user.role} is not authorized to access this route`
+        message: `User role ${req.user.role} is not authorized to access this route`
       });
     }
     next();

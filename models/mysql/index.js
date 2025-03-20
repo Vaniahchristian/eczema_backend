@@ -35,6 +35,26 @@ class User {
         );
         return rows[0];
     }
+
+    static async update(userId, userData) {
+        // Filter out undefined values
+        const validUpdates = Object.entries(userData)
+            .filter(([_, value]) => value !== undefined)
+            .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+        if (Object.keys(validUpdates).length === 0) {
+            return; // No valid updates
+        }
+
+        const setClause = Object.keys(validUpdates)
+            .map(key => `${key} = ?`)
+            .join(', ');
+
+        const query = `UPDATE users SET ${setClause} WHERE user_id = ?`;
+        const values = [...Object.values(validUpdates), userId];
+
+        await mysqlPool.execute(query, values);
+    }
 }
 
 class DoctorProfile {

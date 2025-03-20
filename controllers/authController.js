@@ -34,7 +34,7 @@ exports.register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const password_hash = await bcrypt.hash(password, salt);
 
-    // Create user
+    // Create user with properly mapped fields
     const userId = await User.create({
       email,
       password_hash,
@@ -43,8 +43,8 @@ exports.register = async (req, res) => {
       last_name: lastName,
       date_of_birth: dateOfBirth,
       gender,
-      phone_number: phoneNumber,
-      address
+      phone_number: phoneNumber || null,
+      address: address || null
     });
 
     // Generate token
@@ -141,8 +141,18 @@ exports.getProfile = async (req, res) => {
       });
     }
 
-    // Remove sensitive data
-    const { password_hash, ...userProfile } = user;
+    // Map database fields to API response format
+    const userProfile = {
+      id: user.user_id,
+      email: user.email,
+      role: user.role,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      dateOfBirth: user.date_of_birth,
+      gender: user.gender,
+      phoneNumber: user.phone_number,
+      address: user.address
+    };
 
     res.json({
       success: true,
@@ -163,7 +173,7 @@ exports.updateProfile = async (req, res) => {
     const { firstName, lastName, phoneNumber, address } = req.body;
     const userId = req.user.id;
 
-    // Update user profile
+    // Map API fields to database fields
     await User.update(userId, {
       first_name: firstName,
       last_name: lastName,
@@ -172,7 +182,19 @@ exports.updateProfile = async (req, res) => {
     });
 
     const updatedUser = await User.findById(userId);
-    const { password_hash, ...userProfile } = updatedUser;
+    
+    // Map database fields to API response format
+    const userProfile = {
+      id: updatedUser.user_id,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      firstName: updatedUser.first_name,
+      lastName: updatedUser.last_name,
+      dateOfBirth: updatedUser.date_of_birth,
+      gender: updatedUser.gender,
+      phoneNumber: updatedUser.phone_number,
+      address: updatedUser.address
+    };
 
     res.json({
       success: true,
