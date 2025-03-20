@@ -14,6 +14,8 @@ const authRoutes = require('./routes/auth');
 const eczemaRoutes = require('./routes/eczema');
 const doctorRoutes = require('./routes/doctors');
 const appointmentRoutes = require('./routes/appointments');
+const analyticsRoutes = require('./routes/analytics');
+const researchRoutes = require('./routes/research');
 const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
@@ -55,6 +57,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/eczema', eczemaRoutes);
 app.use('/api/doctors', doctorRoutes);
 app.use('/api/appointments', appointmentRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/research', researchRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

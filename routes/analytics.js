@@ -8,24 +8,26 @@ const {
     getModelConfidence,
     getDiagnosisHistory
 } = require('../controllers/analyticsController');
+const {
+    exportPatientRecords,
+    exportDiagnosisData,
+    exportAnalyticsReport
+} = require('../controllers/exportController');
 
 // All analytics routes require authentication and doctor/admin role
 router.use(protect);
 router.use(authorize('doctor', 'admin'));
 
-// Get age distribution of eczema cases
+// Analytics endpoints
 router.get('/age-distribution', getAgeDistribution);
-
-// Get geographical distribution of cases
 router.get('/geographical-distribution', getGeographicalDistribution);
-
-// Get treatment effectiveness statistics
 router.get('/treatment-effectiveness', getTreatmentEffectiveness);
-
-// Get ML model confidence distribution
 router.get('/model-confidence', getModelConfidence);
-
-// Get diagnosis history with trends
 router.get('/diagnosis-history', getDiagnosisHistory);
+
+// Export endpoints
+router.get('/export/patients', exportPatientRecords);
+router.get('/export/diagnoses', exportDiagnosisData);
+router.get('/export/analytics', exportAnalyticsReport);
 
 module.exports = router;
