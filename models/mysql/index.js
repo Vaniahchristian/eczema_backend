@@ -3,21 +3,21 @@ const { v4: uuidv4 } = require('uuid');
 
 class User {
     static async create(userData) {
-        const userId = uuidv4();
+        const id = uuidv4();
         const query = `
             INSERT INTO users (
-                user_id, email, password_hash, role, first_name, last_name,
-                date_of_birth, gender, phone_number, address
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                id, email, password, role, first_name, last_name,
+                date_of_birth, gender
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const values = [
-            userId, userData.email, userData.password_hash, userData.role,
-            userData.first_name, userData.last_name, userData.date_of_birth,
-            userData.gender, userData.phone_number, userData.address
+            id, userData.email, userData.password, userData.role,
+            userData.firstName, userData.lastName, userData.dateOfBirth,
+            userData.gender
         ];
 
         await mysqlPool.execute(query, values);
-        return userId;
+        return id;
     }
 
     static async findByEmail(email) {
@@ -30,57 +30,69 @@ class User {
 
     static async findById(userId) {
         const [rows] = await mysqlPool.execute(
-            'SELECT * FROM users WHERE user_id = ?',
+            'SELECT * FROM users WHERE id = ?',
             [userId]
         );
         return rows[0];
     }
 
-    static async update(userId, userData) {
-        // Filter out undefined values
-        const validUpdates = Object.entries(userData)
-            .filter(([_, value]) => value !== undefined)
-            .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
-
-        if (Object.keys(validUpdates).length === 0) {
-            return; // No valid updates
-        }
-
-        const setClause = Object.keys(validUpdates)
-            .map(key => `${key} = ?`)
-            .join(', ');
-
-        const query = `UPDATE users SET ${setClause} WHERE user_id = ?`;
-        const values = [...Object.values(validUpdates), userId];
-
+    static async updateProfile(userId, userData) {
+        const query = `
+            UPDATE users 
+            SET first_name = ?, last_name = ?, gender = ?
+            WHERE id = ?
+        `;
+        const values = [userData.firstName, userData.lastName, userData.gender, userId];
         await mysqlPool.execute(query, values);
     }
 }
 
 class DoctorProfile {
     static async create(profileData) {
-        const doctorId = uuidv4();
+        const id = uuidv4();
         const query = `
             INSERT INTO doctor_profiles (
-                doctor_id, user_id, license_number, specialization,
-                qualification, hospital_affiliation, consultation_fee,
-                years_of_experience, available_days
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                id, user_id, specialization, license_number,
+                years_of_experience, available_hours
+            ) VALUES (?, ?, ?, ?, ?, ?)
         `;
         const values = [
-            doctorId, profileData.user_id, profileData.license_number,
-            profileData.specialization, profileData.qualification,
-            profileData.hospital_affiliation, profileData.consultation_fee,
-            profileData.years_of_experience, JSON.stringify(profileData.available_days)
+            id, profileData.userId, profileData.specialization,
+            profileData.licenseNumber, profileData.yearsOfExperience,
+            JSON.stringify(profileData.availableHours)
         ];
-
         await mysqlPool.execute(query, values);
-        return doctorId;
+        return id;
     }
 
     static async findByUserId(userId) {
         const [rows] = await mysqlPool.execute(
             'SELECT * FROM doctor_profiles WHERE user_id = ?',
+            [userId]
+        );
+        return rows[0];
+    }
+}
+
+class PatientProfile {
+    static async create(profileData) {
+        const id = uuidv4();
+        const query = `
+            INSERT INTO patient_profiles (
+                id, user_id, medical_history, allergies, medications
+            ) VALUES (?, ?, ?, ?, ?)
+        `;
+        const values = [
+            id, profileData.userId, profileData.medicalHistory,
+            profileData.allergies, profileData.medications
+        ];
+        await mysqlPool.execute(query, values);
+        return id;
+    }
+
+    static async findByUserId(userId) {
+        const [rows] = await mysqlPool.execute(
+            'SELECT * FROM patient_profiles WHERE user_id = ?',
             [userId]
         );
         return rows[0];
@@ -222,6 +234,7 @@ class PatientMedicalHistory {
 module.exports = {
     User,
     DoctorProfile,
+    PatientProfile,
     Appointment,
     TreatmentPlan,
     PatientMedicalHistory

@@ -9,7 +9,8 @@ const mysqlConfig = {
   host: process.env.MYSQL_HOST || 'localhost',
   user: process.env.MYSQL_USER || 'root',
   password: process.env.MYSQL_PASSWORD || '',
-  database: isTest ? 'eczema_test' : (process.env.MYSQL_DATABASE || 'eczema')
+  database: 'eczema', // Always use eczema database
+  multipleStatements: true // Allow multiple statements in one query
 };
 
 // MongoDB Configuration
@@ -20,9 +21,18 @@ const mongoConfig = {
 // Create MySQL connection pool
 const mysqlPool = mysql.createPool(mysqlConfig);
 
-// Test MySQL connection
+// Test MySQL connection and ensure database exists
 const testMySQLConnection = async () => {
   try {
+    // Create database if it doesn't exist
+    const tempPool = mysql.createPool({
+      ...mysqlConfig,
+      database: null
+    });
+    await tempPool.query('CREATE DATABASE IF NOT EXISTS eczema');
+    await tempPool.end();
+
+    // Test connection with main pool
     await mysqlPool.query('SELECT 1');
     console.log('MySQL connected successfully');
   } catch (error) {
@@ -52,5 +62,5 @@ module.exports = {
   mysqlPool,
   connectMongoDB,
   initializeDatabases,
-  isTest
+  testMySQLConnection
 };

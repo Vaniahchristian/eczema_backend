@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { MySQL } = require('../models');
-const { User } = MySQL;
+const { User, PatientProfile } = MySQL;
 
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET || 'your-secret-key', {
@@ -11,7 +11,7 @@ const generateToken = (userId) => {
 
 exports.register = async (req, res) => {
   try {
-    const { email, password, firstName, lastName, role, dateOfBirth, gender, phoneNumber, address } = req.body;
+    const { email, password, firstName, lastName, role, dateOfBirth, gender } = req.body;
 
     // Validate required fields
     if (!email || !password || !firstName || !lastName || !dateOfBirth || !gender) {
@@ -32,20 +32,28 @@ exports.register = async (req, res) => {
 
     // Hash password
     const salt = await bcrypt.genSalt(10);
-    const password_hash = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create user with properly mapped fields
+    // Create user
     const userId = await User.create({
       email,
-      password_hash,
+      password: hashedPassword,
       role: role || 'patient',
-      first_name: firstName,
-      last_name: lastName,
-      date_of_birth: dateOfBirth,
-      gender,
-      phone_number: phoneNumber || null,
-      address: address || null
+      firstName,
+      lastName,
+      dateOfBirth,
+      gender
     });
+
+    // If user is a patient, create patient profile
+    if (role === 'patient' || !role) {
+      await PatientProfile.create({
+        userId,
+        medicalHistory: '',
+        allergies: '',
+        medications: ''
+      });
+    }
 
     // Generate token
     const token = generateToken(userId);
@@ -60,7 +68,9 @@ exports.register = async (req, res) => {
           email,
           role: role || 'patient',
           firstName,
-          lastName
+          lastName,
+          dateOfBirth,
+          gender
         }
       }
     });
@@ -68,7 +78,7 @@ exports.register = async (req, res) => {
     console.error('Registration error:', error);
     res.status(500).json({
       success: false,
-      message: 'Error registering user',
+      message: 'Error during registration',
       error: error.message
     });
   }
@@ -96,7 +106,7 @@ exports.login = async (req, res) => {
     }
 
     // Verify password
-    const isMatch = await bcrypt.compare(password, user.password_hash);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({
         success: false,
@@ -105,7 +115,7 @@ exports.login = async (req, res) => {
     }
 
     // Generate token
-    const token = generateToken(user.user_id);
+    const token = generateToken(user.id);
 
     res.json({
       success: true,
@@ -113,11 +123,13 @@ exports.login = async (req, res) => {
       data: {
         token,
         user: {
-          id: user.user_id,
+          id: user.id,
           email: user.email,
           role: user.role,
-          firstName: user.first_name,
-          lastName: user.last_name
+          firstName: user.firstName,
+          lastName: user.lastName,
+          dateOfBirth: user.dateOfBirth,
+          gender: user.gender
         }
       }
     });
@@ -143,15 +155,13 @@ exports.getProfile = async (req, res) => {
 
     // Map database fields to API response format
     const userProfile = {
-      id: user.user_id,
+      id: user.id,
       email: user.email,
       role: user.role,
-      firstName: user.first_name,
-      lastName: user.last_name,
-      dateOfBirth: user.date_of_birth,
-      gender: user.gender,
-      phoneNumber: user.phone_number,
-      address: user.address
+      firstName: user.firstName,
+      lastName: user.lastName,
+      dateOfBirth: user.dateOfBirth,
+      gender: user.gender
     };
 
     res.json({
@@ -170,30 +180,28 @@ exports.getProfile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    const { firstName, lastName, phoneNumber, address } = req.body;
+    const { firstName, lastName, dateOfBirth, gender } = req.body;
     const userId = req.user.id;
 
     // Map API fields to database fields
     await User.update(userId, {
-      first_name: firstName,
-      last_name: lastName,
-      phone_number: phoneNumber,
-      address
+      firstName,
+      lastName,
+      dateOfBirth,
+      gender
     });
 
     const updatedUser = await User.findById(userId);
     
     // Map database fields to API response format
     const userProfile = {
-      id: updatedUser.user_id,
+      id: updatedUser.id,
       email: updatedUser.email,
       role: updatedUser.role,
-      firstName: updatedUser.first_name,
-      lastName: updatedUser.last_name,
-      dateOfBirth: updatedUser.date_of_birth,
-      gender: updatedUser.gender,
-      phoneNumber: updatedUser.phone_number,
-      address: updatedUser.address
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      dateOfBirth: updatedUser.dateOfBirth,
+      gender: updatedUser.gender
     };
 
     res.json({
