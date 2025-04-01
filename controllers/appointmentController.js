@@ -1,10 +1,9 @@
-const { MySQL } = require('../models');
-const { Appointment } = MySQL;
+const Appointment = require('../models/mysql/appointment');
 
 // Create a new appointment
 exports.createAppointment = async (req, res) => {
     try {
-        const { doctorId, appointmentDate, reason } = req.body;
+        const { doctorId, appointmentDate, reason, appointmentType } = req.body;
         const patientId = req.user.id;
 
         // Validate required fields
@@ -30,6 +29,7 @@ exports.createAppointment = async (req, res) => {
             patient_id: patientId,
             appointment_date: appointmentDate,
             reason,
+            appointment_type: appointmentType,
             status: 'pending'
         });
 
@@ -37,11 +37,12 @@ exports.createAppointment = async (req, res) => {
             success: true,
             message: 'Appointment created successfully',
             data: {
-                appointmentId,
+                id: appointmentId,
                 doctorId,
                 patientId,
                 appointmentDate,
                 reason,
+                appointmentType,
                 status: 'pending'
             }
         });

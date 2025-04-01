@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/auth');
 const { MySQL } = require('../models');
+
 const { mysqlPool } = require('../config/database');
 
 // Get all available doctors

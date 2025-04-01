@@ -72,7 +72,9 @@ async function createTables() {
                 patient_id VARCHAR(36) NOT NULL,
                 doctor_id VARCHAR(36) NOT NULL,
                 appointment_date DATETIME NOT NULL,
-                status ENUM('scheduled', 'completed', 'cancelled', 'no_show') NOT NULL DEFAULT 'scheduled',
+                status ENUM('pending', 'scheduled', 'completed', 'cancelled', 'no_show') NOT NULL DEFAULT 'pending',
+                reason TEXT NOT NULL,
+                appointment_type VARCHAR(50) DEFAULT 'regular',
                 notes TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -130,9 +132,9 @@ async function insertDummyData() {
 
         // Insert appointments
         await mysqlPool.query(`
-            INSERT INTO appointments (id, patient_id, doctor_id, appointment_date, status, notes) VALUES
-            ('a1', 'p1', 'd1', '2025-03-21 10:00:00', 'scheduled', 'Initial consultation'),
-            ('a2', 'p2', 'd2', '2025-03-22 14:00:00', 'scheduled', 'Follow-up appointment');
+            INSERT INTO appointments (id, patient_id, doctor_id, appointment_date, status, reason, appointment_type, notes) VALUES
+            ('a1', 'p1', 'd1', '2025-03-21 10:00:00', 'pending', 'Initial consultation', 'regular', 'Initial consultation'),
+            ('a2', 'p2', 'd2', '2025-03-22 14:00:00', 'pending', 'Follow-up appointment', 'regular', 'Follow-up appointment');
         `);
 
         // Insert research consent

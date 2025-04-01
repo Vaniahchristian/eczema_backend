@@ -39,10 +39,10 @@ exports.register = async (req, res) => {
       email,
       password: hashedPassword,
       role: role || 'patient',
-      first_name: firstName,
-      last_name: lastName,
-      date_of_birth: dateOfBirth,
-      gender
+      firstName: firstName,
+      lastName: lastName,
+      dateOfBirth: dateOfBirth,
+      gender: gender
     });
 
     // If user is a patient, create patient profile
@@ -126,9 +126,9 @@ exports.login = async (req, res) => {
           id: user.id,
           email: user.email,
           role: user.role,
-          firstName: user.first_name,
-          lastName: user.last_name,
-          dateOfBirth: user.date_of_birth,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          dateOfBirth: user.dateOfBirth,
           gender: user.gender
         }
       }
@@ -158,9 +158,9 @@ exports.getProfile = async (req, res) => {
       id: user.id,
       email: user.email,
       role: user.role,
-      firstName: user.first_name,
-      lastName: user.last_name,
-      dateOfBirth: user.date_of_birth,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      dateOfBirth: user.dateOfBirth,
       gender: user.gender
     };
 
@@ -185,9 +185,9 @@ exports.updateProfile = async (req, res) => {
 
     // Map API fields to database fields
     await User.update(userId, {
-      first_name: firstName,
-      last_name: lastName,
-      date_of_birth: dateOfBirth,
+      firstName,
+      lastName,
+      dateOfBirth,
       gender
     });
 
@@ -198,9 +198,9 @@ exports.updateProfile = async (req, res) => {
       id: updatedUser.id,
       email: updatedUser.email,
       role: updatedUser.role,
-      firstName: updatedUser.first_name,
-      lastName: updatedUser.last_name,
-      dateOfBirth: updatedUser.date_of_birth,
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      dateOfBirth: updatedUser.dateOfBirth,
       gender: updatedUser.gender
     };
 

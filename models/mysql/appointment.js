@@ -3,25 +3,26 @@ const { v4: uuidv4 } = require('uuid');
 
 class Appointment {
     static async create(appointmentData) {
-        const appointmentId = uuidv4();
+        const id = uuidv4();
         const query = `
             INSERT INTO appointments (
-                appointment_id, doctor_id, patient_id,
+                id, doctor_id, patient_id,
                 appointment_date, reason, status,
-                created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())
+                appointment_type
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
         const values = [
-            appointmentId,
+            id,
             appointmentData.doctor_id,
             appointmentData.patient_id,
             appointmentData.appointment_date,
             appointmentData.reason,
-            appointmentData.status
+            appointmentData.status,
+            appointmentData.appointment_type || 'regular'
         ];
 
         await mysqlPool.execute(query, values);
-        return appointmentId;
+        return id;
     }
 
     static async findById(appointmentId) {
@@ -31,9 +32,9 @@ class Appointment {
                 CONCAT(u1.first_name, ' ', u1.last_name) as doctor_name,
                 CONCAT(u2.first_name, ' ', u2.last_name) as patient_name
             FROM appointments a
-            JOIN users u1 ON a.doctor_id = u1.user_id
-            JOIN users u2 ON a.patient_id = u2.user_id
-            WHERE a.appointment_id = ?`,
+            JOIN users u1 ON a.doctor_id = u1.id
+            JOIN users u2 ON a.patient_id = u2.id
+            WHERE a.id = ?`,
             [appointmentId]
         );
         return rows[0];
@@ -45,7 +46,7 @@ class Appointment {
                 a.*,
                 CONCAT(u.first_name, ' ', u.last_name) as patient_name
             FROM appointments a
-            JOIN users u ON a.patient_id = u.user_id
+            JOIN users u ON a.patient_id = u.id
             WHERE a.doctor_id = ?
         `;
         const values = [doctorId];
@@ -55,12 +56,17 @@ class Appointment {
             values.push(filters.status);
         }
 
-        if (filters.startDate && filters.endDate) {
-            query += ' AND a.appointment_date BETWEEN ? AND ?';
-            values.push(filters.startDate, filters.endDate);
+        if (filters.startDate) {
+            query += ' AND a.appointment_date >= ?';
+            values.push(filters.startDate);
         }
 
-        query += ' ORDER BY a.appointment_date ASC';
+        if (filters.endDate) {
+            query += ' AND a.appointment_date <= ?';
+            values.push(filters.endDate);
+        }
+
+        query += ' ORDER BY a.appointment_date DESC';
 
         const [rows] = await mysqlPool.execute(query, values);
         return rows;
@@ -72,7 +78,7 @@ class Appointment {
                 a.*,
                 CONCAT(u.first_name, ' ', u.last_name) as doctor_name
             FROM appointments a
-            JOIN users u ON a.doctor_id = u.user_id
+            JOIN users u ON a.doctor_id = u.id
             WHERE a.patient_id = ?
         `;
         const values = [patientId];
@@ -82,86 +88,82 @@ class Appointment {
             values.push(filters.status);
         }
 
-        if (filters.startDate && filters.endDate) {
-            query += ' AND a.appointment_date BETWEEN ? AND ?';
-            values.push(filters.startDate, filters.endDate);
+        if (filters.startDate) {
+            query += ' AND a.appointment_date >= ?';
+            values.push(filters.startDate);
         }
 
-        query += ' ORDER BY a.appointment_date ASC';
+        if (filters.endDate) {
+            query += ' AND a.appointment_date <= ?';
+            values.push(filters.endDate);
+        }
+
+        query += ' ORDER BY a.appointment_date DESC';
 
         const [rows] = await mysqlPool.execute(query, values);
         return rows;
     }
 
-    static async findUpcoming(userId, userRole) {
-        const field = userRole === 'doctor' ? 'doctor_id' : 'patient_id';
-        const joinField = userRole === 'doctor' ? 'patient_id' : 'doctor_id';
-        
-        const query = `
-            SELECT 
-                a.*,
-                CONCAT(u.first_name, ' ', u.last_name) as ${userRole === 'doctor' ? 'patient_name' : 'doctor_name'}
-            FROM appointments a
-            JOIN users u ON a.${joinField} = u.user_id
-            WHERE a.${field} = ?
-            AND a.appointment_date >= CURDATE()
-            AND a.status IN ('pending', 'confirmed')
-            ORDER BY a.appointment_date ASC
-            LIMIT 10
-        `;
-
-        const [rows] = await mysqlPool.execute(query, [userId]);
-        return rows;
+    static async updateStatus(appointmentId, status) {
+        await mysqlPool.execute(
+            'UPDATE appointments SET status = ? WHERE id = ?',
+            [status, appointmentId]
+        );
     }
 
     static async checkAvailability(doctorId, appointmentDate) {
-        // Check if the time slot is available for the doctor
-        const [rows] = await mysqlPool.execute(
-            `SELECT COUNT(*) as count
-            FROM appointments
-            WHERE doctor_id = ?
-            AND appointment_date = ?
-            AND status != 'cancelled'`,
-            [doctorId, appointmentDate]
-        );
+        try {
+            // Get doctor's available hours
+            const [doctorProfiles] = await mysqlPool.execute(
+                'SELECT available_hours FROM doctor_profiles WHERE user_id = ?',
+                [doctorId]
+            );
 
-        return rows[0].count === 0;
-    }
+            if (doctorProfiles.length === 0 || !doctorProfiles[0].available_hours) {
+                return false;
+            }
 
-    static async getDoctorAvailability(doctorId, date) {
-        // Get doctor's working hours and booked slots
-        const [workingHours] = await mysqlPool.execute(
-            `SELECT available_hours
-            FROM doctor_profiles
-            WHERE user_id = ?`,
-            [doctorId]
-        );
+            const availableHours = JSON.parse(doctorProfiles[0].available_hours);
+            const requestedDate = new Date(appointmentDate);
+            
+            // Get day of week in lowercase
+            const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            const dayOfWeek = days[requestedDate.getDay()];
+            
+            // Get time in HH:mm format
+            const hours = requestedDate.getHours().toString().padStart(2, '0');
+            const minutes = requestedDate.getMinutes().toString().padStart(2, '0');
+            const requestedTime = `${hours}:${minutes}`;
 
-        const [bookedSlots] = await mysqlPool.execute(
-            `SELECT appointment_date
-            FROM appointments
-            WHERE doctor_id = ?
-            AND DATE(appointment_date) = DATE(?)
-            AND status != 'cancelled'`,
-            [doctorId, date]
-        );
+            // Check if the day is available
+            if (!availableHours[dayOfWeek] || !availableHours[dayOfWeek].length) {
+                return false;
+            }
 
-        // Parse working hours and remove booked slots
-        const availableHours = JSON.parse(workingHours[0]?.available_hours || '[]');
-        const bookedTimes = bookedSlots.map(slot => 
-            new Date(slot.appointment_date).toLocaleTimeString('en-US', { hour12: false })
-        );
+            // Check if the time falls within any of the available slots
+            const isTimeAvailable = availableHours[dayOfWeek].some(slot => {
+                const [start, end] = slot.split('-');
+                return requestedTime >= start && requestedTime <= end;
+            });
 
-        return availableHours.filter(hour => !bookedTimes.includes(hour));
-    }
+            if (!isTimeAvailable) {
+                return false;
+            }
 
-    static async updateStatus(appointmentId, status) {
-        await mysqlPool.execute(
-            `UPDATE appointments
-            SET status = ?, updated_at = NOW()
-            WHERE appointment_id = ?`,
-            [status, appointmentId]
-        );
+            // Check if there are any existing appointments at the same time
+            const [existingAppointments] = await mysqlPool.execute(`
+                SELECT COUNT(*) as count 
+                FROM appointments 
+                WHERE doctor_id = ? 
+                AND appointment_date = ? 
+                AND status != 'cancelled'
+            `, [doctorId, appointmentDate]);
+
+            return existingAppointments[0].count === 0;
+        } catch (error) {
+            console.error('Error checking availability:', error);
+            return false;
+        }
     }
 }
 
