@@ -28,9 +28,9 @@ exports.protect = async (req, res, next) => {
         });
       }
 
-      // Set user info in request, maintaining the user_id
+      // Set user info in request using correct field names from database
       req.user = {
-        id: user.user_id,
+        id: user.id,
         email: user.email,
         role: user.role,
         firstName: user.first_name,
