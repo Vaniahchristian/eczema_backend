@@ -8,17 +8,21 @@ const { mysqlPool } = require('../config/database');
 router.get('/', protect, async (req, res) => {
     try {
         const [doctors] = await mysqlPool.execute(`
-            SELECT u.user_id, u.first_name, u.last_name, u.email, 
+            SELECT u.id, u.first_name, u.last_name, u.email, 
                    dp.specialization, dp.available_hours
             FROM users u
-            INNER JOIN doctor_profiles dp ON u.user_id = dp.user_id
+            INNER JOIN doctor_profiles dp ON u.id = dp.user_id
             WHERE u.role = 'doctor'
         `);
 
         // Format available_hours from JSON string to object
         const formattedDoctors = doctors.map(doctor => ({
-            ...doctor,
-            available_hours: JSON.parse(doctor.available_hours)
+            id: doctor.id,
+            firstName: doctor.first_name,
+            lastName: doctor.last_name,
+            email: doctor.email,
+            specialization: doctor.specialization,
+            availableHours: doctor.available_hours ? JSON.parse(doctor.available_hours) : null
         }));
 
         res.json({
@@ -60,7 +64,16 @@ router.get('/:doctorId/available-slots', protect, async (req, res) => {
             });
         }
 
-        const availableHours = JSON.parse(doctorProfiles[0].available_hours);
+        // Parse available hours
+        const availableHours = doctorProfiles[0].available_hours ? JSON.parse(doctorProfiles[0].available_hours) : null;
+
+        if (!availableHours) {
+            return res.status(404).json({
+                success: false,
+                message: 'No availability set for this doctor'
+            });
+        }
+
         const requestedDate = new Date(date);
         const dayOfWeek = requestedDate.toLocaleLowerCase().slice(0, 3);
 
