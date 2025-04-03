@@ -52,60 +52,79 @@ router.get('/:doctorId/available-slots', protect, async (req, res) => {
             });
         }
 
-        // Get doctor's general availability
+        // Get doctor's available hours
         const [doctorProfiles] = await mysqlPool.execute(
             'SELECT available_hours FROM doctor_profiles WHERE user_id = ?',
             [doctorId]
         );
 
-        if (doctorProfiles.length === 0) {
+        if (doctorProfiles.length === 0 || !doctorProfiles[0].available_hours) {
             return res.status(404).json({
                 success: false,
-                message: 'Doctor not found'
+                message: 'Doctor not found or no available hours set'
             });
         }
 
-        // Parse available hours
-        const availableHours = doctorProfiles[0].available_hours ? JSON.parse(doctorProfiles[0].available_hours) : null;
-
-        if (!availableHours) {
-            return res.status(404).json({
-                success: false,
-                message: 'No availability set for this doctor'
-            });
-        }
-
+        const availableHours = JSON.parse(doctorProfiles[0].available_hours);
         const requestedDate = new Date(date);
-        const dayOfWeek = requestedDate.toLocaleLowerCase().slice(0, 3);
+        
+        // Get day of week in lowercase
+        const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        const dayOfWeek = days[requestedDate.getDay()];
 
-        // Get booked appointments for the requested date
-        const [bookedSlots] = await mysqlPool.execute(
-            'SELECT appointment_date FROM appointments WHERE doctor_id = ? AND DATE(appointment_date) = DATE(?)',
-            [doctorId, date]
-        );
+        // If no hours available for this day
+        if (!availableHours[dayOfWeek] || !availableHours[dayOfWeek].length) {
+            return res.json({
+                success: true,
+                data: {
+                    date: date,
+                    availableSlots: []
+                }
+            });
+        }
 
-        // Convert booked slots to time strings for easy comparison
-        const bookedTimes = bookedSlots.map(slot => 
-            new Date(slot.appointment_date).toTimeString().slice(0, 5)
-        );
+        // Get existing appointments for this date
+        const [existingAppointments] = await mysqlPool.execute(`
+            SELECT TIME_FORMAT(TIME(appointment_date), '%H:%i') as time
+            FROM appointments 
+            WHERE doctor_id = ? 
+            AND DATE(appointment_date) = DATE(?)
+            AND status != 'cancelled'
+        `, [doctorId, date]);
 
-        // Filter out booked slots from available hours
-        const availableSlotsForDay = availableHours[dayOfWeek]?.filter(
-            time => !bookedTimes.includes(time)
-        ) || [];
+        const bookedTimes = new Set(existingAppointments.map(apt => apt.time));
+
+        // Generate available time slots based on working hours
+        const availableSlots = [];
+        availableHours[dayOfWeek].forEach(slot => {
+            const [start, end] = slot.split('-');
+            const startTime = new Date(`${date}T${start}`);
+            const endTime = new Date(`${date}T${end}`);
+
+            // Generate 30-minute slots
+            while (startTime < endTime) {
+                const timeSlot = startTime.toTimeString().slice(0, 5);
+                if (!bookedTimes.has(timeSlot)) {
+                    availableSlots.push(timeSlot);
+                }
+                startTime.setMinutes(startTime.getMinutes() + 30);
+            }
+        });
 
         res.json({
             success: true,
             data: {
-                date,
-                availableSlots: availableSlotsForDay
+                date: date,
+                availableSlots: availableSlots.sort()
             }
         });
+
     } catch (error) {
-        console.error('Error fetching available slots:', error);
+        console.error('Error getting available slots:', error);
         res.status(500).json({
             success: false,
-            message: 'Error fetching available slots'
+            message: 'Error getting available slots',
+            error: error.message
         });
     }
 });
