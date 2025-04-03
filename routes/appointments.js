@@ -7,7 +7,8 @@ const {
     getAppointments,
     updateAppointmentStatus,
     getDoctorAvailability,
-    getUpcomingAppointments
+    getUpcomingAppointments,
+    rescheduleAppointment
 } = require('../controllers/appointmentController');
 
 // Create new appointment
@@ -24,5 +25,8 @@ router.get('/availability/:doctorId', protect, getDoctorAvailability);
 
 // Update appointment status (confirm/cancel/complete)
 router.put('/:appointmentId/status', protect, updateAppointmentStatus);
+
+// Reschedule appointment
+router.put('/:appointmentId/reschedule', protect, rescheduleAppointment);
 
 module.exports = router;

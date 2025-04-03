@@ -9,21 +9,32 @@ const { mysqlPool } = require('../config/database');
 router.get('/', protect, async (req, res) => {
     try {
         const [doctors] = await mysqlPool.execute(`
-            SELECT u.id, u.first_name, u.last_name, u.email, 
-                   dp.specialization, dp.available_hours
+            SELECT 
+                u.id, 
+                u.first_name, 
+                u.last_name, 
+                u.email,
+                dp.specialization,
+                dp.available_hours,
+                dp.avatar,
+                dp.rating,
+                dp.experience_years,
+                dp.bio
             FROM users u
             INNER JOIN doctor_profiles dp ON u.id = dp.user_id
             WHERE u.role = 'doctor'
         `);
 
-        // Format available_hours from JSON string to object
+        // Format available_hours from JSON string to object and transform data
         const formattedDoctors = doctors.map(doctor => ({
             id: doctor.id,
-            firstName: doctor.first_name,
-            lastName: doctor.last_name,
-            email: doctor.email,
-            specialization: doctor.specialization,
-            availableHours: doctor.available_hours ? JSON.parse(doctor.available_hours) : null
+            name: `${doctor.first_name} ${doctor.last_name}`,
+            specialty: doctor.specialization,
+            image: doctor.avatar || '/placeholder.svg?height=200&width=200',
+            rating: parseFloat(doctor.rating) || 4.5,
+            experience: parseInt(doctor.experience_years) || 0,
+            bio: doctor.bio || `Dr. ${doctor.last_name} is a specialist in treating various skin conditions including eczema.`,
+            availability: doctor.available_hours ? JSON.parse(doctor.available_hours) : []
         }));
 
         res.json({
@@ -31,10 +42,11 @@ router.get('/', protect, async (req, res) => {
             data: formattedDoctors
         });
     } catch (error) {
-        console.error('Error fetching doctors:', error);
+        console.error('Get doctors error:', error);
         res.status(500).json({
             success: false,
-            message: 'Error fetching doctors'
+            message: 'Error fetching doctors',
+            error: error.message
         });
     }
 });

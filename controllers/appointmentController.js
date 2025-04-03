@@ -195,3 +195,87 @@ exports.updateAppointmentStatus = async (req, res) => {
         });
     }
 };
+
+// Reschedule appointment
+exports.rescheduleAppointment = async (req, res) => {
+    try {
+        const { appointmentId } = req.params;
+        const { newDate } = req.body;
+        const userId = req.user.id;
+
+        // Verify appointment exists and belongs to user
+        const appointment = await Appointment.findById(appointmentId);
+        if (!appointment) {
+            return res.status(404).json({
+                success: false,
+                message: 'Appointment not found'
+            });
+        }
+
+        // Check if user has permission to reschedule
+        if (appointment.patient_id !== userId && appointment.doctor_id !== userId) {
+            return res.status(403).json({
+                success: false,
+                message: 'Not authorized to reschedule this appointment'
+            });
+        }
+
+        // Check if new time slot is available
+        const isAvailable = await Appointment.checkAvailability(appointment.doctor_id, newDate);
+        if (!isAvailable) {
+            return res.status(400).json({
+                success: false,
+                message: 'Selected time slot is not available'
+            });
+        }
+
+        // Update appointment
+        await Appointment.update(appointmentId, {
+            appointment_date: newDate,
+            status: 'rescheduled'
+        });
+
+        res.json({
+            success: true,
+            message: 'Appointment rescheduled successfully'
+        });
+    } catch (error) {
+        console.error('Reschedule appointment error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error rescheduling appointment',
+            error: error.message
+        });
+    }
+};
+
+// Get available doctors
+exports.getDoctors = async (req, res) => {
+    try {
+        const doctors = await Appointment.getDoctors();
+        
+        // Transform data to match frontend expectations
+        const transformedDoctors = doctors.map(doctor => ({
+            id: doctor.id,
+            name: `${doctor.first_name} ${doctor.last_name}`,
+            specialty: doctor.specialty,
+            image: doctor.avatar || '/placeholder.svg?height=200&width=200',
+            rating: parseFloat(doctor.rating) || 4.5,
+            experience: parseInt(doctor.experience_years) || 0,
+            bio: doctor.bio || `Dr. ${doctor.last_name} is a specialist in treating various skin conditions including eczema.`,
+            availability: doctor.availability || []
+        }));
+
+        res.json({
+            success: true,
+            data: transformedDoctors
+        });
+    } catch (error) {
+        console.error('Get doctors error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching doctors',
+            error: error.message
+        });
+    }
+};

@@ -29,8 +29,11 @@ async function createTables() {
                 role ENUM('patient', 'doctor', 'researcher', 'admin') NOT NULL DEFAULT 'patient',
                 first_name VARCHAR(100) NOT NULL,
                 last_name VARCHAR(100) NOT NULL,
-                date_of_birth DATE NOT NULL,
-                gender ENUM('male', 'female', 'other') NOT NULL,
+                date_of_birth DATE,
+                gender ENUM('male', 'female', 'other'),
+                phone_number VARCHAR(20),
+                address TEXT,
+                image_url VARCHAR(255),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -41,10 +44,13 @@ async function createTables() {
             CREATE TABLE doctor_profiles (
                 id VARCHAR(36) PRIMARY KEY,
                 user_id VARCHAR(36) NOT NULL,
-                specialization VARCHAR(100) NOT NULL,
-                license_number VARCHAR(50) NOT NULL,
-                years_of_experience INT NOT NULL,
-                available_hours JSON,
+                specialty VARCHAR(100) NOT NULL,
+                bio TEXT,
+                rating DECIMAL(3,2) DEFAULT 5.0,
+                experience_years INT DEFAULT 0,
+                clinic_name VARCHAR(255),
+                clinic_address TEXT,
+                consultation_fee DECIMAL(10,2),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -69,30 +75,19 @@ async function createTables() {
         await mysqlPool.query(`
             CREATE TABLE appointments (
                 id VARCHAR(36) PRIMARY KEY,
-                patient_id VARCHAR(36) NOT NULL,
                 doctor_id VARCHAR(36) NOT NULL,
+                patient_id VARCHAR(36) NOT NULL,
                 appointment_date DATETIME NOT NULL,
-                status ENUM('pending', 'scheduled', 'completed', 'cancelled', 'no_show') NOT NULL DEFAULT 'pending',
                 reason TEXT NOT NULL,
-                appointment_type VARCHAR(50) DEFAULT 'regular',
+                appointment_type VARCHAR(50) NOT NULL DEFAULT 'regular',
+                status ENUM('pending', 'confirmed', 'cancelled', 'completed', 'rescheduled') NOT NULL DEFAULT 'pending',
+                mode ENUM('In-person', 'Video', 'Phone') NOT NULL DEFAULT 'In-person',
+                duration INT DEFAULT 30,
                 notes TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                FOREIGN KEY (patient_id) REFERENCES users(id) ON DELETE CASCADE,
-                FOREIGN KEY (doctor_id) REFERENCES users(id) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        `);
-
-        // Create research_consent table
-        await mysqlPool.query(`
-            CREATE TABLE research_consent (
-                id VARCHAR(36) PRIMARY KEY,
-                user_id VARCHAR(36) NOT NULL,
-                consented BOOLEAN NOT NULL DEFAULT FALSE,
-                consent_date DATETIME,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                FOREIGN KEY (doctor_id) REFERENCES users(id),
+                FOREIGN KEY (patient_id) REFERENCES users(id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         `);
 
@@ -108,41 +103,59 @@ async function insertDummyData() {
         console.log('Inserting dummy data...');
 
         // Insert users
-        await mysqlPool.query(`
-            INSERT INTO users (id, email, password, role, first_name, last_name, date_of_birth, gender) VALUES
-            ('d1', 'doctor1@example.com', '$2b$10$xxxxxxxxxxx', 'doctor', 'John', 'Smith', '1980-01-01', 'male'),
-            ('d2', 'doctor2@example.com', '$2b$10$xxxxxxxxxxx', 'doctor', 'Sarah', 'Johnson', '1985-02-15', 'female'),
-            ('p1', 'patient1@example.com', '$2b$10$xxxxxxxxxxx', 'patient', 'Michael', 'Brown', '1990-03-20', 'male'),
-            ('p2', 'patient2@example.com', '$2b$10$xxxxxxxxxxx', 'patient', 'Emily', 'Davis', '1988-07-10', 'female');
-        `);
+        const users = [
+            {
+                id: '550e8400-e29b-41d4-a716-446655440000',
+                email: 'doctor1@example.com',
+                password: '$2b$10$EiA3c7avHjGXwTagXqkZ1.YxkGBL3k0vuPkZSO.h6HT6NqhBRGHYe', // password123
+                role: 'doctor',
+                first_name: 'John',
+                last_name: 'Doe',
+                date_of_birth: '1980-01-01',
+                gender: 'male',
+                image_url: '/images/doctors/doctor1.jpg'
+            },
+            {
+                id: '550e8400-e29b-41d4-a716-446655440001',
+                email: 'patient1@example.com',
+                password: '$2b$10$EiA3c7avHjGXwTagXqkZ1.YxkGBL3k0vuPkZSO.h6HT6NqhBRGHYe', // password123
+                role: 'patient',
+                first_name: 'Jane',
+                last_name: 'Smith',
+                date_of_birth: '1990-05-15',
+                gender: 'female',
+                image_url: '/images/patients/patient1.jpg'
+            }
+        ];
+
+        for (const user of users) {
+            await mysqlPool.query(
+                'INSERT INTO users (id, email, password, role, first_name, last_name, date_of_birth, gender, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                [user.id, user.email, user.password, user.role, user.first_name, user.last_name, user.date_of_birth, user.gender, user.image_url]
+            );
+        }
 
         // Insert doctor profiles
-        await mysqlPool.query(`
-            INSERT INTO doctor_profiles (id, user_id, specialization, license_number, years_of_experience, available_hours) VALUES
-            ('dp1', 'd1', 'Dermatology', 'LIC123456', 15, '{"monday": ["09:00-17:00"], "tuesday": ["09:00-17:00"], "wednesday": ["09:00-17:00"], "thursday": ["09:00-17:00"], "friday": ["09:00-17:00"]}'),
-            ('dp2', 'd2', 'Dermatology', 'LIC789012', 10, '{"monday": ["10:00-18:00"], "tuesday": ["10:00-18:00"], "wednesday": ["10:00-18:00"], "thursday": ["10:00-18:00"], "friday": ["10:00-18:00"]}');
-        `);
+        const doctorProfiles = [
+            {
+                id: '660f9511-f3ab-52e5-b782-557766551111',
+                user_id: '550e8400-e29b-41d4-a716-446655440000',
+                specialty: 'Dermatology',
+                bio: 'Experienced dermatologist specializing in eczema treatment',
+                rating: 4.8,
+                experience_years: 15,
+                clinic_name: 'Skin Care Center',
+                clinic_address: 'Kampala, Uganda',
+                consultation_fee: 100.00
+            }
+        ];
 
-        // Insert patient profiles
-        await mysqlPool.query(`
-            INSERT INTO patient_profiles (id, user_id, medical_history, allergies, medications) VALUES
-            ('pp1', 'p1', 'History of mild eczema', 'Peanuts', 'None'),
-            ('pp2', 'p2', 'Chronic eczema since childhood', 'Dairy, dust', 'Topical corticosteroids');
-        `);
-
-        // Insert appointments
-        await mysqlPool.query(`
-            INSERT INTO appointments (id, patient_id, doctor_id, appointment_date, status, reason, appointment_type, notes) VALUES
-            ('a1', 'p1', 'd1', '2025-03-21 10:00:00', 'pending', 'Initial consultation', 'regular', 'Initial consultation'),
-            ('a2', 'p2', 'd2', '2025-03-22 14:00:00', 'pending', 'Follow-up appointment', 'regular', 'Follow-up appointment');
-        `);
-
-        // Insert research consent
-        await mysqlPool.query(`
-            INSERT INTO research_consent (id, user_id, consented, consent_date) VALUES
-            ('rc1', 'p1', TRUE, '2025-03-01 00:00:00'),
-            ('rc2', 'p2', TRUE, '2025-03-02 00:00:00');
-        `);
+        for (const profile of doctorProfiles) {
+            await mysqlPool.query(
+                'INSERT INTO doctor_profiles (id, user_id, specialty, bio, rating, experience_years, clinic_name, clinic_address, consultation_fee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                [profile.id, profile.user_id, profile.specialty, profile.bio, profile.rating, profile.experience_years, profile.clinic_name, profile.clinic_address, profile.consultation_fee]
+            );
+        }
 
         console.log('Dummy data inserted successfully');
     } catch (error) {
@@ -157,9 +170,10 @@ async function initializeDatabase() {
         await createTables();
         await insertDummyData();
         console.log('Database initialization completed successfully');
+        process.exit(0);
     } catch (error) {
-        console.error('Error initializing database:', error);
-        throw error;
+        console.error('Database initialization failed:', error);
+        process.exit(1);
     }
 }
 

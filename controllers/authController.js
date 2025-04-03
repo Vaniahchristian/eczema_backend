@@ -15,9 +15,9 @@ exports.register = async (req, res) => {
 
     // Validate required fields
     if (!email || !password || !firstName || !lastName || !dateOfBirth || !gender) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: 'Please provide all required fields' 
+        message: 'Please provide all required fields'
       });
     }
 
@@ -192,7 +192,7 @@ exports.updateProfile = async (req, res) => {
     });
 
     const updatedUser = await User.findById(userId);
-    
+
     // Map database fields to API response format
     const userProfile = {
       id: updatedUser.id,

@@ -5,29 +5,8 @@
   },
   "item": [
     {
-      "name": "Authentication",
+      "name": "Auth",
       "item": [
-        {
-          "name": "Register User",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"role\": \"patient\",\n    \"dateOfBirth\": \"1990-01-01\",\n    \"gender\": \"male\",\n    \"phoneNumber\": \"+1234567890\",\n    \"address\": \"123 Main St\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "register"]
-            }
-          }
-        },
         {
           "name": "Login",
           "request": {
@@ -40,7 +19,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+              "raw": "{\n  \"email\": \"doctor1@example.com\",\n  \"password\": \"password123\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/login",
@@ -50,19 +29,23 @@
           }
         },
         {
-          "name": "Get Profile",
+          "name": "Register",
           "request": {
-            "method": "GET",
+            "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
+                "key": "Content-Type",
+                "value": "application/json"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"password123\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"role\": \"patient\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"gender\": \"male\"\n}"
+            },
             "url": {
-              "raw": "{{baseUrl}}/api/auth/profile",
+              "raw": "{{baseUrl}}/api/auth/register",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "profile"]
+              "path": ["api", "auth", "register"]
             }
           }
         }
@@ -72,7 +55,51 @@
       "name": "Appointments",
       "item": [
         {
-          "name": "Create Appointment",
+          "name": "Get Appointments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments?startDate=2025-04-03T12:00:00Z&endDate=2025-04-04T12:00:00Z",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "appointments"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2025-04-03T12:00:00Z"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2025-04-04T12:00:00Z"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Upcoming Appointments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/upcoming",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "appointments", "upcoming"]
+            }
+          }
+        },
+        {
+          "name": "Schedule Appointment",
           "request": {
             "method": "POST",
             "header": [
@@ -87,25 +114,8 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"doctorId\": \"{{doctorId}}\",\n    \"appointmentDate\": \"2025-03-21T10:00:00.000Z\",\n    \"reason\": \"Regular checkup\"\n}"
+              "raw": "{\n  \"doctorId\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"appointmentDate\": \"2025-04-04T10:00:00Z\",\n  \"reason\": \"Initial consultation\",\n  \"appointmentType\": \"regular\",\n  \"mode\": \"In-person\",\n  \"duration\": 30\n}"
             },
-            "url": {
-              "raw": "{{baseUrl}}/api/appointments",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "appointments"]
-            }
-          }
-        },
-        {
-          "name": "Get My Appointments",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
             "url": {
               "raw": "{{baseUrl}}/api/appointments",
               "host": ["{{baseUrl}}"],
@@ -116,7 +126,7 @@
         {
           "name": "Update Appointment Status",
           "request": {
-            "method": "PATCH",
+            "method": "PUT",
             "header": [
               {
                 "key": "Authorization",
@@ -129,85 +139,19 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"status\": \"confirmed\"\n}"
+              "raw": "{\n  \"status\": \"confirmed\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/appointments/{{appointmentId}}",
+              "raw": "{{baseUrl}}/api/appointments/{{appointmentId}}/status",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "appointments", "{{appointmentId}}"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Diagnoses",
-      "item": [
-        {
-          "name": "Upload Image for Diagnosis",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "image",
-                  "type": "file",
-                  "src": ""
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/eczema/diagnose",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "eczema", "diagnose"]
+              "path": ["api", "appointments", "{{appointmentId}}", "status"]
             }
           }
         },
         {
-          "name": "Get My Diagnoses",
+          "name": "Reschedule Appointment",
           "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/eczema/diagnoses",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "eczema", "diagnoses"]
-            }
-          }
-        },
-        {
-          "name": "Get Diagnosis by ID",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/eczema/diagnoses/{{diagnosisId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "eczema", "diagnoses", "{{diagnosisId}}"]
-            }
-          }
-        },
-        {
-          "name": "Add Doctor Review",
-          "request": {
-            "method": "POST",
+            "method": "PUT",
             "header": [
               {
                 "key": "Authorization",
@@ -220,12 +164,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"comments\": \"Patient shows improvement. Continue with current treatment plan.\",\n    \"adjustments\": [\n        {\n            \"field\": \"recommendations.treatments\",\n            \"oldValue\": null,\n            \"newValue\": [\n                {\n                    \"type\": \"Topical Corticosteroid\",\n                    \"description\": \"Apply once daily\",\n                    \"priority\": 1\n                }\n            ],\n            \"reason\": \"Reducing application frequency due to improvement\"\n        }\n    ]\n}"
+              "raw": "{\n  \"newDate\": \"2025-04-05T14:00:00Z\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/eczema/diagnoses/{{diagnosisId}}/review",
+              "raw": "{{baseUrl}}/api/appointments/{{appointmentId}}/reschedule",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "eczema", "diagnoses", "{{diagnosisId}}", "review"]
+              "path": ["api", "appointments", "{{appointmentId}}", "reschedule"]
             }
           }
         }
@@ -235,7 +179,7 @@
       "name": "Doctors",
       "item": [
         {
-          "name": "Get Available Doctors",
+          "name": "Get Doctors",
           "request": {
             "method": "GET",
             "header": [
@@ -252,7 +196,7 @@
           }
         },
         {
-          "name": "Get Doctor Available Slots",
+          "name": "Check Doctor Availability",
           "request": {
             "method": "GET",
             "header": [
@@ -262,9 +206,15 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/doctors/{{doctorId}}/available-slots",
+              "raw": "{{baseUrl}}/api/appointments/availability/{{doctorId}}?date=2025-04-04",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "doctors", "{{doctorId}}", "available-slots"]
+              "path": ["api", "appointments", "availability", "{{doctorId}}"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2025-04-04"
+                }
+              ]
             }
           }
         }
@@ -274,7 +224,19 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:3000"
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "token",
+      "value": "your_jwt_token_here"
+    },
+    {
+      "key": "appointmentId",
+      "value": "appointment_id_here"
+    },
+    {
+      "key": "doctorId",
+      "value": "550e8400-e29b-41d4-a716-446655440000"
     }
   ]
 }
