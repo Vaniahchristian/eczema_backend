@@ -179,7 +179,7 @@ async function insertDummyData() {
         console.error('Error inserting dummy data:', error);
         throw error;
     }
-}
+}   
 
 async function initializeDatabase() {
     try {
