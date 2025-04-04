@@ -22,14 +22,6 @@ exports.register = async (req, res) => {
       });
     }
 
-    // Additional validation for doctors
-    if (role === 'doctor' && !specialty) {
-      return res.status(400).json({
-        success: false,
-        message: 'Specialty is required for doctor registration'
-      });
-    }
-
     // Check if user already exists
     const existingUser = await User.findByEmail(email);
     if (existingUser) {
@@ -66,11 +58,12 @@ exports.register = async (req, res) => {
 
     // If user is a doctor, create doctor profile
     if (role === 'doctor') {
+      const defaultSpecialty = 'Dermatologist';
       await DoctorProfile.create({
         id: uuidv4(),
         userId,
-        specialty: 'Dermatology',
-        bio: `Dr. ${lastName} is a specialist in ${specialty}.`,
+        specialty: specialty || defaultSpecialty,
+        bio: `Dr. ${lastName} is a specialist in ${specialty || defaultSpecialty}.`,
         rating: 5.0,
         experienceYears: 0,
         available_hours: JSON.stringify({
