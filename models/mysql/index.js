@@ -49,20 +49,24 @@ class User {
 
 class DoctorProfile {
     static async create(profileData) {
-        const id = uuidv4();
         const query = `
             INSERT INTO doctor_profiles (
-                id, user_id, specialization, license_number,
-                years_of_experience, available_hours
-            ) VALUES (?, ?, ?, ?, ?, ?)
+                id, user_id, specialty, bio, rating,
+                experience_years, available_hours
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
         const values = [
-            id, profileData.userId, profileData.specialization,
-            profileData.licenseNumber, profileData.yearsOfExperience,
-            JSON.stringify(profileData.availableHours)
+            profileData.id,
+            profileData.userId,
+            profileData.specialty,
+            profileData.bio,
+            profileData.rating,
+            profileData.experienceYears,
+            profileData.available_hours
         ];
+
         await mysqlPool.execute(query, values);
-        return id;
+        return profileData.id;
     }
 
     static async findByUserId(userId) {

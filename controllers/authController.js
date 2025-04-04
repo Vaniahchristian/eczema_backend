@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { MySQL } = require('../models');
-const { User, PatientProfile } = MySQL;
+const { User, PatientProfile, DoctorProfile } = MySQL;
+const { v4: uuidv4 } = require('uuid');
 
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET || 'your-secret-key', {
@@ -11,13 +12,21 @@ const generateToken = (userId) => {
 
 exports.register = async (req, res) => {
   try {
-    const { email, password, firstName, lastName, role, dateOfBirth, gender } = req.body;
+    const { email, password, firstName, lastName, role, dateOfBirth, gender, specialty } = req.body;
 
     // Validate required fields
     if (!email || !password || !firstName || !lastName || !dateOfBirth || !gender) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Please provide all required fields' 
+      });
+    }
+
+    // Additional validation for doctors
+    if (role === 'doctor' && !specialty) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide all required fields'
+        message: 'Specialty is required for doctor registration'
       });
     }
 
@@ -52,6 +61,25 @@ exports.register = async (req, res) => {
         medicalHistory: '',
         allergies: '',
         medications: ''
+      });
+    }
+
+    // If user is a doctor, create doctor profile
+    if (role === 'doctor') {
+      await DoctorProfile.create({
+        id: uuidv4(),
+        userId,
+        specialty: 'Dermatology',
+        bio: `Dr. ${lastName} is a specialist in ${specialty}.`,
+        rating: 5.0,
+        experienceYears: 0,
+        available_hours: JSON.stringify({
+          monday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
+          tuesday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
+          wednesday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
+          thursday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
+          friday: ['09:00', '10:00', '11:00', '14:00', '15:00']
+        })
       });
     }
 

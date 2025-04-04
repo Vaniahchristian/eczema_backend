@@ -1,4 +1,5 @@
 const { mysqlPool } = require('../config/database');
+const uuidv4 = require('uuid').v4;
 
 async function createDatabase() {
     try {
@@ -51,6 +52,7 @@ async function createTables() {
                 clinic_name VARCHAR(255),
                 clinic_address TEXT,
                 consultation_fee DECIMAL(10,2),
+                available_hours JSON,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -138,23 +140,38 @@ async function insertDummyData() {
         // Insert doctor profiles
         const doctorProfiles = [
             {
-                id: '660f9511-f3ab-52e5-b782-557766551111',
+                id: uuidv4(),
                 user_id: '550e8400-e29b-41d4-a716-446655440000',
                 specialty: 'Dermatology',
                 bio: 'Experienced dermatologist specializing in eczema treatment',
                 rating: 4.8,
                 experience_years: 15,
-                clinic_name: 'Skin Care Center',
-                clinic_address: 'Kampala, Uganda',
-                consultation_fee: 100.00
+                clinic_name: 'Healthy Skin Clinic',
+                clinic_address: '123 Medical Center Dr.',
+                consultation_fee: 150.00,
+                available_hours: JSON.stringify({
+                    monday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
+                    tuesday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
+                    wednesday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
+                    thursday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
+                    friday: ['09:00', '10:00', '11:00', '14:00', '15:00']
+                })
             }
         ];
 
         for (const profile of doctorProfiles) {
-            await mysqlPool.query(
-                'INSERT INTO doctor_profiles (id, user_id, specialty, bio, rating, experience_years, clinic_name, clinic_address, consultation_fee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                [profile.id, profile.user_id, profile.specialty, profile.bio, profile.rating, profile.experience_years, profile.clinic_name, profile.clinic_address, profile.consultation_fee]
-            );
+            await mysqlPool.execute(`
+                INSERT INTO doctor_profiles (
+                    id, user_id, specialty, bio, rating, 
+                    experience_years, clinic_name, clinic_address, 
+                    consultation_fee, available_hours
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `, [
+                profile.id, profile.user_id, profile.specialty,
+                profile.bio, profile.rating, profile.experience_years,
+                profile.clinic_name, profile.clinic_address,
+                profile.consultation_fee, profile.available_hours
+            ]);
         }
 
         console.log('Dummy data inserted successfully');
