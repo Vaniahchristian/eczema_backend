@@ -1,5 +1,4 @@
-const { v4: uuidv4 } = require('uuid');
-const { MySQL } = require('../models');
+const { mysqlPool } = require('../config/database');
 const Message = require('../models/mongodb/Message');
 const Conversation = require('../models/mongodb/Conversation');
 
@@ -8,27 +7,30 @@ const messageController = {
         try {
             const userId = req.user.id;
 
-            // Get conversations where user is a participant
-            const conversations = await Conversation.find({
-                'participants.userId': userId
-            })
-                .sort('-updatedAt')
-                .populate('lastMessage');
+            // Fetch conversations with aggregation for efficiency
+            const conversations = await Conversation.aggregate([
+                { $match: { 'participants.userId': userId } },
+                { $sort: { updatedAt: -1 } },
+                { $lookup: { from: 'messages', localField: 'lastMessage', foreignField: '_id', as: 'lastMessage' } },
+                { $unwind: { path: '$lastMessage', preserveNullAndEmptyArrays: true } }
+            ]);
 
-            // Get user details from MySQL for all participants
+            // Batch fetch participant details from MySQL
             const participantIds = conversations.flatMap(conv =>
                 conv.participants.map(p => p.userId).filter(id => id !== userId)
             );
-
-            const [participantDetails] = await MySQL.query(
-                'SELECT id, firstName, lastName, role, profileImage FROM users WHERE id IN (?)',
-                [participantIds]
+            const allUserIds = [...new Set([userId, ...participantIds])];
+            const [rows] = await mysqlPool.query(
+                'SELECT id, first_name as firstName, last_name as lastName, role, image_url as profileImage FROM users WHERE id IN (?)',
+                [allUserIds]
             );
+            const userMap = new Map(rows.map(row => [row.id, row]));
 
             // Format conversations
             const formattedConversations = conversations.map(conv => {
                 const otherParticipant = conv.participants.find(p => p.userId !== userId);
-                const participantDetail = participantDetails.find(p => p.id === otherParticipant.userId);
+                if (!otherParticipant) return null;
+                const participantDetail = userMap.get(otherParticipant.userId);
 
                 return {
                     id: conv._id,
@@ -41,184 +43,161 @@ const messageController = {
                         id: conv.lastMessage._id,
                         content: conv.lastMessage.content,
                         timestamp: conv.lastMessage.createdAt,
-                        senderId: conv.lastMessage.senderId,
-                        status: conv.lastMessage.status,
-                        type: conv.lastMessage.type,
-                        attachments: conv.lastMessage.attachments
-                    } : null,
-                    updatedAt: conv.updatedAt
+                        status: conv.lastMessage.status
+                    } : null
                 };
-            });
+            }).filter(Boolean);
 
-            res.json({
-                success: true,
-                data: formattedConversations
-            });
+            res.json({ success: true, data: formattedConversations });
         } catch (error) {
             console.error('Error in getConversations:', error);
             res.status(500).json({
                 success: false,
-                message: 'Failed to fetch conversations'
+                message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to fetch conversations'
             });
         }
     },
 
     getMessages: async (req, res) => {
         try {
-            const userId = req.user.id;
             const { conversationId } = req.params;
-            const { page = 1, limit = 50 } = req.query;
+            const userId = req.user.id;
+            const { page = 1, limit = 20 } = req.query;
 
             // Verify user is part of the conversation
             const conversation = await Conversation.findOne({
                 _id: conversationId,
                 'participants.userId': userId
             });
-
             if (!conversation) {
-                return res.status(403).json({
-                    success: false,
-                    message: 'Not authorized to view this conversation'
-                });
+                return res.status(403).json({ success: false, message: 'Not authorized to view these messages' });
             }
 
-            // Get messages with pagination
+            // Fetch messages with pagination
             const messages = await Message.find({ conversationId })
-                .sort('-createdAt')
+                .sort('createdAt')
                 .skip((page - 1) * limit)
-                .limit(limit);
+                .limit(parseInt(limit));
 
-            // Get sender details from MySQL
-            const senderIds = [...new Set(messages.map(m => m.senderId))];
-            const [senderDetails] = await MySQL.query(
-                'SELECT id, firstName, lastName, profileImage FROM users WHERE id IN (?)',
-                [senderIds]
+            // Batch fetch user details
+            const userIds = [...new Set(messages.flatMap(m => [m.patientId, m.doctorId]))];
+            const [rows] = await mysqlPool.query(
+                'SELECT id, first_name as firstName, last_name as lastName, role, image_url as profileImage FROM users WHERE id IN (?)',
+                [userIds]
             );
+            const userMap = new Map(rows.map(row => [row.id, row]));
 
             // Format messages
             const formattedMessages = messages.map(msg => {
-                const sender = senderDetails.find(s => s.id === msg.senderId);
+                const sender = userMap.get(msg.fromDoctor ? msg.doctorId : msg.patientId) ||
+                    { firstName: 'Unknown', lastName: 'User' };
+
                 return {
                     id: msg._id,
                     conversationId: msg.conversationId,
                     content: msg.content,
-                    senderId: msg.senderId,
-                    senderName: sender ? `${sender.firstName} ${sender.lastName}` : 'Unknown User',
-                    senderImage: sender?.profileImage,
+                    patientId: msg.patientId,
+                    doctorId: msg.doctorId,
+                    fromDoctor: msg.fromDoctor,
+                    senderName: `${sender.firstName} ${sender.lastName}`,
+                    senderRole: sender.role,
+                    senderImage: sender.profileImage,
                     timestamp: msg.createdAt,
                     status: msg.status,
                     type: msg.type,
-                    attachments: msg.attachments,
-                    reaction: msg.reaction
+                    attachments: msg.attachments
                 };
             });
 
-            // Mark messages as read
-            await Message.updateMany(
-                {
-                    conversationId,
-                    senderId: { $ne: userId },
-                    status: { $ne: 'read' }
-                },
-                { status: 'read' }
-            );
+            // Update lastRead for the user
+            const participantIdx = conversation.participants.findIndex(p => p.userId === userId);
+            conversation.participants[participantIdx].lastRead = new Date();
+            await conversation.save();
 
-            // Update conversation unread count
-            await Conversation.updateOne(
-                { _id: conversationId, 'participants.userId': userId },
-                { $set: { 'participants.$.unreadCount': 0 } }
-            );
-
-            res.json({
-                success: true,
-                data: formattedMessages,
-                pagination: {
-                    page: parseInt(page),
-                    limit: parseInt(limit),
-                    total: await Message.countDocuments({ conversationId })
-                }
-            });
+            res.json({ success: true, data: formattedMessages });
         } catch (error) {
             console.error('Error in getMessages:', error);
             res.status(500).json({
                 success: false,
-                message: 'Failed to fetch messages'
+                message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to fetch messages'
             });
         }
     },
 
     sendMessage: async (req, res) => {
         try {
-            const userId = req.user.id;
             const { conversationId } = req.params;
             const { content, type = 'text', attachments = [] } = req.body;
+            const userId = req.user.id;
+            const userRole = req.user.role;
 
-            // Verify user is part of the conversation
-            const conversation = await Conversation.findOne({
-                _id: conversationId,
-                'participants.userId': userId
-            });
-
+            // Validate conversation
+            const conversation = await Conversation.findById(conversationId);
             if (!conversation) {
-                return res.status(403).json({
-                    success: false,
-                    message: 'Not authorized to send messages in this conversation'
-                });
+                return res.status(404).json({ success: false, message: 'Conversation not found' });
             }
 
-            // Create new message
-            const message = await Message.create({
+            const participant = conversation.participants.find(p => p.userId === userId);
+            if (!participant) {
+                return res.status(403).json({ success: false, message: 'Not authorized to send messages' });
+            }
+
+            const otherParticipant = conversation.participants.find(p => p.userId !== userId);
+            if (!otherParticipant) {
+                return res.status(400).json({ success: false, message: 'No other participant found' });
+            }
+
+            // Determine sender/receiver roles
+            const fromDoctor = userRole === 'doctor';
+            const messageData = {
                 conversationId,
-                senderId: userId,
+                patientId: fromDoctor ? otherParticipant.userId : userId,
+                doctorId: fromDoctor ? userId : otherParticipant.userId,
+                fromDoctor,
                 content,
                 type,
                 attachments,
                 status: 'sent'
-            });
+            };
+
+            // Create message
+            const message = await Message.create(messageData);
 
             // Update conversation
-            await Conversation.updateOne(
-                { _id: conversationId },
-                {
-                    lastMessage: message._id,
-                    updatedAt: new Date(),
-                    $inc: {
-                        'participants.$[other].unreadCount': 1
-                    }
-                },
-                {
-                    arrayFilters: [{ 'other.userId': { $ne: userId } }]
-                }
-            );
+            conversation.lastMessage = message._id;
+            const otherIdx = conversation.participants.findIndex(p => p.userId !== userId);
+            conversation.participants[otherIdx].unreadCount = (conversation.participants[otherIdx].unreadCount || 0) + 1;
+            await conversation.save();
 
-            // Get sender details
-            const [sender] = await MySQL.query(
-                'SELECT firstName, lastName, profileImage FROM users WHERE id = ?',
+            // Fetch sender details
+            const [rows] = await mysqlPool.query(
+                'SELECT id, first_name as firstName, last_name as lastName, role, image_url as profileImage FROM users WHERE id = ?',
                 [userId]
             );
+            const sender = rows[0] || { firstName: 'Unknown', lastName: 'User' };
 
             const formattedMessage = {
                 id: message._id,
-                conversationId,
+                conversationId: message.conversationId,
                 content,
-                senderId: userId,
-                senderName: sender[0] ? `${sender[0].firstName} ${sender[0].lastName}` : 'Unknown User',
-                senderImage: sender[0]?.profileImage,
+                patientId: message.patientId,
+                doctorId: message.doctorId,
+                fromDoctor: message.fromDoctor,
+                senderName: `${sender.firstName} ${sender.lastName}`,
+                senderRole: sender.role,
+                senderImage: sender.profileImage,
                 timestamp: message.createdAt,
                 status: message.status,
                 type,
                 attachments
             };
 
-            res.json({
-                success: true,
-                data: formattedMessage
-            });
+            res.json({ success: true, data: formattedMessage });
         } catch (error) {
             console.error('Error in sendMessage:', error);
             res.status(500).json({
                 success: false,
-                message: 'Failed to send message'
+                message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to send message'
             });
         }
     },
@@ -228,40 +207,26 @@ const messageController = {
             const userId = req.user.id;
             const { participantId } = req.body;
 
-            // Check if conversation already exists
+            // Check for existing conversation
             const existingConversation = await Conversation.findOne({
-                'participants': {
-                    $all: [
-                        { $elemMatch: { userId } },
-                        { $elemMatch: { userId: participantId } }
-                    ]
-                }
+                participants: { $all: [{ userId }, { userId: participantId }] }
             });
 
             if (existingConversation) {
-                return res.json({
-                    success: true,
-                    data: { id: existingConversation._id }
-                });
+                return res.json({ success: true, data: { id: existingConversation._id } });
             }
 
             // Create new conversation
             const conversation = await Conversation.create({
-                participants: [
-                    { userId },
-                    { userId: participantId }
-                ]
+                participants: [{ userId }, { userId: participantId }]
             });
 
-            res.json({
-                success: true,
-                data: { id: conversation._id }
-            });
+            res.json({ success: true, data: { id: conversation._id } });
         } catch (error) {
             console.error('Error in createConversation:', error);
             res.status(500).json({
                 success: false,
-                message: 'Failed to create conversation'
+                message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to create conversation'
             });
         }
     },
@@ -272,33 +237,27 @@ const messageController = {
             const { messageId } = req.params;
             const { status } = req.body;
 
-            // Verify user can update this message's status
+            // Verify recipient can update status
             const message = await Message.findOne({
                 _id: messageId,
-                senderId: { $ne: userId } // Only recipient can update status
+                $or: [
+                    { fromDoctor: true, doctorId: { $ne: userId } },
+                    { fromDoctor: false, patientId: { $ne: userId } }
+                ]
             });
 
             if (!message) {
-                return res.status(403).json({
-                    success: false,
-                    message: 'Not authorized to update this message status'
-                });
+                return res.status(403).json({ success: false, message: 'Not authorized to update this message status' });
             }
 
-            await Message.updateOne(
-                { _id: messageId },
-                { status }
-            );
+            await Message.updateOne({ _id: messageId }, { status });
 
-            res.json({
-                success: true,
-                data: { status }
-            });
+            res.json({ success: true, data: { status } });
         } catch (error) {
             console.error('Error in updateMessageStatus:', error);
             res.status(500).json({
                 success: false,
-                message: 'Failed to update message status'
+                message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to update message status'
             });
         }
     },
@@ -309,33 +268,27 @@ const messageController = {
             const { messageId } = req.params;
             const { reaction } = req.body;
 
-            // Verify user can react to this message
+            // Verify recipient can react
             const message = await Message.findOne({
                 _id: messageId,
-                senderId: { $ne: userId } // Only recipient can react
+                $or: [
+                    { fromDoctor: true, doctorId: { $ne: userId } },
+                    { fromDoctor: false, patientId: { $ne: userId } }
+                ]
             });
 
             if (!message) {
-                return res.status(403).json({
-                    success: false,
-                    message: 'Not authorized to react to this message'
-                });
+                return res.status(403).json({ success: false, message: 'Not authorized to react to this message' });
             }
 
-            await Message.updateOne(
-                { _id: messageId },
-                { reaction }
-            );
+            await Message.updateOne({ _id: messageId }, { reaction });
 
-            res.json({
-                success: true,
-                data: { reaction }
-            });
+            res.json({ success: true, data: { reaction } });
         } catch (error) {
             console.error('Error in addReaction:', error);
             res.status(500).json({
                 success: false,
-                message: 'Failed to add reaction'
+                message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to add reaction'
             });
         }
     }

@@ -1,0 +1,331 @@
+{
+	"info": {
+		"_postman_id": "e5f3b2a1-d4c3-4e5f-8a9b-1c2d3e4f5a6b",
+		"name": "Eczema Messaging System",
+		"description": "API collection for testing the medical messaging system between patients and doctors",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000/api",
+			"type": "string"
+		},
+		{
+			"key": "patientToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "doctorToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "conversationId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "patientId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "doctorId",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Patient Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set(\"patientToken\", jsonData.token);",
+									"    pm.collectionVariables.set(\"patientId\", jsonData.user.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"patient@test.com\",\n    \"password\": \"testpass123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login as a patient to get authentication token"
+					}
+				},
+				{
+					"name": "Doctor Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set(\"doctorToken\", jsonData.token);",
+									"    pm.collectionVariables.set(\"doctorId\", jsonData.user.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"doctor@test.com\",\n    \"password\": \"testpass456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login as a doctor to get authentication token"
+					}
+				}
+			]
+		},
+		{
+			"name": "Conversations",
+			"item": [
+				{
+					"name": "Create Conversation (Patient to Doctor)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.data && jsonData.data.id) {",
+									"    pm.collectionVariables.set(\"conversationId\", jsonData.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patientToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"participantId\": \"{{doctorId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/messages/conversations",
+							"host": ["{{baseUrl}}"],
+							"path": ["messages", "conversations"]
+						},
+						"description": "Create a new conversation between patient and doctor"
+					}
+				},
+				{
+					"name": "Get Patient's Conversations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patientToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/messages/conversations",
+							"host": ["{{baseUrl}}"],
+							"path": ["messages", "conversations"]
+						},
+						"description": "Get all conversations for the logged-in patient"
+					}
+				},
+				{
+					"name": "Get Doctor's Conversations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{doctorToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/messages/conversations",
+							"host": ["{{baseUrl}}"],
+							"path": ["messages", "conversations"]
+						},
+						"description": "Get all conversations for the logged-in doctor"
+					}
+				}
+			]
+		},
+		{
+			"name": "Messages",
+			"item": [
+				{
+					"name": "Send Message (Patient)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patientToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"Hello doctor, I have a question about my treatment.\",\n    \"type\": \"text\",\n    \"fromDoctor\": false,\n    \"patientId\": \"{{patientId}}\",\n    \"doctorId\": \"{{doctorId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/messages/conversations/{{conversationId}}/messages",
+							"host": ["{{baseUrl}}"],
+							"path": ["messages", "conversations", "{{conversationId}}", "messages"]
+						},
+						"description": "Send a message from patient to doctor"
+					}
+				},
+				{
+					"name": "Send Message (Doctor)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{doctorToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"I'll check your treatment records and get back to you.\",\n    \"type\": \"text\",\n    \"fromDoctor\": true,\n    \"patientId\": \"{{patientId}}\",\n    \"doctorId\": \"{{doctorId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/messages/conversations/{{conversationId}}/messages",
+							"host": ["{{baseUrl}}"],
+							"path": ["messages", "conversations", "{{conversationId}}", "messages"]
+						},
+						"description": "Send a message from doctor to patient"
+					}
+				},
+				{
+					"name": "Get Messages (Patient View)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patientToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/messages/conversations/{{conversationId}}/messages",
+							"host": ["{{baseUrl}}"],
+							"path": ["messages", "conversations", "{{conversationId}}", "messages"]
+						},
+						"description": "Get conversation messages from patient's perspective"
+					}
+				},
+				{
+					"name": "Get Messages (Doctor View)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{doctorToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/messages/conversations/{{conversationId}}/messages",
+							"host": ["{{baseUrl}}"],
+							"path": ["messages", "conversations", "{{conversationId}}", "messages"]
+						},
+						"description": "Get conversation messages from doctor's perspective"
+					}
+				},
+				{
+					"name": "Update Message Status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patientToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"read\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/messages/:messageId/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["messages", ":messageId", "status"],
+							"variable": [
+								{
+									"key": "messageId",
+									"value": "message_id_here"
+								}
+							]
+						},
+						"description": "Update message status (read/delivered)"
+					}
+				}
+			]
+		}
+	]
+}

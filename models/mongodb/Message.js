@@ -6,12 +6,16 @@ const messageSchema = new mongoose.Schema({
         ref: 'Conversation',
         required: true
     },
-    senderId: {
-        type: String,  // MySQL user ID
+    patientId: {
+        type: String, // MySQL user ID
         required: true
     },
-    receiverId: {
-        type: String,  // MySQL user ID
+    doctorId: {
+        type: String, // MySQL user ID
+        required: true
+    },
+    fromDoctor: {
+        type: Boolean,
         required: true
     },
     content: {
@@ -45,7 +49,7 @@ const messageSchema = new mongoose.Schema({
 
 // Indexes for better query performance
 messageSchema.index({ conversationId: 1, createdAt: -1 });
-messageSchema.index({ senderId: 1, receiverId: 1 });
+messageSchema.index({ patientId: 1, doctorId: 1 });
 messageSchema.index({ status: 1 });
 
 module.exports = mongoose.model('Message', messageSchema);
