@@ -6,11 +6,15 @@ const isTest = process.env.NODE_ENV === 'test';
 
 // MySQL Configuration
 const mysqlConfig = {
-  host: process.env.MYSQL_HOST || 'localhost',
-  user: process.env.MYSQL_USER || 'root',
-  password: process.env.MYSQL_PASSWORD || '',
-  database: 'eczema', // Add database name back
-  multipleStatements: true // Allow multiple statements in one query
+  host: process.env.MYSQL_HOST,
+  port: process.env.MYSQL_PORT || 3306,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  multipleStatements: true
 };
 
 // Create MySQL connection pool
