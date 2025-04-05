@@ -20,6 +20,11 @@ const messageController = {
                 conv.participants.map(p => p.userId).filter(id => id !== userId)
             );
             const allUserIds = [...new Set([userId, ...participantIds])];
+            
+            if (allUserIds.length === 0) {
+                return res.json({ success: true, data: [] });
+            }
+
             const [rows] = await mysqlPool.query(
                 'SELECT id, first_name as firstName, last_name as lastName, role, image_url as profileImage FROM users WHERE id IN (?)',
                 [allUserIds]
@@ -39,6 +44,7 @@ const messageController = {
                     participantRole: participantDetail?.role || 'Unknown',
                     participantImage: participantDetail?.profileImage,
                     unreadCount: otherParticipant.unreadCount || 0,
+                    status: conv.status || 'active',
                     lastMessage: conv.lastMessage ? {
                         id: conv.lastMessage._id,
                         content: conv.lastMessage.content,
@@ -79,40 +85,44 @@ const messageController = {
                 .skip((page - 1) * limit)
                 .limit(parseInt(limit));
 
+            // If no messages, return empty array
+            if (messages.length === 0) {
+                return res.json({ success: true, data: [] });
+            }
+
             // Batch fetch user details
             const userIds = [...new Set(messages.flatMap(m => [m.patientId, m.doctorId]))];
+            
+            if (userIds.length === 0) {
+                return res.json({ success: true, data: [] });
+            }
+
             const [rows] = await mysqlPool.query(
                 'SELECT id, first_name as firstName, last_name as lastName, role, image_url as profileImage FROM users WHERE id IN (?)',
                 [userIds]
             );
             const userMap = new Map(rows.map(row => [row.id, row]));
 
-            // Format messages
-            const formattedMessages = messages.map(msg => {
-                const sender = userMap.get(msg.fromDoctor ? msg.doctorId : msg.patientId) ||
-                    { firstName: 'Unknown', lastName: 'User' };
+            // Format messages with user details
+            const formattedMessages = messages.map(message => {
+                const sender = userMap.get(message.fromDoctor ? message.doctorId : message.patientId);
+                if (!sender) return null;
 
                 return {
-                    id: msg._id,
-                    conversationId: msg.conversationId,
-                    content: msg.content,
-                    patientId: msg.patientId,
-                    doctorId: msg.doctorId,
-                    fromDoctor: msg.fromDoctor,
+                    id: message._id,
+                    content: message.content,
+                    patientId: message.patientId,
+                    doctorId: message.doctorId,
+                    fromDoctor: message.fromDoctor,
                     senderName: `${sender.firstName} ${sender.lastName}`,
                     senderRole: sender.role,
                     senderImage: sender.profileImage,
-                    timestamp: msg.createdAt,
-                    status: msg.status,
-                    type: msg.type,
-                    attachments: msg.attachments
+                    timestamp: message.createdAt,
+                    status: message.status,
+                    type: message.type || 'text',
+                    attachments: message.attachments || []
                 };
-            });
-
-            // Update lastRead for the user
-            const participantIdx = conversation.participants.findIndex(p => p.userId === userId);
-            conversation.participants[participantIdx].lastRead = new Date();
-            await conversation.save();
+            }).filter(Boolean);
 
             res.json({ success: true, data: formattedMessages });
         } catch (error) {
