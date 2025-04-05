@@ -22,6 +22,9 @@ const { errorHandler } = require('./middleware/errorHandler');
 const app = express();
 const server = http.createServer(app);
 
+// Serve uploaded files
+app.use('/uploads', express.static('uploads'));
+
 // Connect to MongoDB
 connectMongoDB();
 

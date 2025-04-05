@@ -2,12 +2,41 @@ const { mysqlPool } = require('../config/database');
 const Message = require('../models/mongodb/Message');
 const Conversation = require('../models/mongodb/Conversation');
 
+
+const multer = require('multer');
+const path = require('path');
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // Ensure this directory exists
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+const upload = multer({ storage });
+
+const uploadFile = [
+    upload.single('file'),
+    async (req, res) => {
+        try {
+            if (!req.file) {
+                return res.status(400).json({ success: false, message: 'No file uploaded' });
+            }
+            const url = `/uploads/${req.file.filename}`; // Adjust based on your server setup
+            res.json({ success: true, url });
+        } catch (error) {
+            console.error('Error in uploadFile:', error);
+            res.status(500).json({ success: false, message: 'Failed to upload file' });
+        }
+    }
+];
 const messageController = {
+    uploadFile,
     getConversations: async (req, res) => {
         try {
             const userId = req.user.id;
-
-            // Fetch conversations with aggregation for efficiency
             const conversations = await Conversation.aggregate([
                 { $match: { 'participants.userId': userId } },
                 { $sort: { updatedAt: -1 } },
@@ -15,36 +44,35 @@ const messageController = {
                 { $unwind: { path: '$lastMessage', preserveNullAndEmptyArrays: true } }
             ]);
 
-            // Batch fetch participant details from MySQL
             const participantIds = conversations.flatMap(conv =>
                 conv.participants.map(p => p.userId).filter(id => id !== userId)
             );
             const allUserIds = [...new Set([userId, ...participantIds])];
-            
             if (allUserIds.length === 0) {
                 return res.json({ success: true, data: [] });
             }
 
             const [rows] = await mysqlPool.query(
-                'SELECT id, first_name as firstName, last_name as lastName, role, image_url as profileImage FROM users WHERE id IN (?)',
+                'SELECT id, first_name AS firstName, last_name AS lastName, role, image_url AS profileImage FROM users WHERE id IN (?)',
                 [allUserIds]
             );
             const userMap = new Map(rows.map(row => [row.id, row]));
 
-            // Format conversations
-            const formattedConversations = conversations.map(conv => {
+            const formattedConversations = await Promise.all(conversations.map(async conv => {
                 const otherParticipant = conv.participants.find(p => p.userId !== userId);
                 if (!otherParticipant) return null;
                 const participantDetail = userMap.get(otherParticipant.userId);
+
+                const unreadCount = await conv.getUnreadCount(userId);
 
                 return {
                     id: conv._id,
                     participantId: otherParticipant.userId,
                     participantName: participantDetail ? `${participantDetail.firstName} ${participantDetail.lastName}` : 'Unknown User',
-                    participantRole: participantDetail?.role || 'Unknown',
+                    participantRole: participantDetail?.role || 'unknown',
                     participantImage: participantDetail?.profileImage,
-                    unreadCount: otherParticipant.unreadCount || 0,
-                    status: conv.status || 'active',
+                    unreadCount,
+                    status: conv.isActive ? 'active' : 'archived',
                     lastMessage: conv.lastMessage ? {
                         id: conv.lastMessage._id,
                         content: conv.lastMessage.content,
@@ -52,17 +80,15 @@ const messageController = {
                         status: conv.lastMessage.status
                     } : null
                 };
-            }).filter(Boolean);
+            }));
 
-            res.json({ success: true, data: formattedConversations });
+            res.json({ success: true, data: formattedConversations.filter(Boolean) });
         } catch (error) {
             console.error('Error in getConversations:', error);
-            res.status(500).json({
-                success: false,
-                message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to fetch conversations'
-            });
+            res.status(500).json({ success: false, message: 'Failed to fetch conversations' });
         }
     },
+
 
     getMessages: async (req, res) => {
         try {

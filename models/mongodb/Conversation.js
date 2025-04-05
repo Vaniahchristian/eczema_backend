@@ -28,15 +28,14 @@ conversationSchema.index({ 'participants.userId': 1 });
 conversationSchema.index({ updatedAt: -1 });
 
 // Method to get unread count for a user
-conversationSchema.methods.getUnreadCount = async function(userId) {
+conversationSchema.methods.getUnreadCount = async function (userId) {
     const Message = mongoose.model('Message');
-    const participant = this.participants.find(p => p.userId === userId);
-    
+    const participant = this.participants.find(p => p.userId === String(userId));
     if (!participant) return 0;
 
     return await Message.countDocuments({
         conversationId: this._id,
-        receiverId: userId,
+        fromDoctor: this.participants.find(p => p.userId !== String(userId)).role === 'doctor', // Simplified
         status: { $ne: 'read' },
         createdAt: { $gt: participant.lastRead }
     });

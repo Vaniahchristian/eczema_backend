@@ -3,6 +3,9 @@ const router = express.Router();
 const { protect } = require('../middleware/auth');
 const messageController = require('../controllers/messageController');
 
+
+router.post('/upload', protect, messageController.uploadFile);
+
 // Get all conversations for the authenticated user
 router.get('/conversations', protect, messageController.getConversations);
 
