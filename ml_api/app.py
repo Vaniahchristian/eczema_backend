@@ -1,6 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import tensorflow as tf
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.vgg19 import VGG19, preprocess_input
 from PIL import Image
 import numpy as np
 import io
@@ -8,31 +11,30 @@ import io
 app = Flask(__name__)
 CORS(app)
 
-# Load model
-model = None
+# Class mapping
+class_names = {
+    0: 'Acne and Rosacea',
+    1: 'Normal',
+    2: 'Vitiligo',
+    3: 'Fungal Infections',
+    4: 'Melanoma',
+    5: 'Eczema'
+}
 
-def load_model():
-    global model
-    try:
-        model = tf.keras.models.load_model('eczema.h5')
-        print("Model loaded successfully!")
-    except Exception as e:
-        print(f"Error loading model: {e}")
-        return False
-    return True
+# Load models
+vgg_model = VGG19(weights='imagenet', include_top=False, input_shape=(180, 180, 3))
+for layer in vgg_model.layers:
+    layer.trainable = False
 
-def preprocess_image(image_bytes):
-    # Convert bytes to image
-    img = Image.open(io.BytesIO(image_bytes))
+model = load_model('6claass.h5')
+print("Model loaded successfully!")
 
-    # Resize to 224x224
-    img = img.resize((224, 224))
-
-    # Convert to array and normalize
-    img_array = tf.keras.preprocessing.image.img_to_array(img)
-    img_array = tf.expand_dims(img_array, 0)
-    img_array = img_array / 255.0
-
+def preprocess_image_for_vgg(image_bytes):
+    img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
+    img = img.resize((180, 180))
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    img_array = preprocess_input(img_array)  # VGG19 preprocessing
     return img_array
 
 @app.route('/predict', methods=['POST'])
@@ -44,39 +46,28 @@ def predict():
         image_file = request.files['image']
         image_bytes = image_file.read()
 
-        # Preprocess image
-        img_array = preprocess_image(image_bytes)
+        # Preprocess and extract VGG19 features
+        img_array = preprocess_image_for_vgg(image_bytes)
+        features = vgg_model.predict(img_array)
+        features_flat = features.reshape(1, -1)  # (1, 12800)
 
-        # Flatten image to match model input shape
-        flattened_img_array = tf.reshape(img_array, (1, -1))
+        # Predict
+        predictions = model.predict(features_flat)
+        predicted_class = int(np.argmax(predictions[0]))
+        predicted_label = class_names[predicted_class]
+        confidence = float(predictions[0][predicted_class])
 
-        # Make prediction
-        predictions = model.predict(flattened_img_array)
-        confidence = float(predictions[0][0])
-        has_eczema = confidence > 0.5
-
-        # Determine severity
-        severity = 'none'
-        if has_eczema:
-            if confidence > 0.9:
-                severity = 'severe'
-            elif confidence > 0.7:
-                severity = 'moderate'
-            else:
-                severity = 'mild'
+        # Optionally return all class probabilities
+        all_probs = {class_names[i]: float(predictions[0][i]) for i in range(6)}
 
         return jsonify({
-            'prediction': 'Eczema' if has_eczema else 'No Eczema',
+            'prediction': predicted_label,
             'confidence': confidence,
-            'severity': severity,
-            'requiresDoctorReview': confidence > 0.7
+            'allClassProbabilities': all_probs
         })
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    if load_model():
-        app.run(host='0.0.0.0', port=5000)
-    else:
-        print("Failed to load model. Exiting...")
+    app.run(host='0.0.0.0', port=5000)
