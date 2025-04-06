@@ -26,7 +26,7 @@ vgg_model = VGG19(weights='imagenet', include_top=False, input_shape=(180, 180, 
 for layer in vgg_model.layers:
     layer.trainable = False
 
-model = load_model('6claass.h5')
+model = load_model('eczema.h5')
 print("Model loaded successfully!")
 
 def preprocess_image_for_vgg(image_bytes):
