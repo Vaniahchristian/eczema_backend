@@ -1,8 +1,6 @@
 const { mysqlPool } = require('../config/database');
 const Message = require('../models/mongodb/Message');
 const Conversation = require('../models/mongodb/Conversation');
-
-
 const multer = require('multer');
 const path = require('path');
 
@@ -32,8 +30,10 @@ const uploadFile = [
         }
     }
 ];
+
 const messageController = {
     uploadFile,
+
     getConversations: async (req, res) => {
         try {
             const userId = req.user.id;
@@ -44,7 +44,10 @@ const messageController = {
                 { $unwind: { path: '$lastMessage', preserveNullAndEmptyArrays: true } }
             ]);
 
-            const participantIds = conversations.flatMap(conv =>
+            // Hydrate aggregation results into Mongoose models
+            const hydratedConversations = conversations.map(conv => Conversation.hydrate(conv));
+
+            const participantIds = hydratedConversations.flatMap(conv =>
                 conv.participants.map(p => p.userId).filter(id => id !== userId)
             );
             const allUserIds = [...new Set([userId, ...participantIds])];
@@ -58,7 +61,7 @@ const messageController = {
             );
             const userMap = new Map(rows.map(row => [row.id, row]));
 
-            const formattedConversations = await Promise.all(conversations.map(async conv => {
+            const formattedConversations = await Promise.all(hydratedConversations.map(async conv => {
                 const otherParticipant = conv.participants.find(p => p.userId !== userId);
                 if (!otherParticipant) return null;
                 const participantDetail = userMap.get(otherParticipant.userId);
@@ -89,14 +92,12 @@ const messageController = {
         }
     },
 
-
     getMessages: async (req, res) => {
         try {
             const { conversationId } = req.params;
             const userId = req.user.id;
             const { page = 1, limit = 20 } = req.query;
 
-            // Verify user is part of the conversation
             const conversation = await Conversation.findOne({
                 _id: conversationId,
                 'participants.userId': userId
@@ -105,20 +106,16 @@ const messageController = {
                 return res.status(403).json({ success: false, message: 'Not authorized to view these messages' });
             }
 
-            // Fetch messages with pagination
             const messages = await Message.find({ conversationId })
                 .sort('createdAt')
                 .skip((page - 1) * limit)
                 .limit(parseInt(limit));
 
-            // If no messages, return empty array
             if (messages.length === 0) {
                 return res.json({ success: true, data: [] });
             }
 
-            // Batch fetch user details
             const userIds = [...new Set(messages.flatMap(m => [m.patientId, m.doctorId]))];
-            
             if (userIds.length === 0) {
                 return res.json({ success: true, data: [] });
             }
@@ -129,7 +126,6 @@ const messageController = {
             );
             const userMap = new Map(rows.map(row => [row.id, row]));
 
-            // Format messages with user details
             const formattedMessages = messages.map(message => {
                 const sender = userMap.get(message.fromDoctor ? message.doctorId : message.patientId);
                 if (!sender) return null;
@@ -167,7 +163,6 @@ const messageController = {
             const userId = req.user.id;
             const userRole = req.user.role;
 
-            // Validate conversation
             const conversation = await Conversation.findById(conversationId);
             if (!conversation) {
                 return res.status(404).json({ success: false, message: 'Conversation not found' });
@@ -183,7 +178,6 @@ const messageController = {
                 return res.status(400).json({ success: false, message: 'No other participant found' });
             }
 
-            // Determine sender/receiver roles
             const fromDoctor = userRole === 'doctor';
             const messageData = {
                 conversationId,
@@ -196,16 +190,13 @@ const messageController = {
                 status: 'sent'
             };
 
-            // Create message
             const message = await Message.create(messageData);
 
-            // Update conversation
             conversation.lastMessage = message._id;
             const otherIdx = conversation.participants.findIndex(p => p.userId !== userId);
             conversation.participants[otherIdx].unreadCount = (conversation.participants[otherIdx].unreadCount || 0) + 1;
             await conversation.save();
 
-            // Fetch sender details
             const [rows] = await mysqlPool.query(
                 'SELECT id, first_name as firstName, last_name as lastName, role, image_url as profileImage FROM users WHERE id = ?',
                 [userId]
@@ -243,7 +234,6 @@ const messageController = {
             const userId = req.user.id;
             const { participantId } = req.body;
 
-            // Check for existing conversation
             const existingConversation = await Conversation.findOne({
                 participants: { $all: [{ userId }, { userId: participantId }] }
             });
@@ -252,7 +242,6 @@ const messageController = {
                 return res.json({ success: true, data: { id: existingConversation._id } });
             }
 
-            // Create new conversation
             const conversation = await Conversation.create({
                 participants: [{ userId }, { userId: participantId }]
             });
@@ -273,7 +262,6 @@ const messageController = {
             const { messageId } = req.params;
             const { status } = req.body;
 
-            // Verify recipient can update status
             const message = await Message.findOne({
                 _id: messageId,
                 $or: [
@@ -304,7 +292,6 @@ const messageController = {
             const { messageId } = req.params;
             const { reaction } = req.body;
 
-            // Verify recipient can react
             const message = await Message.findOne({
                 _id: messageId,
                 $or: [

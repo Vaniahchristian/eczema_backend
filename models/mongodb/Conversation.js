@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { mysqlPool } = require('../config/database');
 
 const conversationSchema = new mongoose.Schema({
     participants: [{
@@ -33,9 +34,26 @@ conversationSchema.methods.getUnreadCount = async function (userId) {
     const participant = this.participants.find(p => p.userId === String(userId));
     if (!participant) return 0;
 
+    const otherParticipant = this.participants.find(p => p.userId !== String(userId));
+    if (!otherParticipant) return 0;
+
+    // Fetch the role of the other participant from MySQL
+    const [rows] = await mysqlPool.query(
+        'SELECT role FROM users WHERE id = ?',
+        [otherParticipant.userId]
+    );
+    const otherUserRole = rows[0]?.role;
+
+    if (!otherUserRole) {
+        console.warn(`No role found for user ${otherParticipant.userId}`);
+        return 0; // Fallback to 0 if user not found
+    }
+
+    const fromDoctor = otherUserRole === 'doctor';
+
     return await Message.countDocuments({
         conversationId: this._id,
-        fromDoctor: this.participants.find(p => p.userId !== String(userId)).role === 'doctor', // Simplified
+        fromDoctor, // True if the other participant is a doctor
         status: { $ne: 'read' },
         createdAt: { $gt: participant.lastRead }
     });
