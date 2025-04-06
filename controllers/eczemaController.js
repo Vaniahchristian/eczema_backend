@@ -3,22 +3,30 @@ const { Diagnosis, Analytics, Advisory } = Mongo;
 const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs').promises;
+const mlService = require('../services/mlService');
 
-// Analyze eczema image using ML model (simulated for now)
+// Initialize ML service when the module loads
+(async () => {
+  try {
+    await mlService.initialize();
+    console.log('ML Service initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize ML Service:', error);
+  }
+})();
+
+// Analyze eczema image using ML model
 const analyzeEczemaImage = async (imagePath) => {
-  // Simulate processing delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Return random severity and confidence for demo purposes
-  const severities = ['mild', 'moderate', 'severe'];
-  const randomIndex = Math.floor(Math.random() * 3);
-  const confidence = 0.7 + (Math.random() * 0.3); // Random confidence between 0.7 and 1.0
+  const imageBuffer = await fs.readFile(imagePath);
+  const analysis = await mlService.analyzeSkin(imageBuffer);
   
   return {
-    severity: severities[randomIndex],
-    confidence: confidence,
-    areas_affected: ['elbow', 'knee'].sort(() => Math.random() - 0.5),
-    symptoms: ['redness', 'itching', 'dryness'].sort(() => Math.random() - 0.5)
+    severity: analysis.severity,
+    confidence: analysis.confidence,
+    areas_affected: ['elbow', 'knee'],
+    symptoms: ['redness', 'itching', 'dryness'],
+    prediction: analysis.prediction,
+    requiresDoctorReview: analysis.requiresDoctorReview
   };
 };
 
@@ -75,7 +83,9 @@ exports.analyzeImage = async (req, res) => {
         areas_affected: analysis.areas_affected,
         symptoms: analysis.symptoms,
         recommendations: advisory ? advisory.recommendations : [],
-        image_url: `/uploads/processed_${req.file.filename}`
+        image_url: `/uploads/processed_${req.file.filename}`,
+        prediction: analysis.prediction,
+        requiresDoctorReview: analysis.requiresDoctorReview
       }
     });
   } catch (error) {

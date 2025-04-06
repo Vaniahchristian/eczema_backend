@@ -1,36 +1,43 @@
-const sharp = require('sharp');
-const path = require('path');
+const axios = require('axios');
+const FormData = require('form-data');
 
 class MLService {
     constructor() {
-        this.initialized = true; // Always initialized in mock mode
+        this.apiUrl = 'http://localhost:5000';
+        this.initialized = true;
     }
 
     async initialize() {
-        return Promise.resolve();
+        try {
+            // Test connection to Flask API
+            await axios.get(this.apiUrl);
+            console.log('ML API connection successful');
+        } catch (error) {
+            console.error('Error connecting to ML API:', error);
+            throw new Error('Failed to connect to ML API');
+        }
     }
 
     async analyzeSkin(imageBuffer) {
         try {
-            // Process image with sharp to ensure it's valid
-            await sharp(imageBuffer)
-                .resize(224, 224)
-                .toBuffer();
+            // Create form data
+            const formData = new FormData();
+            formData.append('image', imageBuffer, {
+                filename: 'image.jpg',
+                contentType: 'image/jpeg'
+            });
 
-            // Return mock analysis results
-            return {
-                severity: 'moderate',
-                confidence: 0.85,
-                recommendations: [
-                    'Keep the affected area moisturized',
-                    'Avoid known triggers',
-                    'Consider using over-the-counter hydrocortisone cream'
-                ],
-                requiresDoctorReview: true
-            };
+            // Make request to Flask API
+            const response = await axios.post(`${this.apiUrl}/predict`, formData, {
+                headers: {
+                    ...formData.getHeaders()
+                }
+            });
+
+            return response.data;
         } catch (error) {
-            console.error('Error processing image:', error);
-            throw new Error('Failed to process image');
+            console.error('Error analyzing image:', error);
+            throw new Error('Failed to analyze image: ' + error.message);
         }
     }
 }
