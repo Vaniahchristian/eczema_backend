@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { mysqlPool } = require('../config/database');
+const { mysqlPool } = require('../../config/database');
 
 const conversationSchema = new mongoose.Schema({
     participants: [{
