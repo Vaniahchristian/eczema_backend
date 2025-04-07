@@ -3,6 +3,12 @@ const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const fs = require('fs');
 
+// Create uploads directory if it doesn't exist
+const uploadsDir = path.join(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
 class ImageProcessingError extends Error {
   constructor(message) {
     super(message);
@@ -30,7 +36,7 @@ const imageProcessor = {
 
       // Generate unique filename
       const filename = `${uuidv4()}.${format}`;
-      const uploadPath = path.join(__dirname, '../uploads', filename);
+      const uploadPath = path.join(process.cwd(), 'uploads', filename);
 
       // Process image
       const image = sharp(file.buffer);
