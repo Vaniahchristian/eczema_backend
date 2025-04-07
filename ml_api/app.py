@@ -11,8 +11,8 @@ import io
 app = Flask(__name__)
 CORS(app)
 
-# Class mapping
-class_names = {
+# Class mappings
+eczema_class_names = {
     0: 'Acne and Rosacea',
     1: 'Normal',
     2: 'Vitiligo',
@@ -21,22 +21,30 @@ class_names = {
     5: 'Eczema'
 }
 
+body_part_class_names = {
+    0: 'Belly', 1: 'Ear', 2: 'Elbow', 3: 'Eye', 4: 'Foot',
+    5: 'Hand', 6: 'Knee', 7: 'Neck', 8: 'Nose', 9: 'Shoulders'
+}
+
 # Load models
 vgg_model = VGG19(weights='imagenet', include_top=False, input_shape=(180, 180, 3))
 for layer in vgg_model.layers:
     layer.trainable = False
 
-model = load_model('eczema.h5')
-print("Model loaded successfully!")
+eczema_model = load_model('eczema.h5')
+body_part_model = load_model('bodypart_classifier.h5')
 
-def preprocess_image_for_vgg(image_bytes):
+print("Models loaded successfully!")
+
+# Preprocessing
+def preprocess_image(image_bytes):
     img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
     img = img.resize((180, 180))
     img_array = image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)
-    img_array = preprocess_input(img_array)  # VGG19 preprocessing
-    return img_array
+    return preprocess_input(img_array)
 
+# Severity
 def get_severity(confidence):
     if confidence >= 0.8:
         return "Severe"
@@ -44,7 +52,6 @@ def get_severity(confidence):
         return "Moderate"
     else:
         return "Mild"
-
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -55,29 +62,39 @@ def predict():
         image_file = request.files['image']
         image_bytes = image_file.read()
 
-        # Preprocess and extract VGG19 features
-        img_array = preprocess_image_for_vgg(image_bytes)
-        features = vgg_model.predict(img_array)
-        features_flat = features.reshape(1, -1)  # (1, 12800)
+        # Preprocess image
+        img_array = preprocess_image(image_bytes)
 
-        # Predict
-        predictions = model.predict(features_flat)
-        predicted_class = int(np.argmax(predictions[0]))
-        predicted_label = class_names[predicted_class]
-        confidence = float(predictions[0][predicted_class])
+        # Eczema Prediction
+        vgg_features = vgg_model.predict(img_array)
+        features_flat = vgg_features.reshape(1, -1)
+        eczema_preds = eczema_model.predict(features_flat)
+        eczema_class = int(np.argmax(eczema_preds[0]))
+        eczema_label = eczema_class_names[eczema_class]
+        eczema_confidence = float(eczema_preds[0][eczema_class])
 
-        # Check for "Eczema"
-        if predicted_label == 'Eczema':
+        # Body Part Prediction
+        body_preds = body_part_model.predict(img_array)
+        body_class = int(np.argmax(body_preds[0]))
+        body_label = body_part_class_names[body_class]
+        body_confidence = float(body_preds[0][body_class])
+
+        # Return prediction
+        if eczema_label == 'Eczema':
             return jsonify({
                 'prediction': 'Eczema',
-                'confidence': confidence,
-                'severity': get_severity(confidence)
+                'confidence': eczema_confidence,
+                'severity': get_severity(eczema_confidence),
+                'bodyPart': body_label,
+                'bodyPartConfidence': body_confidence
             })
         else:
             return jsonify({
                 'prediction': 'No Eczema Detected',
-                'confidence': confidence,
-                'severity': 'None'
+                'confidence': eczema_confidence,
+                'severity': 'None',
+                'bodyPart': body_label,
+                'bodyPartConfidence': body_confidence
             })
 
     except Exception as e:
