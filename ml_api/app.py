@@ -32,7 +32,10 @@ for layer in vgg_model.layers:
     layer.trainable = False
 
 eczema_model = load_model('eczema.h5')
-body_part_model = load_model('bodypart_classifier.h5')
+
+# Load the TensorFlow Lite model for body part classification
+interpreter = tf.lite.Interpreter(model_path="mobilenet_bodypart_model.tflite")
+interpreter.allocate_tensors()
 
 print("Models loaded successfully!")
 
@@ -52,6 +55,21 @@ def get_severity(confidence):
         return "Moderate"
     else:
         return "Mild"
+
+def predict_with_tflite(model_interpreter, img_array):
+    input_details = model_interpreter.get_input_details()
+    output_details = model_interpreter.get_output_details()
+
+    # Set input tensor
+    model_interpreter.set_tensor(input_details[0]['index'], img_array)
+
+    # Run inference
+    model_interpreter.invoke()
+
+    # Get output tensor
+    output_data = model_interpreter.get_tensor(output_details[0]['index'])
+
+    return output_data
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -73,8 +91,8 @@ def predict():
         eczema_label = eczema_class_names[eczema_class]
         eczema_confidence = float(eczema_preds[0][eczema_class])
 
-        # Body Part Prediction
-        body_preds = body_part_model.predict(img_array)
+        # Body Part Prediction (Using TensorFlow Lite model)
+        body_preds = predict_with_tflite(interpreter, img_array)
         body_class = int(np.argmax(body_preds[0]))
         body_label = body_part_class_names[body_class]
         body_confidence = float(body_preds[0][body_class])
