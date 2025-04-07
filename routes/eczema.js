@@ -5,7 +5,6 @@ const { v4: uuidv4 } = require('uuid');
 const { protect, authorize } = require('../middleware/auth');
 const imageProcessor = require('../middleware/imageProcessor');
 const mlService = require('../services/mlService');
-const notificationService = require('../services/notificationService');
 const Diagnosis = require('../models/mongodb/Diagnosis');
 
 // Configure multer for image upload
@@ -71,15 +70,6 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
                 precautions: analysisResult.isEczema ? analysisResult.recommendations : [analysisResult.skincareTips]
             },
             status: analysisResult.severity === 'Severe' || analysisResult.confidence < 0.6 ? 'pending_review' : 'completed'
-        });
-
-        // Send notification
-        await notificationService.sendDiagnosisResult(req.user.id, diagnosis._id, {
-            isEczema: analysisResult.isEczema,
-            severity: analysisResult.severity,
-            confidence: analysisResult.confidence,
-            bodyPart: analysisResult.bodyPart,
-            needsDoctorReview: diagnosis.status === 'pending_review'
         });
 
         res.status(201).json({
@@ -173,17 +163,6 @@ router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, r
         };
         diagnosis.status = 'reviewed';
         await diagnosis.save();
-
-        // Notify patient
-        await notificationService.sendToUser(diagnosis.patientId, {
-            type: 'diagnosis_reviewed',
-            title: 'Doctor Review Available',
-            message: 'A doctor has reviewed your diagnosis',
-            data: {
-                diagnosisId: diagnosis.diagnosisId,
-                severity: updatedSeverity || diagnosis.mlResults.severity
-            }
-        });
 
         res.json({
             success: true,
