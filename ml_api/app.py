@@ -37,6 +37,15 @@ def preprocess_image_for_vgg(image_bytes):
     img_array = preprocess_input(img_array)  # VGG19 preprocessing
     return img_array
 
+def get_severity(confidence):
+    if confidence >= 0.8:
+        return "Severe"
+    elif confidence >= 0.5:
+        return "Moderate"
+    else:
+        return "Mild"
+
+
 @app.route('/predict', methods=['POST'])
 def predict():
     if 'image' not in request.files:
@@ -57,14 +66,19 @@ def predict():
         predicted_label = class_names[predicted_class]
         confidence = float(predictions[0][predicted_class])
 
-        # Optionally return all class probabilities
-        all_probs = {class_names[i]: float(predictions[0][i]) for i in range(6)}
-
-        return jsonify({
-            'prediction': predicted_label,
-            'confidence': confidence,
-            'allClassProbabilities': all_probs
-        })
+        # Check for "Eczema"
+        if predicted_label == 'Eczema':
+            return jsonify({
+                'prediction': 'Eczema',
+                'confidence': confidence,
+                'severity': get_severity(confidence)
+            })
+        else:
+            return jsonify({
+                'prediction': 'No Eczema Detected',
+                'confidence': confidence,
+                'severity': 'None'
+            })
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
