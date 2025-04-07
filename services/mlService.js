@@ -3,7 +3,7 @@ const FormData = require('form-data');
 
 class MLService {
     constructor() {
-        this.apiUrl = 'http://localhost:5000';
+        this.apiUrl = 'https://eczema-model.onrender.com';
         this.initialized = true;
     }
 

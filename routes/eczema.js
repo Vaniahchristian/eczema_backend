@@ -40,33 +40,41 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
             imageUrl: processedImage.filename,
             severity: analysisResult.severity,
             confidenceScore: analysisResult.confidence,
-            recommendations: analysisResult.recommendations,
-            needsDoctorReview: analysisResult.needsDoctorReview,
-            status: analysisResult.needsDoctorReview ? 'pending_review' : 'completed',
+            bodyPart: analysisResult.bodyPart,
+            isEczema: analysisResult.isEczema,
+            recommendations: analysisResult.isEczema ? analysisResult.recommendations : analysisResult.skincareTips,
+            needsDoctorReview: analysisResult.severity === 'Severe' || analysisResult.confidence < 0.6,
+            status: analysisResult.severity === 'Severe' || analysisResult.confidence < 0.6 ? 'pending_review' : 'completed',
             metadata: {
                 ...processedImage.metadata,
                 mlAnalysis: {
                     isEczema: analysisResult.isEczema,
-                    confidence: analysisResult.confidence
+                    confidence: analysisResult.confidence,
+                    bodyPart: analysisResult.bodyPart,
+                    bodyPartConfidence: analysisResult.bodyPartConfidence
                 }
             }
         });
 
         // Send notification
         await notificationService.sendDiagnosisResult(req.user.id, diagnosis._id, {
+            isEczema: analysisResult.isEczema,
             severity: analysisResult.severity,
             confidence: analysisResult.confidence,
-            needsDoctorReview: analysisResult.needsDoctorReview
+            bodyPart: analysisResult.bodyPart,
+            needsDoctorReview: diagnosis.needsDoctorReview
         });
 
         res.status(201).json({
             success: true,
             data: {
                 diagnosisId: diagnosis._id,
+                isEczema: analysisResult.isEczema,
                 severity: analysisResult.severity,
                 confidence: analysisResult.confidence,
-                recommendations: analysisResult.recommendations,
-                needsDoctorReview: analysisResult.needsDoctorReview,
+                bodyPart: analysisResult.bodyPart,
+                recommendations: diagnosis.recommendations,
+                needsDoctorReview: diagnosis.needsDoctorReview,
                 imageUrl: `/uploads/${processedImage.filename}`
             }
         });
