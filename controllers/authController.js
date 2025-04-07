@@ -91,6 +91,7 @@ exports.register = async (req, res) => {
       success: true,
       message: 'User registered successfully',
       data: {
+        token,
         user: {
           id: userId,
           email,
@@ -157,6 +158,7 @@ exports.login = async (req, res) => {
       success: true,
       message: 'Login successful',
       data: {
+        token,
         user: {
           id: user.id,
           email: user.email,
