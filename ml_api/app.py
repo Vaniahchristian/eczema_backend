@@ -41,9 +41,15 @@ print("Models loaded successfully!")
 
 # Preprocessing
 # Preprocessing for both models
-def preprocess_image(image_bytes, target_size=(150, 150)):
+def preprocess_image(image_bytes, target_size=(150, 150), model='bodypart'):
     img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
-    img = img.resize(target_size)  # Resize image to match input size for MobileNetV2 (150, 150)
+    
+    # Resize image according to model's input size
+    if model == 'eczema':
+        img = img.resize((180, 180))  # Resize to (180, 180) for VGG19
+    else:
+        img = img.resize(target_size)  # Resize to (150, 150) for MobileNetV2 body part model
+    
     img_array = image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
     img_array = img_array / 255.0  # Normalize image to [0, 1] range (important for MobileNetV2)
@@ -82,19 +88,22 @@ def predict():
         image_file = request.files['image']
         image_bytes = image_file.read()
 
-        # Preprocess image for both models
-        img_array = preprocess_image(image_bytes, target_size=(150, 150))  # Resize to (150, 150) for body part model
-
+        # Preprocess image for eczema model (VGG19 needs (180, 180))
+        img_array_eczema = preprocess_image(image_bytes, target_size=(180, 180), model='eczema')
+        
         # Eczema Prediction
-        vgg_features = vgg_model.predict(img_array)
+        vgg_features = vgg_model.predict(img_array_eczema)
         features_flat = vgg_features.reshape(1, -1)
         eczema_preds = eczema_model.predict(features_flat)
         eczema_class = int(np.argmax(eczema_preds[0]))
         eczema_label = eczema_class_names[eczema_class]
         eczema_confidence = float(eczema_preds[0][eczema_class])
 
+        # Preprocess image for body part model (MobileNetV2 needs (150, 150))
+        img_array_body_part = preprocess_image(image_bytes, target_size=(150, 150), model='bodypart')
+        
         # Body Part Prediction (Using TensorFlow Lite model)
-        body_preds = predict_with_tflite(interpreter, img_array)
+        body_preds = predict_with_tflite(interpreter, img_array_body_part)
         body_class = int(np.argmax(body_preds[0]))
         body_label = body_part_class_names[body_class]
         body_confidence = float(body_preds[0][body_class])
