@@ -82,6 +82,75 @@ def predict_with_tflite(model_interpreter, img_array):
 
     return output_data
 
+# Treatment recommendations based on severity
+def get_treatment_recommendations(severity, body_part):
+    general_tips = [
+        "Keep the affected area clean and moisturized",
+        "Avoid scratching the affected area",
+        "Wear loose, breathable clothing",
+        "Use fragrance-free products"
+    ]
+    
+    severe_treatments = [
+        "Consult a dermatologist immediately",
+        "Consider prescription topical corticosteroids",
+        "Use wet wrap therapy",
+        "Monitor for signs of infection"
+    ]
+    
+    moderate_treatments = [
+        "Apply over-the-counter hydrocortisone cream",
+        "Use antihistamines to reduce itching",
+        "Apply cold compresses to reduce inflammation",
+        "Consider phototherapy treatment"
+    ]
+    
+    mild_treatments = [
+        "Use emollients regularly",
+        "Apply calamine lotion for itching",
+        "Take lukewarm baths with colloidal oatmeal",
+        "Identify and avoid triggers"
+    ]
+    
+    body_part_specific = {
+        'Face': ["Use gentle, non-comedogenic products", "Avoid harsh facial scrubs"],
+        'Hand': ["Wear protective gloves when using cleaning products", "Apply moisturizer after washing hands"],
+        'Foot': ["Wear cotton socks", "Keep feet dry and well-ventilated"],
+        'Eye': ["Avoid rubbing eyes", "Use hypoallergenic eye products"],
+        'Neck': ["Avoid wearing tight necklaces", "Keep neck area dry"],
+        'Elbow': ["Apply extra moisturizer to elbow area", "Avoid leaning on elbows"],
+        'Knee': ["Wear loose-fitting pants", "Avoid kneeling for long periods"],
+        'Belly': ["Wear loose, cotton clothing", "Keep the area dry"],
+        'Ear': ["Keep ears dry", "Avoid ear piercings during flare-ups"],
+        'Shoulders': ["Avoid shoulder straps that can irritate", "Keep shoulders moisturized"]
+    }
+    
+    if severity == "Severe":
+        recommendations = severe_treatments
+    elif severity == "Moderate":
+        recommendations = moderate_treatments
+    else:
+        recommendations = mild_treatments
+        
+    # Add body part specific recommendations
+    if body_part in body_part_specific:
+        recommendations.extend(body_part_specific[body_part])
+        
+    recommendations.extend(general_tips)
+    return recommendations
+
+def get_skincare_tips():
+    return [
+        "Maintain a consistent skincare routine",
+        "Use gentle, fragrance-free cleansers",
+        "Apply sunscreen daily",
+        "Stay hydrated and maintain a balanced diet",
+        "Get adequate sleep and manage stress",
+        "Avoid hot showers and pat dry skin gently",
+        "Use a humidifier in dry environments",
+        "Consider using products with ceramides and hyaluronic acid"
+    ]
+
 @app.route('/predict', methods=['POST'])
 def predict():
     if 'image' not in request.files:
@@ -92,31 +161,34 @@ def predict():
         image_bytes = image_file.read()
 
         # Preprocess image for both models
-        img_array_vgg = preprocess_image_for_vgg(image_bytes)  # For eczema model
-        img_array_bodypart = preprocess_image_for_bodypart(image_bytes)  # For body part model
+        img_array_vgg = preprocess_image_for_vgg(image_bytes)
+        img_array_bodypart = preprocess_image_for_bodypart(image_bytes)
 
-        # Eczema Prediction (Using VGG19 model)
+        # Eczema Prediction
         vgg_features = vgg_model.predict(img_array_vgg)
-        features_flat = vgg_features.reshape(1, -1)  # Flatten the features for the model input
+        features_flat = vgg_features.reshape(1, -1)
         eczema_preds = eczema_model.predict(features_flat)
         eczema_class = int(np.argmax(eczema_preds[0]))
         eczema_label = eczema_class_names[eczema_class]
         eczema_confidence = float(eczema_preds[0][eczema_class])
 
-        # Body Part Prediction (Using TensorFlow Lite model)
+        # Body Part Prediction
         body_preds = predict_with_tflite(interpreter, img_array_bodypart)
         body_class = int(np.argmax(body_preds[0]))
         body_label = body_part_class_names[body_class]
         body_confidence = float(body_preds[0][body_class])
 
-        # Return prediction results
+        # Get severity and recommendations
         if eczema_label == 'Eczema':
+            severity = get_severity(eczema_confidence)
+            recommendations = get_treatment_recommendations(severity, body_label)
             return jsonify({
                 'eczemaPrediction': 'Eczema',
                 'eczemaConfidence': eczema_confidence,
-                'eczemaSeverity': get_severity(eczema_confidence),
+                'eczemaSeverity': severity,
                 'bodyPart': body_label,
-                'bodyPartConfidence': body_confidence
+                'bodyPartConfidence': body_confidence,
+                'recommendations': recommendations
             })
         else:
             return jsonify({
@@ -124,7 +196,8 @@ def predict():
                 'eczemaConfidence': eczema_confidence,
                 'eczemaSeverity': 'None',
                 'bodyPart': body_label,
-                'bodyPartConfidence': body_confidence
+                'bodyPartConfidence': body_confidence,
+                'skincareTips': get_skincare_tips()
             })
 
     except Exception as e:

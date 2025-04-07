@@ -34,7 +34,23 @@ class MLService {
                 }
             });
 
-            return response.data;
+            // Process and format the response
+            const result = {
+                isEczema: response.data.eczemaPrediction === 'Eczema',
+                confidence: response.data.eczemaConfidence,
+                severity: response.data.eczemaSeverity,
+                bodyPart: response.data.bodyPart,
+                bodyPartConfidence: response.data.bodyPartConfidence
+            };
+
+            // Add recommendations or skincare tips based on diagnosis
+            if (result.isEczema) {
+                result.recommendations = response.data.recommendations;
+            } else {
+                result.skincareTips = response.data.skincareTips;
+            }
+
+            return result;
         } catch (error) {
             console.error('Error analyzing image:', error);
             throw new Error('Failed to analyze image: ' + error.message);
