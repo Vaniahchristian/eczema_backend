@@ -40,12 +40,13 @@ interpreter.allocate_tensors()
 print("Models loaded successfully!")
 
 # Preprocessing
+# Preprocessing for both models
 def preprocess_image(image_bytes, target_size=(150, 150)):
     img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
-    img = img.resize(target_size)
+    img = img.resize(target_size)  # Resize image to match input size for MobileNetV2 (150, 150)
     img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0)  # Adding batch dimension
-    img_array = img_array / 255.0  # Normalization
+    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+    img_array = img_array / 255.0  # Normalize image to [0, 1] range (important for MobileNetV2)
     return img_array
 
 # Severity
