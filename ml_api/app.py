@@ -34,18 +34,19 @@ for layer in vgg_model.layers:
 eczema_model = load_model('eczema.h5')
 
 # Load the TensorFlow Lite model for body part classification
-interpreter = tf.lite.Interpreter(model_path="mobilenet_bodypart_model.tflite")
+interpreter = tf.lite.Interpreter(model_path="mobilenet_bodypart_model_quantized.tflite")
 interpreter.allocate_tensors()
 
 print("Models loaded successfully!")
 
 # Preprocessing
-def preprocess_image(image_bytes):
+def preprocess_image(image_bytes, target_size=(150, 150)):
     img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
-    img = img.resize((180, 180))
+    img = img.resize(target_size)
     img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0)
-    return preprocess_input(img_array)
+    img_array = np.expand_dims(img_array, axis=0)  # Adding batch dimension
+    img_array = img_array / 255.0  # Normalization
+    return img_array
 
 # Severity
 def get_severity(confidence):
@@ -80,8 +81,8 @@ def predict():
         image_file = request.files['image']
         image_bytes = image_file.read()
 
-        # Preprocess image
-        img_array = preprocess_image(image_bytes)
+        # Preprocess image for both models
+        img_array = preprocess_image(image_bytes, target_size=(150, 150))  # Resize to (150, 150) for body part model
 
         # Eczema Prediction
         vgg_features = vgg_model.predict(img_array)
