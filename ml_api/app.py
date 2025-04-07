@@ -7,15 +7,9 @@ from tensorflow.keras.applications.vgg19 import VGG19, preprocess_input
 from PIL import Image
 import numpy as np
 import io
-import logging
-import os
 
 app = Flask(__name__)
 CORS(app)
-
-# Setup logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
 
 # Class mappings
 eczema_class_names = {
@@ -33,50 +27,37 @@ body_part_class_names = {
 }
 
 # Load models
-try:
-    # Preload VGG19 weights locally (download and add to repo)
-    vgg_model = VGG19(weights=None, include_top=False, input_shape=(180, 180, 3))
-    vgg_model.load_weights('vgg19_weights_tf_dim_ordering_tf_kernels_notop.h5')
-    for layer in vgg_model.layers:
-        layer.trainable = False
+vgg_model = VGG19(weights='imagenet', include_top=False, input_shape=(180, 180, 3))
+for layer in vgg_model.layers:
+    layer.trainable = False
 
-    eczema_model = load_model('eczema.h5')
+eczema_model = load_model('eczema.h5')
 
-    # Load TensorFlow Lite model for body part classification
-    interpreter = tf.lite.Interpreter(model_path='mobilenet_bodypart_model_quantized.tflite')
-    interpreter.allocate_tensors()
+# Load TensorFlow Lite model for body part classification
+interpreter = tf.lite.Interpreter(model_path="mobilenet_bodypart_model_quantized.tflite")
+interpreter.allocate_tensors()
 
-    logger.info("Models loaded successfully!")
-except Exception as e:
-    logger.error(f"Failed to load models: {str(e)}", exc_info=True)
-    raise
+print("Models loaded successfully!")
 
-# Preprocessing functions
+# Preprocessing function for VGG19
 def preprocess_image_for_vgg(image_bytes):
-    try:
-        img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
-        img = img.resize((180, 180))  # VGG19 input size
-        img_array = image.img_to_array(img)
-        img_array = np.expand_dims(img_array, axis=0)
-        img_array = preprocess_input(img_array)
-        return img_array
-    except Exception as e:
-        logger.error(f"Error preprocessing VGG image: {str(e)}")
-        raise
+    img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
+    img = img.resize((180, 180))  # Resize to (180, 180) for VGG19
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+    img_array = preprocess_input(img_array)  # VGG19 preprocessing
+    return img_array
 
+# Preprocessing function for MobileNetV2 (Body part model)
 def preprocess_image_for_bodypart(image_bytes, target_size=(150, 150)):
-    try:
-        img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
-        img = img.resize(target_size)  # Body part model input size
-        img_array = image.img_to_array(img)
-        img_array = np.expand_dims(img_array, axis=0)
-        img_array = img_array / 255.0
-        return img_array
-    except Exception as e:
-        logger.error(f"Error preprocessing body part image: {str(e)}")
-        raise
+    img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
+    img = img.resize(target_size)  # Resize to (150, 150) for body part model
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+    img_array = img_array / 255.0  # Normalize image to [0, 1] range
+    return img_array
 
-# Severity and recommendations (unchanged)
+# Severity function based on confidence level
 def get_severity(confidence):
     if confidence >= 0.8:
         return "Severe"
@@ -85,14 +66,23 @@ def get_severity(confidence):
     else:
         return "Mild"
 
+# Function to predict using TensorFlow Lite model
 def predict_with_tflite(model_interpreter, img_array):
     input_details = model_interpreter.get_input_details()
     output_details = model_interpreter.get_output_details()
+
+    # Set input tensor
     model_interpreter.set_tensor(input_details[0]['index'], img_array)
+
+    # Run inference
     model_interpreter.invoke()
+
+    # Get output tensor
     output_data = model_interpreter.get_tensor(output_details[0]['index'])
+
     return output_data
 
+# Treatment recommendations based on severity
 def get_treatment_recommendations(severity, body_part):
     general_tips = [
         "Keep the affected area clean and moisturized",
@@ -100,24 +90,28 @@ def get_treatment_recommendations(severity, body_part):
         "Wear loose, breathable clothing",
         "Use fragrance-free products"
     ]
+    
     severe_treatments = [
         "Consult a dermatologist immediately",
         "Consider prescription topical corticosteroids",
         "Use wet wrap therapy",
         "Monitor for signs of infection"
     ]
+    
     moderate_treatments = [
         "Apply over-the-counter hydrocortisone cream",
         "Use antihistamines to reduce itching",
         "Apply cold compresses to reduce inflammation",
         "Consider phototherapy treatment"
     ]
+    
     mild_treatments = [
         "Use emollients regularly",
         "Apply calamine lotion for itching",
         "Take lukewarm baths with colloidal oatmeal",
         "Identify and avoid triggers"
     ]
+    
     body_part_specific = {
         'Face': ["Use gentle, non-comedogenic products", "Avoid harsh facial scrubs"],
         'Hand': ["Wear protective gloves when using cleaning products", "Apply moisturizer after washing hands"],
@@ -138,8 +132,10 @@ def get_treatment_recommendations(severity, body_part):
     else:
         recommendations = mild_treatments
         
+    # Add body part specific recommendations
     if body_part in body_part_specific:
         recommendations.extend(body_part_specific[body_part])
+        
     recommendations.extend(general_tips)
     return recommendations
 
@@ -158,7 +154,6 @@ def get_skincare_tips():
 @app.route('/predict', methods=['POST'])
 def predict():
     if 'image' not in request.files:
-        logger.warning("No image provided in request")
         return jsonify({'error': 'No image provided'}), 400
 
     try:
@@ -183,9 +178,6 @@ def predict():
         body_label = body_part_class_names[body_class]
         body_confidence = float(body_preds[0][body_class])
 
-        # Log prediction
-        logger.info(f"Eczema: {eczema_label}, Confidence: {eczema_confidence}, Body Part: {body_label}, Body Confidence: {body_confidence}")
-
         # Get severity and recommendations
         if eczema_label == 'Eczema':
             severity = get_severity(eczema_confidence)
@@ -209,9 +201,7 @@ def predict():
             })
 
     except Exception as e:
-        logger.error(f"Prediction error: {str(e)}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=5000)

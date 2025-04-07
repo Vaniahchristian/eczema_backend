@@ -31,17 +31,8 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
         // Process and validate image
         const processedImage = await imageProcessor.processImage(req.file);
 
-        // Analyze image with ML model (with timeout handling)
-        let analysisResult;
-        try {
-            analysisResult = await mlService.analyzeSkin(req.file.buffer);
-        } catch (mlError) {
-            console.error('ML Service Error:', mlError);
-            return res.status(503).json({
-                success: false,
-                message: 'Machine learning service unavailable. Please try again later.'
-            });
-        }
+        // Analyze image with ML model
+        const analysisResult = await mlService.analyzeSkin(req.file.buffer);
 
         // Generate unique IDs
         const diagnosisId = uuidv4();
@@ -95,7 +86,7 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Diagnosis error:', error.stack);
+        console.error('Diagnosis error:', error);
         res.status(500).json({
             success: false,
             message: error.message || 'Failed to process diagnosis'
@@ -115,7 +106,6 @@ router.get('/diagnoses', async (req, res) => {
             data: diagnoses
         });
     } catch (error) {
-        console.error('Get diagnoses error:', error.stack);
         res.status(500).json({
             success: false,
             message: 'Failed to retrieve diagnoses'
@@ -143,7 +133,6 @@ router.get('/diagnoses/:diagnosisId', async (req, res) => {
             data: diagnosis
         });
     } catch (error) {
-        console.error('Get diagnosis error:', error.stack);
         res.status(500).json({
             success: false,
             message: 'Failed to retrieve diagnosis'
@@ -164,6 +153,7 @@ router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, r
             });
         }
 
+        // Update diagnosis with doctor's review
         diagnosis.doctorReview = {
             doctorId: req.user.id,
             review,
@@ -179,7 +169,6 @@ router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, r
             data: diagnosis
         });
     } catch (error) {
-        console.error('Review error:', error.stack);
         res.status(500).json({
             success: false,
             message: 'Failed to add review'

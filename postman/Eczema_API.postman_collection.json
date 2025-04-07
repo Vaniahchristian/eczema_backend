@@ -10,19 +10,6 @@
       "item": [
         {
           "name": "Register User",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 201) {",
-                  "    pm.environment.set('authToken', pm.response.json().data.token);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
           "request": {
             "method": "POST",
             "header": [
@@ -44,19 +31,6 @@
         },
         {
           "name": "Login",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    pm.environment.set('authToken', pm.response.json().data.token);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
           "request": {
             "method": "POST",
             "header": [
@@ -80,12 +54,7 @@
           "name": "Logout",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{authToken}}"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/auth/logout",
               "host": ["{{baseUrl}}"],
@@ -102,12 +71,7 @@
           "name": "Upload Image for Diagnosis",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{authToken}}"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/eczema/diagnose",
               "host": ["{{baseUrl}}"],
@@ -129,12 +93,7 @@
           "name": "Get All Diagnoses",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{authToken}}"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/eczema/diagnoses",
               "host": ["{{baseUrl}}"],
@@ -146,12 +105,7 @@
           "name": "Get Single Diagnosis",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{authToken}}"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/eczema/diagnoses/{{diagnosisId}}",
               "host": ["{{baseUrl}}"],
@@ -164,10 +118,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{authToken}}"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
