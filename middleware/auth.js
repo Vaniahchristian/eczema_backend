@@ -23,13 +23,26 @@ exports.protect = async (req, res, next) => {
     }
 
     try {
+      // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-      const user = await User.findById(decoded.id);
+
+      // Get user from database using MySQL query
+      const [user] = await User.findOne({
+        where: { id: decoded.id }
+      });
       
       if (!user) {
         return res.status(401).json({
           success: false,
           message: 'User no longer exists'
+        });
+      }
+
+      // Check if token was issued before password change
+      if (user.password_changed_at && decoded.iat * 1000 < user.password_changed_at.getTime()) {
+        return res.status(401).json({
+          success: false,
+          message: 'Password was recently changed. Please log in again'
         });
       }
 
@@ -50,6 +63,7 @@ exports.protect = async (req, res, next) => {
       });
     }
   } catch (error) {
+    console.error('Auth middleware error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',

@@ -8,6 +8,7 @@ const MongoModels = {
     Advisory: require('./mongodb/Advisory')
 };
 
+// Export models
 module.exports = {
     MySQL: MySQLModels,
     Mongo: MongoModels
