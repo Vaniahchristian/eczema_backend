@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const http = require('http');
 const helmet = require('helmet');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 const WebSocketServer = require('./websocket');
 const { mysqlPool, connectMongoDB } = require('./config/database');
 
@@ -52,6 +53,7 @@ app.use(cors({
 app.use(morgan('dev')); // Logging
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser()); // Parse cookies
 
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

@@ -79,11 +79,18 @@ exports.register = async (req, res) => {
     // Generate token
     const token = generateToken(userId);
 
+    // Set token in cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
     res.status(201).json({
       success: true,
       message: 'User registered successfully',
       data: {
-        token,
         user: {
           id: userId,
           email,
@@ -138,11 +145,18 @@ exports.login = async (req, res) => {
     // Generate token
     const token = generateToken(user.id);
 
+    // Set token in cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
     res.json({
       success: true,
       message: 'Login successful',
       data: {
-        token,
         user: {
           id: user.id,
           email: user.email,
@@ -235,6 +249,29 @@ exports.updateProfile = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error updating profile',
+      error: error.message
+    });
+  }
+};
+
+exports.logout = async (req, res) => {
+  try {
+    // Clear the token cookie
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    });
+
+    res.json({
+      success: true,
+      message: 'Logged out successfully'
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error during logout',
       error: error.message
     });
   }
