@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+const { v4: uuidv4 } = require('uuid');
 const { protect, authorize } = require('../middleware/auth');
 const imageProcessor = require('../middleware/imageProcessor');
 const mlService = require('../services/mlService');
@@ -34,26 +35,42 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
         // Analyze image with ML model
         const analysisResult = await mlService.analyzeSkin(req.file.buffer);
 
+        // Generate unique IDs
+        const diagnosisId = uuidv4();
+        const imageId = uuidv4();
+
         // Create diagnosis record
         const diagnosis = await Diagnosis.create({
+            diagnosisId,
+            imageId,
             patientId: req.user.id,
             imageUrl: processedImage.filename,
-            severity: analysisResult.severity,
-            confidenceScore: analysisResult.confidence,
-            bodyPart: analysisResult.bodyPart,
-            isEczema: analysisResult.isEczema,
-            recommendations: analysisResult.isEczema ? analysisResult.recommendations : analysisResult.skincareTips,
-            needsDoctorReview: analysisResult.severity === 'Severe' || analysisResult.confidence < 0.6,
-            status: analysisResult.severity === 'Severe' || analysisResult.confidence < 0.6 ? 'pending_review' : 'completed',
-            metadata: {
-                ...processedImage.metadata,
-                mlAnalysis: {
-                    isEczema: analysisResult.isEczema,
-                    confidence: analysisResult.confidence,
-                    bodyPart: analysisResult.bodyPart,
-                    bodyPartConfidence: analysisResult.bodyPartConfidence
-                }
-            }
+            imageMetadata: {
+                originalFileName: req.file.originalname,
+                uploadDate: new Date(),
+                fileSize: req.file.size,
+                dimensions: {
+                    width: processedImage.metadata.width,
+                    height: processedImage.metadata.height
+                },
+                imageQuality: processedImage.metadata.qualityScore,
+                format: req.file.mimetype.split('/')[1].toUpperCase()
+            },
+            mlResults: {
+                hasEczema: analysisResult.isEczema,
+                confidence: analysisResult.confidence,
+                severity: analysisResult.severity.toLowerCase(),
+                affectedAreas: [analysisResult.bodyPart],
+                differentialDiagnosis: [],
+                modelVersion: '1.0'
+            },
+            recommendations: {
+                treatments: [],
+                lifestyle: [],
+                triggers: [],
+                precautions: analysisResult.isEczema ? analysisResult.recommendations : [analysisResult.skincareTips]
+            },
+            status: analysisResult.severity === 'Severe' || analysisResult.confidence < 0.6 ? 'pending_review' : 'completed'
         });
 
         // Send notification
@@ -62,19 +79,19 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
             severity: analysisResult.severity,
             confidence: analysisResult.confidence,
             bodyPart: analysisResult.bodyPart,
-            needsDoctorReview: diagnosis.needsDoctorReview
+            needsDoctorReview: diagnosis.status === 'pending_review'
         });
 
         res.status(201).json({
             success: true,
             data: {
-                diagnosisId: diagnosis._id,
+                diagnosisId: diagnosis.diagnosisId,
                 isEczema: analysisResult.isEczema,
                 severity: analysisResult.severity,
                 confidence: analysisResult.confidence,
                 bodyPart: analysisResult.bodyPart,
-                recommendations: diagnosis.recommendations,
-                needsDoctorReview: diagnosis.needsDoctorReview,
+                recommendations: diagnosis.recommendations.precautions,
+                needsDoctorReview: diagnosis.status === 'pending_review',
                 imageUrl: `/uploads/${processedImage.filename}`
             }
         });
@@ -110,7 +127,7 @@ router.get('/diagnoses', async (req, res) => {
 router.get('/diagnoses/:diagnosisId', async (req, res) => {
     try {
         const diagnosis = await Diagnosis.findOne({
-            _id: req.params.diagnosisId,
+            diagnosisId: req.params.diagnosisId,
             patientId: req.user.id
         });
 
@@ -138,7 +155,7 @@ router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, r
     try {
         const { review, updatedSeverity, treatmentPlan } = req.body;
 
-        const diagnosis = await Diagnosis.findById(req.params.diagnosisId);
+        const diagnosis = await Diagnosis.findOne({ diagnosisId: req.params.diagnosisId });
         if (!diagnosis) {
             return res.status(404).json({
                 success: false,
@@ -151,7 +168,7 @@ router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, r
             doctorId: req.user.id,
             review,
             reviewedAt: new Date(),
-            updatedSeverity: updatedSeverity || diagnosis.severity,
+            updatedSeverity: updatedSeverity || diagnosis.mlResults.severity,
             treatmentPlan
         };
         diagnosis.status = 'reviewed';
@@ -163,8 +180,8 @@ router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, r
             title: 'Doctor Review Available',
             message: 'A doctor has reviewed your diagnosis',
             data: {
-                diagnosisId: diagnosis._id,
-                severity: updatedSeverity || diagnosis.severity
+                diagnosisId: diagnosis.diagnosisId,
+                severity: updatedSeverity || diagnosis.mlResults.severity
             }
         });
 
