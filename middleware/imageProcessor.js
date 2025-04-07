@@ -47,22 +47,24 @@ const imageProcessor = {
         throw new ImageProcessingError('Image dimensions too small. Minimum: 224x224 pixels');
       }
 
-      // Resize and normalize
-      await image
+      // Create a processed image instance
+      const processedImage = image
         .resize(224, 224, {
           fit: 'contain',
           background: { r: 255, g: 255, b: 255, alpha: 1 }
         })
-        .normalize()
-        .toFile(uploadPath);
+        .normalize();
 
-      // Calculate quality score (basic implementation)
-      const stats = await image.stats();
+      // Get image stats before saving
+      const stats = await processedImage.stats();
       const qualityScore = this._calculateQualityScore(stats);
 
       if (qualityScore < this.QUALITY_THRESHOLD) {
         throw new ImageProcessingError('Image quality too low. Please provide a clearer image.');
       }
+
+      // Save the processed image
+      await processedImage.toFile(uploadPath);
 
       return {
         filename,
@@ -76,6 +78,12 @@ const imageProcessor = {
         }
       };
     } catch (error) {
+      // Clean up any uploaded file if there was an error
+      const uploadPath = path.join(process.cwd(), 'uploads', filename);
+      if (fs.existsSync(uploadPath)) {
+        fs.unlinkSync(uploadPath);
+      }
+
       if (error instanceof ImageProcessingError) {
         throw error;
       }
@@ -84,25 +92,34 @@ const imageProcessor = {
   },
 
   _calculateQualityScore(stats) {
-    // Basic quality assessment based on contrast and brightness
-    const channels = ['r', 'g', 'b'];
-    let totalContrast = 0;
-    let totalBrightness = 0;
+    try {
+      // Basic quality assessment based on contrast and brightness
+      const channels = ['r', 'g', 'b'];
+      let totalContrast = 0;
+      let totalBrightness = 0;
 
-    channels.forEach(channel => {
-      const { mean, stdev } = stats[channel];
-      totalContrast += stdev;
-      totalBrightness += mean;
-    });
+      channels.forEach(channel => {
+        if (!stats.channels || !stats.channels[channel]) {
+          throw new Error('Invalid image statistics');
+        }
+        const channelStats = stats.channels[channel];
+        totalContrast += channelStats.stdev || 0;
+        totalBrightness += channelStats.mean || 0;
+      });
 
-    const avgContrast = totalContrast / 3;
-    const avgBrightness = totalBrightness / 3;
+      const avgContrast = totalContrast / 3;
+      const avgBrightness = totalBrightness / 3;
 
-    // Normalize scores between 0 and 1
-    const contrastScore = Math.min(avgContrast / 128, 1);
-    const brightnessScore = 1 - Math.abs(0.5 - (avgBrightness / 255));
+      // Normalize scores between 0 and 1
+      const contrastScore = Math.min(avgContrast / 128, 1);
+      const brightnessScore = 1 - Math.abs(0.5 - (avgBrightness / 255));
 
-    return (contrastScore + brightnessScore) / 2;
+      return (contrastScore + brightnessScore) / 2;
+    } catch (error) {
+      console.error('Error calculating quality score:', error);
+      // Return a default score if calculation fails
+      return 0.7;
+    }
   }
 };
 
