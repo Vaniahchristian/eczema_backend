@@ -1,32 +1,79 @@
 const { Mongo } = require('../models');
 const { Diagnosis, Analytics, Advisory } = Mongo;
-const sharp = require('sharp');
-const path = require('path');
 const fs = require('fs').promises;
-const mlService = require('../services/mlService');
-
-// Initialize ML service when the module loads
-(async () => {
-  try {
-    await mlService.initialize();
-    console.log('ML Service initialized successfully');
-  } catch (error) {
-    console.error('Failed to initialize ML Service:', error);
-  }
-})();
+const axios = require('axios');
+const FormData = require('form-data');
+const path = require('path');
 
 // Analyze eczema image using ML model
 const analyzeEczemaImage = async (imagePath) => {
-  const imageBuffer = await fs.readFile(imagePath);
-  const analysis = await mlService.analyzeSkin(imageBuffer);
-  
-  return {
-    severity: analysis.severity,
-    confidence: analysis.confidence,
-    areas_affected: ['elbow', 'knee'],
-    symptoms: ['redness', 'itching', 'dryness'],
-    prediction: analysis.prediction,
-    requiresDoctorReview: analysis.requiresDoctorReview
+  try {
+    const imageBuffer = await fs.readFile(imagePath);
+    
+    // Create form data with the image
+    const formData = new FormData();
+    formData.append('image', imageBuffer, {
+      filename: 'image.jpg',
+      contentType: 'image/jpeg'
+    });
+
+    // Send directly to Flask API
+    const response = await axios.post('http://172.50.1.37:5001/predict', formData, {
+      headers: {
+        ...formData.getHeaders(),
+        'Accept': 'application/json'
+      },
+      maxBodyLength: Infinity,
+      timeout: 30000
+    });
+
+    return {
+      severity: response.data.eczemaSeverity,
+      confidence: response.data.eczemaConfidence,
+      areas_affected: [response.data.bodyPart],
+      bodyPartConfidence: response.data.bodyPartConfidence,
+      prediction: response.data.eczemaPrediction,
+      recommendations: response.data.recommendations || [],
+      skincareTips: response.data.skincareTips || [],
+      requiresDoctorReview: response.data.eczemaSeverity === 'Severe' || response.data.eczemaConfidence < 0.6
+    };
+  } catch (error) {
+    console.error('Error analyzing image:', error);
+    if (error.response) {
+      console.error('Flask API error:', {
+        status: error.response.status,
+        data: error.response.data
+      });
+    }
+    throw new Error('Failed to analyze image');
+  }
+};
+
+// Get diagnosis statistics for analytics
+const getDiagnosisStats = async () => {
+  const stats = await Diagnosis.aggregate([
+    {
+      $group: {
+        _id: null,
+        total: { $sum: 1 },
+        eczema: {
+          $sum: { $cond: ['$mlResults.hasEczema', 1, 0] }
+        },
+        pending: {
+          $sum: { $cond: [{ $eq: ['$status', 'pending_review'] }, 1, 0] }
+        },
+        reviewed: {
+          $sum: { $cond: [{ $eq: ['$status', 'reviewed'] }, 1, 0] }
+        }
+      }
+    }
+  ]);
+
+  return stats[0] || {
+    total: 0,
+    eczema: 0,
+    pending: 0,
+    reviewed: 0
   };
 };
 
@@ -41,23 +88,22 @@ exports.analyzeImage = async (req, res) => {
 
     // Process image with sharp
     const processedImagePath = path.join('uploads', `processed_${req.file.filename}`);
-    await sharp(req.file.path)
-      .resize(800, 800, { fit: 'inside' })
-      .jpeg({ quality: 80 })
-      .toFile(processedImagePath);
+    // await sharp(req.file.path)
+    //   .resize(800, 800, { fit: 'inside' })
+    //   .jpeg({ quality: 80 })
+    //   .toFile(processedImagePath);
 
     // Analyze the processed image
-    const analysis = await analyzeEczemaImage(processedImagePath);
+    const analysis = await analyzeEczemaImage(req.file.path);
 
     // Create diagnosis record in MongoDB
     const diagnosis = await Diagnosis.create({
       patient_id: req.user.user_id,
-      image_path: processedImagePath,
-      original_image_path: req.file.path,
+      image_path: req.file.path,
       severity: analysis.severity,
       confidence_score: analysis.confidence,
       areas_affected: analysis.areas_affected,
-      symptoms: analysis.symptoms,
+      symptoms: [],
       analyzed_at: new Date()
     });
 
@@ -81,9 +127,9 @@ exports.analyzeImage = async (req, res) => {
         severity: analysis.severity,
         confidence: analysis.confidence,
         areas_affected: analysis.areas_affected,
-        symptoms: analysis.symptoms,
+        symptoms: [],
         recommendations: advisory ? advisory.recommendations : [],
-        image_url: `/uploads/processed_${req.file.filename}`,
+        image_url: `/uploads/${req.file.filename}`,
         prediction: analysis.prediction,
         requiresDoctorReview: analysis.requiresDoctorReview
       }

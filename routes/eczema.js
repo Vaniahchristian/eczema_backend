@@ -3,9 +3,9 @@ const router = express.Router();
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const { protect, authorize } = require('../middleware/auth');
-const imageProcessor = require('../middleware/imageProcessor');
-const mlService = require('../services/mlService');
 const Diagnosis = require('../models/mongodb/Diagnosis');
+const axios = require('axios');
+const FormData = require('form-data');
 
 // Configure multer for image upload
 const upload = multer({
@@ -28,11 +28,25 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
             });
         }
 
-        // Process and validate image
-        const processedImage = await imageProcessor.processImage(req.file);
+        // Create form data with the image
+        const formData = new FormData();
+        formData.append('image', req.file.buffer, {
+            filename: 'image.jpg',
+            contentType: 'image/jpeg'
+        });
 
-        // Analyze image with ML model using processed buffer
-        const analysisResult = await mlService.analyzeSkin(processedImage.buffer);
+        // Send directly to Flask API
+        console.log('Sending request to Flask API');
+        const response = await axios.post('http://172.50.1.37:5001/predict', formData, {
+            headers: {
+                ...formData.getHeaders(),
+                'Accept': 'application/json'
+            },
+            maxBodyLength: Infinity,
+            timeout: 30000
+        });
+
+        console.log('Received response:', response.data);
 
         // Generate unique IDs
         const diagnosisId = uuidv4();
@@ -47,17 +61,13 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
                 originalFileName: req.file.originalname,
                 uploadDate: new Date(),
                 fileSize: req.file.size,
-                dimensions: {
-                    width: processedImage.width,
-                    height: processedImage.height
-                },
-                format: processedImage.format
+                format: 'JPEG'
             },
             mlResults: {
-                hasEczema: analysisResult.isEczema,
-                confidence: analysisResult.confidence,
-                severity: analysisResult.severity.toLowerCase(),
-                affectedAreas: [analysisResult.bodyPart],
+                hasEczema: response.data.eczemaPrediction === 'Eczema',
+                confidence: response.data.eczemaConfidence,
+                severity: response.data.eczemaSeverity.toLowerCase(),
+                affectedAreas: [response.data.bodyPart],
                 differentialDiagnosis: [],
                 modelVersion: '1.0'
             },
@@ -65,28 +75,35 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
                 treatments: [],
                 lifestyle: [],
                 triggers: [],
-                precautions: analysisResult.isEczema ? analysisResult.recommendations : analysisResult.skincareTips
+                precautions: response.data.recommendations || response.data.skincareTips || []
             },
-            status: analysisResult.severity === 'Severe' || analysisResult.confidence < 0.6 ? 'pending_review' : 'completed'
+            status: response.data.eczemaSeverity === 'Severe' || response.data.eczemaConfidence < 0.6 ? 'pending_review' : 'completed'
         });
 
         res.status(201).json({
             success: true,
             data: {
                 diagnosisId: diagnosis.diagnosisId,
-                isEczema: analysisResult.isEczema,
-                severity: analysisResult.severity,
-                confidence: analysisResult.confidence,
-                bodyPart: analysisResult.bodyPart,
+                isEczema: diagnosis.mlResults.hasEczema,
+                severity: diagnosis.mlResults.severity,
+                confidence: diagnosis.mlResults.confidence,
+                bodyPart: response.data.bodyPart,
+                bodyPartConfidence: response.data.bodyPartConfidence,
                 recommendations: diagnosis.recommendations.precautions,
                 needsDoctorReview: diagnosis.status === 'pending_review'
             }
         });
     } catch (error) {
         console.error('Diagnosis error:', error);
+        if (error.response) {
+            console.error('Flask API error:', {
+                status: error.response.status,
+                data: error.response.data
+            });
+        }
         res.status(500).json({
             success: false,
-            message: error.message || 'Failed to process diagnosis'
+            message: 'Failed to process diagnosis'
         });
     }
 });
