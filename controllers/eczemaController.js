@@ -17,14 +17,17 @@ const analyzeEczemaImage = async (imagePath) => {
       contentType: 'image/jpeg'
     });
 
-    // Send directly to Flask API
-    const response = await axios.post('http://172.50.1.37:5001/predict', formData, {
+    // Send to hosted ML API
+    const ML_API_URL = process.env.ML_API_URL || 'https://eczema-model.onrender.com';
+    console.log('Sending request to ML API:', ML_API_URL);
+    
+    const response = await axios.post(`${ML_API_URL}/predict`, formData, {
       headers: {
         ...formData.getHeaders(),
         'Accept': 'application/json'
       },
       maxBodyLength: Infinity,
-      timeout: 30000
+      timeout: 60000
     });
 
     return {
@@ -40,7 +43,7 @@ const analyzeEczemaImage = async (imagePath) => {
   } catch (error) {
     console.error('Error analyzing image:', error);
     if (error.response) {
-      console.error('Flask API error:', {
+      console.error('ML API error:', {
         status: error.response.status,
         data: error.response.data
       });

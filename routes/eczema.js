@@ -28,6 +28,10 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
             });
         }
 
+        // Get ML API URL from environment or use local fallback
+        const ML_API_URL = process.env.ML_API_URL || 'http://localhost:5001';
+        console.log('Using ML API URL:', ML_API_URL);
+
         // Create form data with the image
         const formData = new FormData();
         formData.append('image', req.file.buffer, {
@@ -35,15 +39,15 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
             contentType: 'image/jpeg'
         });
 
-        // Send directly to Flask API
+        // Send directly to Flask API with increased timeout
         console.log('Sending request to Flask API');
-        const response = await axios.post('http://172.50.1.37:5001/predict', formData, {
+        const response = await axios.post(`${ML_API_URL}/predict`, formData, {
             headers: {
                 ...formData.getHeaders(),
                 'Accept': 'application/json'
             },
             maxBodyLength: Infinity,
-            timeout: 30000
+            timeout: 10000000 // Increased to 60 seconds
         });
 
         console.log('Received response:', response.data);
@@ -95,6 +99,12 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
         });
     } catch (error) {
         console.error('Diagnosis error:', error);
+        if (error.code === 'ECONNABORTED') {
+            return res.status(504).json({
+                success: false,
+                message: 'ML API request timed out. Please ensure the ML API is accessible.'
+            });
+        }
         if (error.response) {
             console.error('Flask API error:', {
                 status: error.response.status,
@@ -103,7 +113,7 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
         }
         res.status(500).json({
             success: false,
-            message: 'Failed to process diagnosis'
+            message: 'Failed to process diagnosis. Please check ML API connectivity.'
         });
     }
 });
