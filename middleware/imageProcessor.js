@@ -22,6 +22,7 @@ const imageProcessor = {
   MAX_SIZE: 5 * 1024 * 1024, // 5MB
 
   async processImage(file) {
+    let filename;
     try {
       // Validate format
       const format = file.mimetype.split('/')[1];
@@ -35,7 +36,7 @@ const imageProcessor = {
       }
 
       // Generate unique filename
-      const filename = `${uuidv4()}.${format}`;
+      filename = `${uuidv4()}.${format}`;
       const uploadPath = path.join(process.cwd(), 'uploads', filename);
 
       // Process image
@@ -63,12 +64,16 @@ const imageProcessor = {
         throw new ImageProcessingError('Image quality too low. Please provide a clearer image.');
       }
 
+      // Get processed buffer for ML analysis
+      const processedBuffer = await processedImage.toBuffer();
+      
       // Save the processed image
       await processedImage.toFile(uploadPath);
 
       return {
         filename,
         path: uploadPath,
+        buffer: processedBuffer,
         metadata: {
           format,
           width: metadata.width,
@@ -79,9 +84,11 @@ const imageProcessor = {
       };
     } catch (error) {
       // Clean up any uploaded file if there was an error
-      const uploadPath = path.join(process.cwd(), 'uploads', filename);
-      if (fs.existsSync(uploadPath)) {
-        fs.unlinkSync(uploadPath);
+      if (filename) {
+        const uploadPath = path.join(process.cwd(), 'uploads', filename);
+        if (fs.existsSync(uploadPath)) {
+          fs.unlinkSync(uploadPath);
+        }
       }
 
       if (error instanceof ImageProcessingError) {

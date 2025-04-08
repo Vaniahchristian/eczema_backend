@@ -31,8 +31,8 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
         // Process and validate image
         const processedImage = await imageProcessor.processImage(req.file);
 
-        // Analyze image with ML model
-        const analysisResult = await mlService.analyzeSkin(req.file.buffer);
+        // Analyze image with ML model using processed buffer
+        const analysisResult = await mlService.analyzeSkin(processedImage.buffer);
 
         // Generate unique IDs
         const diagnosisId = uuidv4();
