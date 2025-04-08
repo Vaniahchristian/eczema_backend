@@ -11,15 +11,20 @@ class MLService {
             console.log('Creating form data for image analysis');
             const formData = new FormData();
             
-            // Create a proper file object
-            const blob = new Blob([imageBuffer], { type: 'image/jpeg' });
-            formData.append('image', blob, 'image.jpg');
+            // Append the buffer directly with filename and mimetype
+            formData.append('image', imageBuffer, {
+                filename: 'image.jpg',
+                contentType: 'image/jpeg',
+                knownLength: imageBuffer.length
+            });
 
             console.log('Sending request to ML API');
             const response = await axios.post(`${this.apiUrl}/predict`, formData, {
                 headers: {
-                    ...formData.getHeaders()
-                }
+                    ...formData.getHeaders(),
+                    'Accept': 'application/json'
+                },
+                maxBodyLength: Infinity
             });
             
             console.log('Received response:', response.data);

@@ -42,23 +42,49 @@ try:
 except Exception as e:
     print("Error loading models:", str(e))
 
-# Preprocessing function for VGG19
 def preprocess_image_for_vgg(image_bytes):
-    img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
-    img = img.resize((180, 180))  # Resize to (180, 180) for VGG19
-    img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
-    img_array = preprocess_input(img_array)  # VGG19 preprocessing
-    return img_array
+    try:
+        # Convert bytes to PIL Image
+        img = Image.open(io.BytesIO(image_bytes))
+        
+        # Convert to RGB if needed
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+            
+        # Resize to VGG19 input size
+        img = img.resize((180, 180))
+        
+        # Convert to array and preprocess
+        img_array = image.img_to_array(img)
+        img_array = np.expand_dims(img_array, axis=0)
+        img_array = preprocess_input(img_array)
+        
+        return img_array
+    except Exception as e:
+        print("Error preprocessing image for VGG:", str(e))
+        raise
 
-# Preprocessing function for MobileNetV2 (Body part model)
-def preprocess_image_for_bodypart(image_bytes, target_size=(150, 150)):
-    img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
-    img = img.resize(target_size)  # Resize to (150, 150) for body part model
-    img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
-    img_array = img_array / 255.0  # Normalize image to [0, 1] range
-    return img_array
+def preprocess_image_for_bodypart(image_bytes):
+    try:
+        # Convert bytes to PIL Image
+        img = Image.open(io.BytesIO(image_bytes))
+        
+        # Convert to RGB if needed
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+            
+        # Resize to body part model input size
+        img = img.resize((150, 150))
+        
+        # Convert to array and normalize
+        img_array = image.img_to_array(img)
+        img_array = np.expand_dims(img_array, axis=0)
+        img_array = img_array / 255.0
+        
+        return img_array
+    except Exception as e:
+        print("Error preprocessing image for body part:", str(e))
+        raise
 
 # Severity function based on confidence level
 def get_severity(confidence):
@@ -161,28 +187,36 @@ def home():
 @app.route('/predict', methods=['POST'])
 def predict():
     print("Received prediction request")
+    
     if 'image' not in request.files:
         print("No image in request")
         return jsonify({'error': 'No image provided'}), 400
 
     try:
         image_file = request.files['image']
-        print("Image received:", image_file.filename)
+        print(f"Image received: {image_file.filename}")
+        
+        # Read the image data
         image_bytes = image_file.read()
-
-        # Preprocess image for both models
+        
+        # Preprocess images for both models
+        print("Preprocessing for VGG19")
         img_array_vgg = preprocess_image_for_vgg(image_bytes)
+        
+        print("Preprocessing for body part model")
         img_array_bodypart = preprocess_image_for_bodypart(image_bytes)
 
         # Eczema Prediction
-        vgg_features = vgg_model.predict(img_array_vgg)
+        print("Running VGG prediction")
+        vgg_features = vgg_model.predict(img_array_vgg, verbose=0)
         features_flat = vgg_features.reshape(1, -1)
-        eczema_preds = eczema_model.predict(features_flat)
+        eczema_preds = eczema_model.predict(features_flat, verbose=0)
         eczema_class = int(np.argmax(eczema_preds[0]))
         eczema_label = eczema_class_names[eczema_class]
         eczema_confidence = float(eczema_preds[0][eczema_class])
 
         # Body Part Prediction
+        print("Running body part prediction")
         body_preds = predict_with_tflite(interpreter, img_array_bodypart)
         body_class = int(np.argmax(body_preds[0]))
         body_label = body_part_class_names[body_class]
