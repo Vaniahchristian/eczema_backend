@@ -246,5 +246,5 @@ def predict():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    port = 5001  # Fixed local port
+    port = 5000  # Fixed local port
     app.run(host='0.0.0.0', port=port, debug=True)
