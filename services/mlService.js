@@ -8,11 +8,21 @@ class MLService {
 
     async analyzeSkin(imageBuffer) {
         try {
+            console.log('Creating form data for image analysis');
             const formData = new FormData();
-            formData.append('image', imageBuffer);
-
-            const response = await axios.post(`${this.apiUrl}/predict`, formData);
             
+            // Create a proper file object
+            const blob = new Blob([imageBuffer], { type: 'image/jpeg' });
+            formData.append('image', blob, 'image.jpg');
+
+            console.log('Sending request to ML API');
+            const response = await axios.post(`${this.apiUrl}/predict`, formData, {
+                headers: {
+                    ...formData.getHeaders()
+                }
+            });
+            
+            console.log('Received response:', response.data);
             return {
                 isEczema: response.data.eczemaPrediction === 'Eczema',
                 confidence: response.data.eczemaConfidence || 0,
@@ -24,6 +34,9 @@ class MLService {
             };
         } catch (error) {
             console.error('ML Service Error:', error.message);
+            if (error.response) {
+                console.error('Error Response:', error.response.data);
+            }
             throw new Error('Failed to analyze image');
         }
     }
