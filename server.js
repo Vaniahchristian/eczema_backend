@@ -5,6 +5,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const http = require('http');
 const helmet = require('helmet');
+const imageProcessor = require('./middleware/imageProcessor');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const WebSocketServer = require('./websocket');

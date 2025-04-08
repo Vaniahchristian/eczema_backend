@@ -3,7 +3,7 @@ const FormData = require('form-data');
 
 class MLService {
     constructor() {
-        this.apiUrl = 'http://localhost:5000';
+        this.apiUrl = 'http://localhost:5001';  // Updated port to 5001
     }
 
     async analyzeSkin(imageBuffer) {

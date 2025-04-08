@@ -31,9 +31,6 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
         // Process and validate image
         const processedImage = await imageProcessor.processImage(req.file);
 
-        // Confirm the route is correctly passing the processed image buffer to the ML service
-        console.log('Processed image buffer:', processedImage.buffer);
-
         // Analyze image with ML model using processed buffer
         const analysisResult = await mlService.analyzeSkin(processedImage.buffer);
 
@@ -46,17 +43,15 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
             diagnosisId,
             imageId,
             patientId: req.user.id,
-            imageUrl: processedImage.filename,
             imageMetadata: {
                 originalFileName: req.file.originalname,
                 uploadDate: new Date(),
                 fileSize: req.file.size,
                 dimensions: {
-                    width: processedImage.metadata.width,
-                    height: processedImage.metadata.height
+                    width: processedImage.width,
+                    height: processedImage.height
                 },
-                imageQuality: processedImage.metadata.qualityScore,
-                format: req.file.mimetype.split('/')[1].toUpperCase()
+                format: processedImage.format
             },
             mlResults: {
                 hasEczema: analysisResult.isEczema,
@@ -70,7 +65,7 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
                 treatments: [],
                 lifestyle: [],
                 triggers: [],
-                precautions: analysisResult.isEczema ? analysisResult.recommendations : [analysisResult.skincareTips]
+                precautions: analysisResult.isEczema ? analysisResult.recommendations : analysisResult.skincareTips
             },
             status: analysisResult.severity === 'Severe' || analysisResult.confidence < 0.6 ? 'pending_review' : 'completed'
         });
@@ -84,8 +79,7 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
                 confidence: analysisResult.confidence,
                 bodyPart: analysisResult.bodyPart,
                 recommendations: diagnosis.recommendations.precautions,
-                needsDoctorReview: diagnosis.status === 'pending_review',
-                imageUrl: `/uploads/${processedImage.filename}`
+                needsDoctorReview: diagnosis.status === 'pending_review'
             }
         });
     } catch (error) {
