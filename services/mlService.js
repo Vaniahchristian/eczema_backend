@@ -20,21 +20,32 @@ class MLService {
 
     async analyzeSkin(imageBuffer) {
         try {
-            // Create form data
+            // Create form data with proper file field
             const formData = new FormData();
-            formData.append('image', imageBuffer, {
+            
+            // Create a Buffer from the image data if it's not already a Buffer
+            const buffer = Buffer.isBuffer(imageBuffer) ? imageBuffer : Buffer.from(imageBuffer);
+            
+            // Append as a proper file with correct field name matching Flask's request.files['image']
+            formData.append('image', buffer, {
                 filename: 'image.jpg',
-                contentType: 'image/jpeg'
+                contentType: 'image/jpeg',
+                knownLength: buffer.length
             });
 
-            // Make request to Flask API
+            // Make request to Flask API with proper headers and configuration
             const response = await axios.post(`${this.apiUrl}/predict`, formData, {
                 headers: {
-                    ...formData.getHeaders()
-                }
+                    ...formData.getHeaders(),
+                    'Accept': 'application/json',
+                    'Content-Length': formData.getLengthSync()
+                },
+                maxContentLength: Infinity,
+                maxBodyLength: Infinity,
+                timeout: 30000 // 30 second timeout for ML processing
             });
 
-            // Process and format the response
+            // Process and format the response based on Flask app's JSON structure
             const result = {
                 isEczema: response.data.eczemaPrediction === 'Eczema',
                 confidence: response.data.eczemaConfidence,
@@ -53,6 +64,14 @@ class MLService {
             return result;
         } catch (error) {
             console.error('Error analyzing image:', error);
+            if (error.response) {
+                // Log detailed error information
+                console.error('Error response:', {
+                    status: error.response.status,
+                    data: error.response.data
+                });
+                throw new Error(`Failed to analyze image: ${error.response.data.error || error.message}`);
+            }
             throw new Error('Failed to analyze image: ' + error.message);
         }
     }

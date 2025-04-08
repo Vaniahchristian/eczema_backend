@@ -31,6 +31,9 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
         // Process and validate image
         const processedImage = await imageProcessor.processImage(req.file);
 
+        // Confirm the route is correctly passing the processed image buffer to the ML service
+        console.log('Processed image buffer:', processedImage.buffer);
+
         // Analyze image with ML model using processed buffer
         const analysisResult = await mlService.analyzeSkin(processedImage.buffer);
 
