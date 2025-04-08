@@ -27,17 +27,20 @@ body_part_class_names = {
 }
 
 # Load models
-vgg_model = VGG19(weights='imagenet', include_top=False, input_shape=(180, 180, 3))
-for layer in vgg_model.layers:
-    layer.trainable = False
+try:
+    vgg_model = VGG19(weights='imagenet', include_top=False, input_shape=(180, 180, 3))
+    for layer in vgg_model.layers:
+        layer.trainable = False
 
-eczema_model = load_model('eczema.h5')
+    eczema_model = load_model('eczema.h5')
 
-# Load TensorFlow Lite model for body part classification
-interpreter = tf.lite.Interpreter(model_path="mobilenet_bodypart_model_quantized.tflite")
-interpreter.allocate_tensors()
+    # Load TensorFlow Lite model for body part classification
+    interpreter = tf.lite.Interpreter(model_path="mobilenet_bodypart_model_quantized.tflite")
+    interpreter.allocate_tensors()
 
-print("Models loaded successfully!")
+    print("Models loaded successfully!")
+except Exception as e:
+    print("Error loading models:", str(e))
 
 # Preprocessing function for VGG19
 def preprocess_image_for_vgg(image_bytes):
@@ -151,13 +154,20 @@ def get_skincare_tips():
         "Consider using products with ceramides and hyaluronic acid"
     ]
 
+@app.route('/')
+def home():
+    return jsonify({"status": "ML API is running"})
+
 @app.route('/predict', methods=['POST'])
 def predict():
+    print("Received prediction request")
     if 'image' not in request.files:
+        print("No image in request")
         return jsonify({'error': 'No image provided'}), 400
 
     try:
         image_file = request.files['image']
+        print("Image received:", image_file.filename)
         image_bytes = image_file.read()
 
         # Preprocess image for both models
@@ -179,28 +189,25 @@ def predict():
         body_confidence = float(body_preds[0][body_class])
 
         # Get severity and recommendations
-        if eczema_label == 'Eczema':
-            severity = get_severity(eczema_confidence)
-            recommendations = get_treatment_recommendations(severity, body_label)
-            return jsonify({
-                'eczemaPrediction': 'Eczema',
-                'eczemaConfidence': eczema_confidence,
-                'eczemaSeverity': severity,
-                'bodyPart': body_label,
-                'bodyPartConfidence': body_confidence,
-                'recommendations': recommendations
-            })
-        else:
-            return jsonify({
-                'eczemaPrediction': 'No Eczema Detected',
-                'eczemaConfidence': eczema_confidence,
-                'eczemaSeverity': 'None',
-                'bodyPart': body_label,
-                'bodyPartConfidence': body_confidence,
-                'skincareTips': get_skincare_tips()
-            })
+        severity = get_severity(eczema_confidence)
+        recommendations = get_treatment_recommendations(severity, body_label) if eczema_label == 'Eczema' else []
+        skincare_tips = get_skincare_tips() if eczema_label != 'Eczema' else []
+
+        response = {
+            'eczemaPrediction': eczema_label,
+            'eczemaConfidence': eczema_confidence,
+            'eczemaSeverity': severity,
+            'bodyPart': body_label,
+            'bodyPartConfidence': body_confidence,
+            'recommendations': recommendations,
+            'skincareTips': skincare_tips
+        }
+        
+        print("Prediction successful:", response)
+        return jsonify(response)
 
     except Exception as e:
+        print("Error during prediction:", str(e))
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
