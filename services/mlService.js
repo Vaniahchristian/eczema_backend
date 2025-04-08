@@ -3,7 +3,9 @@ const FormData = require('form-data');
 
 class MLService {
     constructor() {
-        this.apiUrl = 'http://localhost:5001';  // Updated port to 5001
+        // Use ML_API_URL from environment or default to localhost
+        this.apiUrl = process.env.ML_API_URL || 'http://localhost:5000';
+        console.log('ML Service initialized with API URL:', this.apiUrl);
     }
 
     async analyzeSkin(imageBuffer) {
@@ -18,13 +20,14 @@ class MLService {
                 knownLength: imageBuffer.length
             });
 
-            console.log('Sending request to ML API');
+            console.log('Sending request to ML API:', this.apiUrl);
             const response = await axios.post(`${this.apiUrl}/predict`, formData, {
                 headers: {
                     ...formData.getHeaders(),
                     'Accept': 'application/json'
                 },
-                maxBodyLength: Infinity
+                maxBodyLength: Infinity,
+                timeout: 30000 // 30 second timeout
             });
             
             console.log('Received response:', response.data);
@@ -40,7 +43,17 @@ class MLService {
         } catch (error) {
             console.error('ML Service Error:', error.message);
             if (error.response) {
-                console.error('Error Response:', error.response.data);
+                console.error('Error Response:', {
+                    status: error.response.status,
+                    data: error.response.data,
+                    headers: error.response.headers
+                });
+            } else if (error.request) {
+                console.error('No response received, request:', {
+                    method: error.request.method,
+                    path: error.request.path,
+                    headers: error.request._header
+                });
             }
             throw new Error('Failed to analyze image');
         }
