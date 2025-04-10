@@ -97,7 +97,7 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
                 format: 'JPEG'
             },
             mlResults: {
-                hasEczema: response.data.eczemaPrediction === 'Eczema',
+                hasEczema: response.data.eczemaPrediction,
                 confidence: response.data.eczemaConfidence,
                 severity: response.data.eczemaSeverity.toLowerCase(),
                 affectedAreas: [response.data.bodyPart],
