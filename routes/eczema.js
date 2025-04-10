@@ -6,14 +6,35 @@ const { protect, authorize } = require('../middleware/auth');
 const Diagnosis = require('../models/mongodb/Diagnosis');
 const axios = require('axios');
 const FormData = require('form-data');
+const path = require('path');
+const fs = require('fs').promises;
 
 // Configure multer for image upload
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/diagnoses');
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
 const upload = multer({
-    storage: multer.memoryStorage(),
+    storage: storage,
     limits: {
         fileSize: 5 * 1024 * 1024 // 5MB limit
     }
 });
+
+// Ensure upload directory exists
+(async () => {
+    try {
+        await fs.mkdir('uploads/diagnoses', { recursive: true });
+    } catch (err) {
+        console.error('Failed to create upload directory:', err);
+    }
+})();
 
 // Protect all routes
 router.use(protect);
@@ -34,8 +55,8 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
 
         // Create form data with the image
         const formData = new FormData();
-        formData.append('image', req.file.buffer, {
-            filename: 'image.jpg',
+        formData.append('image', await fs.readFile(req.file.path), {
+            filename: req.file.filename,
             contentType: 'image/jpeg'
         });
 
@@ -55,12 +76,20 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
         // Generate unique IDs
         const diagnosisId = uuidv4();
         const imageId = uuidv4();
+        const imageUrl = `/uploads/diagnoses/${req.file.filename}`;
+
+        // Combine recommendations and skincare tips
+        const allRecommendations = [
+            ...(response.data.recommendations || []),
+            ...(response.data.skincareTips || [])
+        ];
 
         // Create diagnosis record
         const diagnosis = await Diagnosis.create({
             diagnosisId,
             imageId,
             patientId: req.user.id,
+            imageUrl,
             imageMetadata: {
                 originalFileName: req.file.originalname,
                 uploadDate: new Date(),
@@ -72,14 +101,14 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
                 confidence: response.data.eczemaConfidence,
                 severity: response.data.eczemaSeverity.toLowerCase(),
                 affectedAreas: [response.data.bodyPart],
-                differentialDiagnosis: [],
+                bodyPartConfidence: response.data.bodyPartConfidence,
                 modelVersion: '1.0'
             },
             recommendations: {
                 treatments: [],
                 lifestyle: [],
                 triggers: [],
-                precautions: response.data.recommendations || response.data.skincareTips || []
+                precautions: allRecommendations
             },
             status: response.data.eczemaSeverity === 'Severe' || response.data.eczemaConfidence < 0.6 ? 'pending_review' : 'completed'
         });
@@ -93,8 +122,11 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
                 confidence: diagnosis.mlResults.confidence,
                 bodyPart: response.data.bodyPart,
                 bodyPartConfidence: response.data.bodyPartConfidence,
-                recommendations: diagnosis.recommendations.precautions,
-                needsDoctorReview: diagnosis.status === 'pending_review'
+                recommendations: allRecommendations,
+                needsDoctorReview: diagnosis.status === 'pending_review',
+                imageUrl: diagnosis.imageUrl,
+                status: diagnosis.status,
+                createdAt: diagnosis.createdAt
             }
         });
     } catch (error) {
@@ -125,9 +157,24 @@ router.get('/diagnoses', async (req, res) => {
             .sort('-createdAt')
             .select('-metadata');
 
+        const formattedDiagnoses = diagnoses.map(diagnosis => ({
+            diagnosisId: diagnosis.diagnosisId,
+            isEczema: diagnosis.mlResults.hasEczema,
+            severity: diagnosis.mlResults.severity,
+            confidence: diagnosis.mlResults.confidence,
+            bodyPart: diagnosis.mlResults.affectedAreas[0],
+            bodyPartConfidence: diagnosis.mlResults.bodyPartConfidence,
+            recommendations: diagnosis.recommendations.precautions,
+            needsDoctorReview: diagnosis.status === 'pending_review',
+            imageUrl: diagnosis.imageUrl,
+            status: diagnosis.status,
+            createdAt: diagnosis.createdAt,
+            doctorReview: diagnosis.doctorReview
+        }));
+
         res.json({
             success: true,
-            data: diagnoses
+            data: formattedDiagnoses
         });
     } catch (error) {
         res.status(500).json({
@@ -152,9 +199,24 @@ router.get('/diagnoses/:diagnosisId', async (req, res) => {
             });
         }
 
+        const formattedDiagnosis = {
+            diagnosisId: diagnosis.diagnosisId,
+            isEczema: diagnosis.mlResults.hasEczema,
+            severity: diagnosis.mlResults.severity,
+            confidence: diagnosis.mlResults.confidence,
+            bodyPart: diagnosis.mlResults.affectedAreas[0],
+            bodyPartConfidence: diagnosis.mlResults.bodyPartConfidence,
+            recommendations: diagnosis.recommendations.precautions,
+            needsDoctorReview: diagnosis.status === 'pending_review',
+            imageUrl: diagnosis.imageUrl,
+            status: diagnosis.status,
+            createdAt: diagnosis.createdAt,
+            doctorReview: diagnosis.doctorReview
+        };
+
         res.json({
             success: true,
-            data: diagnosis
+            data: formattedDiagnosis
         });
     } catch (error) {
         res.status(500).json({
@@ -188,9 +250,24 @@ router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, r
         diagnosis.status = 'reviewed';
         await diagnosis.save();
 
+        const formattedDiagnosis = {
+            diagnosisId: diagnosis.diagnosisId,
+            isEczema: diagnosis.mlResults.hasEczema,
+            severity: diagnosis.doctorReview.updatedSeverity || diagnosis.mlResults.severity,
+            confidence: diagnosis.mlResults.confidence,
+            bodyPart: diagnosis.mlResults.affectedAreas[0],
+            bodyPartConfidence: diagnosis.mlResults.bodyPartConfidence,
+            recommendations: diagnosis.recommendations.precautions,
+            needsDoctorReview: false,
+            imageUrl: diagnosis.imageUrl,
+            status: diagnosis.status,
+            createdAt: diagnosis.createdAt,
+            doctorReview: diagnosis.doctorReview
+        };
+
         res.json({
             success: true,
-            data: diagnosis
+            data: formattedDiagnosis
         });
     } catch (error) {
         res.status(500).json({

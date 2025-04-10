@@ -1,16 +1,5 @@
 const mongoose = require('mongoose');
 
-const treatmentSchema = new mongoose.Schema({
-  type: String,
-  description: String,
-  priority: Number
-}, { _id: false });
-
-const lifestyleRecommendationSchema = new mongoose.Schema({
-  category: String,
-  recommendations: [String]
-}, { _id: false });
-
 const diagnosisSchema = new mongoose.Schema({
   diagnosisId: {
     type: String,
@@ -26,15 +15,14 @@ const diagnosisSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  imageUrl: {
+    type: String,
+    required: true
+  },
   imageMetadata: {
     originalFileName: String,
     uploadDate: Date,
     fileSize: Number,
-    dimensions: {
-      width: Number,
-      height: Number
-    },
-    imageQuality: Number,
     format: {
       type: String,
       enum: ['JPEG', 'PNG']
@@ -48,28 +36,36 @@ const diagnosisSchema = new mongoose.Schema({
       enum: ['mild', 'moderate', 'severe']
     },
     affectedAreas: [String],
-    differentialDiagnosis: [{
-      condition: String,
-      probability: Number
-    }],
+    bodyPartConfidence: Number,
     modelVersion: String
   },
   recommendations: {
-    treatments: [treatmentSchema],
-    lifestyle: [lifestyleRecommendationSchema],
+    treatments: [{
+      type: String,
+      description: String,
+      priority: Number
+    }],
+    lifestyle: [{
+      category: String,
+      recommendations: [String]
+    }],
     triggers: [String],
     precautions: [String]
   },
+  status: {
+    type: String,
+    enum: ['pending_review', 'completed', 'reviewed'],
+    default: 'pending_review'
+  },
   doctorReview: {
-    reviewedBy: String,
-    reviewDate: Date,
-    comments: String,
-    adjustments: [{
-      field: String,
-      oldValue: mongoose.Schema.Types.Mixed,
-      newValue: mongoose.Schema.Types.Mixed,
-      reason: String
-    }]
+    doctorId: String,
+    review: String,
+    reviewedAt: Date,
+    updatedSeverity: {
+      type: String,
+      enum: ['mild', 'moderate', 'severe']
+    },
+    treatmentPlan: String
   }
 }, {
   timestamps: true
