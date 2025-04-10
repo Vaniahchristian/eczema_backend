@@ -135,6 +135,137 @@
           }
         }
       ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "User Analytics",
+          "item": [
+            {
+              "name": "Get Age Distribution",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/analytics/age-distribution",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "analytics", "age-distribution"]
+                }
+              }
+            },
+            {
+              "name": "Get Geographical Distribution",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/analytics/geographical-distribution",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "analytics", "geographical-distribution"]
+                }
+              }
+            },
+            {
+              "name": "Get Treatment Effectiveness",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/analytics/treatment-effectiveness",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "analytics", "treatment-effectiveness"]
+                }
+              }
+            },
+            {
+              "name": "Get Model Confidence",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/analytics/model-confidence",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "analytics", "model-confidence"]
+                }
+              }
+            },
+            {
+              "name": "Get Diagnosis History",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/analytics/diagnosis-history?startDate=2025-01-01&endDate=2025-04-10",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "analytics", "diagnosis-history"],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2025-01-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2025-04-10"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Doctor Analytics",
+          "item": [
+            {
+              "name": "Get Doctor Performance",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/analytics/doctor/{{doctorId}}/performance?startDate=2025-03-10&endDate=2025-04-10",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "analytics", "doctor", "{{doctorId}}", "performance"],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2025-03-10"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2025-04-10"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Doctor Appointments Analytics",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/analytics/doctor/{{doctorId}}/appointments",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "analytics", "doctor", "{{doctorId}}", "appointments"]
+                }
+              }
+            },
+            {
+              "name": "Get Doctor Clinical Insights",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/analytics/doctor/{{doctorId}}/clinical-insights",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "analytics", "doctor", "{{doctorId}}", "clinical-insights"]
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   ],
   "event": [
@@ -157,6 +288,11 @@
     {
       "key": "baseUrl",
       "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "doctorId",
+      "value": "your-doctor-id-here",
       "type": "string"
     }
   ]

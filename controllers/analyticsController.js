@@ -1,6 +1,7 @@
 const { MySQL, Mongo } = require('../models');
 const { User } = MySQL;
 const { Diagnosis, Analytics } = Mongo;
+const analyticsService = require('../services/analyticsService');
 
 // Get age distribution of eczema cases
 exports.getAgeDistribution = async (req, res) => {
@@ -249,6 +250,71 @@ exports.getDiagnosisHistory = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error fetching diagnosis history',
+            error: error.message
+        });
+    }
+};
+
+// Get doctor performance metrics
+exports.getDoctorPerformance = async (req, res) => {
+    try {
+        const { doctorId } = req.params;
+        const timeRange = {
+            start: new Date(req.query.startDate || new Date().setMonth(new Date().getMonth() - 1)),
+            end: new Date(req.query.endDate || new Date())
+        };
+
+        const performance = await analyticsService.getDoctorPerformance(doctorId, timeRange);
+        
+        res.json({
+            success: true,
+            data: performance
+        });
+    } catch (error) {
+        console.error('Doctor performance error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching doctor performance metrics',
+            error: error.message
+        });
+    }
+};
+
+// Get doctor appointment analytics
+exports.getDoctorAppointments = async (req, res) => {
+    try {
+        const { doctorId } = req.params;
+        const analytics = await analyticsService.getAppointmentAnalytics(doctorId);
+        
+        res.json({
+            success: true,
+            data: analytics
+        });
+    } catch (error) {
+        console.error('Doctor appointments error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching doctor appointment analytics',
+            error: error.message
+        });
+    }
+};
+
+// Get doctor clinical insights
+exports.getDoctorClinicalInsights = async (req, res) => {
+    try {
+        const { doctorId } = req.params;
+        const insights = await analyticsService.getClinicalInsights(doctorId);
+        
+        res.json({
+            success: true,
+            data: insights
+        });
+    } catch (error) {
+        console.error('Clinical insights error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching doctor clinical insights',
             error: error.message
         });
     }
