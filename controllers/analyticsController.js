@@ -10,8 +10,8 @@ exports.getAgeDistribution = async (req, res) => {
             {
                 $lookup: {
                     from: 'users',
-                    localField: 'patient_id',
-                    foreignField: 'user_id',
+                    localField: 'patientId',  
+                    foreignField: 'id',       
                     as: 'patient'
                 }
             },
@@ -23,8 +23,8 @@ exports.getAgeDistribution = async (req, res) => {
                     age: {
                         $floor: {
                             $divide: [
-                                { $subtract: [new Date(), { $toDate: '$patient.date_of_birth' }] },
-                                31536000000 // milliseconds in a year
+                                { $subtract: [new Date(), { $toDate: '$patient.dateOfBirth' }] },
+                                31536000000 
                             ]
                         }
                     }
@@ -42,18 +42,29 @@ exports.getAgeDistribution = async (req, res) => {
             },
             {
                 $sort: { '_id': 1 }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    ageRange: {
+                        $concat: [
+                            { $toString: { $multiply: ['$_id', 10] } },
+                            '-',
+                            { $toString: { $add: [{ $multiply: ['$_id', 10] }, 9] } }
+                        ]
+                    },
+                    count: 1
+                }
             }
         ];
 
         const ageDistribution = await Diagnosis.aggregate(pipeline);
+        console.log('Age Distribution Results:', ageDistribution); 
 
         res.json({
             success: true,
             data: {
-                ageGroups: ageDistribution.map(group => ({
-                    ageRange: `${group._id * 10}-${(group._id * 10) + 9}`,
-                    count: group.count
-                }))
+                ageGroups: ageDistribution
             }
         });
     } catch (error) {
@@ -73,31 +84,39 @@ exports.getGeographicalDistribution = async (req, res) => {
             {
                 $lookup: {
                     from: 'users',
-                    localField: 'patient_id',
-                    foreignField: 'user_id',
+                    localField: 'patientId',  
+                    foreignField: 'id',       
                     as: 'patient'
                 }
             },
             {
+                $unwind: '$patient'
+            },
+            {
                 $group: {
-                    _id: '$patient.address',
+                    _id: '$patient.location',
                     count: { $sum: 1 }
                 }
             },
             {
-                $sort: { 'count': -1 }
+                $project: {
+                    _id: 0,
+                    location: '$_id',
+                    count: 1
+                }
+            },
+            {
+                $sort: { count: -1 }
             }
         ];
 
         const geoDistribution = await Diagnosis.aggregate(pipeline);
+        console.log('Geographical Distribution Results:', geoDistribution); 
 
         res.json({
             success: true,
             data: {
-                regions: geoDistribution.map(region => ({
-                    location: region._id,
-                    count: region.count
-                }))
+                regions: geoDistribution
             }
         });
     } catch (error) {
@@ -115,19 +134,27 @@ exports.getTreatmentEffectiveness = async (req, res) => {
     try {
         const pipeline = [
             {
+                $unwind: '$recommendations.treatments'
+            },
+            {
                 $group: {
-                    _id: '$treatment.type',
+                    _id: '$recommendations.treatments.type',
                     totalCases: { $sum: 1 },
                     improvedCases: {
                         $sum: {
-                            $cond: [{ $eq: ['$treatment.outcome', 'improved'] }, 1, 0]
+                            $cond: [
+                                { $eq: ['$mlResults.severity', 'mild'] },
+                                1,
+                                0
+                            ]
                         }
                     }
                 }
             },
             {
                 $project: {
-                    treatmentType: '$_id',
+                    _id: 0,
+                    type: '$_id',
                     effectiveness: {
                         $multiply: [
                             { $divide: ['$improvedCases', '$totalCases'] },
@@ -136,22 +163,16 @@ exports.getTreatmentEffectiveness = async (req, res) => {
                     },
                     totalCases: 1
                 }
-            },
-            {
-                $sort: { 'effectiveness': -1 }
             }
         ];
 
         const treatmentStats = await Diagnosis.aggregate(pipeline);
+        console.log('Treatment Effectiveness Results:', treatmentStats); 
 
         res.json({
             success: true,
             data: {
-                treatments: treatmentStats.map(stat => ({
-                    type: stat.treatmentType,
-                    effectiveness: Math.round(stat.effectiveness * 100) / 100,
-                    totalCases: stat.totalCases
-                }))
+                treatments: treatmentStats
             }
         });
     } catch (error) {
@@ -173,32 +194,33 @@ exports.getModelConfidence = async (req, res) => {
                     _id: {
                         $switch: {
                             branches: [
-                                { case: { $lte: ['$confidence', 0.6] }, then: 'low' },
-                                { case: { $lte: ['$confidence', 0.8] }, then: 'medium' },
-                                { case: { $lte: ['$confidence', 0.9] }, then: 'high' }
+                                { case: { $gte: ['$mlResults.confidence', 0.9] }, then: 'High' },
+                                { case: { $gte: ['$mlResults.confidence', 0.7] }, then: 'Medium' }
                             ],
-                            default: 'very_high'
+                            default: 'Low'
                         }
                     },
                     count: { $sum: 1 },
-                    avgConfidence: { $avg: '$confidence' }
+                    avgConfidence: { $avg: '$mlResults.confidence' }
                 }
             },
             {
-                $sort: { 'avgConfidence': 1 }
+                $project: {
+                    _id: 0,
+                    level: '$_id',
+                    count: 1,
+                    averageConfidence: { $round: ['$avgConfidence', 2] }
+                }
             }
         ];
 
         const confidenceStats = await Diagnosis.aggregate(pipeline);
+        console.log('Model Confidence Results:', confidenceStats); 
 
         res.json({
             success: true,
             data: {
-                confidenceLevels: confidenceStats.map(stat => ({
-                    level: stat._id,
-                    count: stat.count,
-                    averageConfidence: Math.round(stat.avgConfidence * 100) / 100
-                }))
+                confidenceLevels: confidenceStats
             }
         });
     } catch (error) {
