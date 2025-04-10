@@ -16,13 +16,25 @@ exports.getAgeDistribution = async (req, res) => {
                 }
             },
             {
+                $unwind: '$patient'
+            },
+            {
+                $addFields: {
+                    age: {
+                        $floor: {
+                            $divide: [
+                                { $subtract: [new Date(), { $toDate: '$patient.date_of_birth' }] },
+                                31536000000 // milliseconds in a year
+                            ]
+                        }
+                    }
+                }
+            },
+            {
                 $group: {
                     _id: {
                         $floor: {
-                            $divide: [
-                                { $subtract: [new Date(), '$patient.date_of_birth'] },
-                                365.25 * 24 * 60 * 60 * 1000
-                            ]
+                            $divide: ['$age', 10]
                         }
                     },
                     count: { $sum: 1 }
@@ -39,7 +51,7 @@ exports.getAgeDistribution = async (req, res) => {
             success: true,
             data: {
                 ageGroups: ageDistribution.map(group => ({
-                    ageRange: `${group._id}-${group._id + 9}`,
+                    ageRange: `${group._id * 10}-${(group._id * 10) + 9}`,
                     count: group.count
                 }))
             }
