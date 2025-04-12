@@ -28,11 +28,9 @@ router.get('/', protect, async (req, res) => {
         `;
         console.log('Query:', query);
 
-        const result = await mysqlPool.execute(query);
-        console.log('Query result:', JSON.stringify(result, null, 2));
-
-        const [rows] = result;
-        console.log('Rows:', JSON.stringify(rows, null, 2));
+        // Use connection.query() instead of execute()
+        const [rows] = await mysqlPool.query(query);
+        console.log('Query result rows:', JSON.stringify(rows, null, 2));
 
         // Ensure rows is an array
         const doctors = Array.isArray(rows) ? rows : [];
@@ -82,7 +80,7 @@ router.get('/:doctorId/available-slots', protect, async (req, res) => {
         }
 
         // Get doctor's available hours
-        const [doctorProfiles] = await mysqlPool.execute(
+        const [doctorProfiles] = await mysqlPool.query(
             'SELECT available_hours FROM doctor_profiles WHERE user_id = ?',
             [doctorId]
         );
@@ -102,7 +100,7 @@ router.get('/:doctorId/available-slots', protect, async (req, res) => {
         const dayOfWeek = days[requestedDate.getDay()];
 
         // Get all appointments for this doctor on the requested date
-        const [appointments] = await mysqlPool.execute(
+        const [appointments] = await mysqlPool.query(
             'SELECT appointment_date FROM appointments WHERE doctor_id = ? AND DATE(appointment_date) = DATE(?)',
             [doctorId, date]
         );
