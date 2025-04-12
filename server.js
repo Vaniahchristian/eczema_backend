@@ -45,12 +45,57 @@ connectMongoDB();
 // Initialize WebSocket server for real-time updates
 const wsServer = new WebSocketServer(server);
 
+// Custom request logger
+app.use((req, res, next) => {
+  console.log('📝 Incoming Request:', {
+    method: req.method,
+    path: req.path,
+    origin: req.headers.origin,
+    cookies: req.cookies,
+    authorization: req.headers.authorization ? 'Present' : 'Not present'
+  });
+  next();
+});
+
 // Middleware
-app.use(helmet()); // Security headers
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
-  credentials: true
-}));
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: false,
+})); // Security headers with relaxed settings for development
+
+// CORS configuration with detailed logging
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  console.log('🌐 CORS - Incoming origin:', origin);
+  
+  const allowedOrigins = [
+    process.env.CLIENT_URL,
+    'http://localhost:3000',
+    'https://eczema-dashboard.vercel.app',
+    'https://eczema-dashboard-git-main-vaniahchristian.vercel.app'
+  ].filter(Boolean);
+
+  console.log('🌐 CORS - Allowed origins:', allowedOrigins);
+
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    console.log(`🌐 CORS - Origin ${origin} is allowed`);
+  } else {
+    console.log(`🌐 CORS - Origin ${origin} is not in allowed list`);
+  }
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  if (req.method === 'OPTIONS') {
+    console.log('🌐 CORS - Handling OPTIONS preflight request');
+    return res.sendStatus(200);
+  }
+
+  next();
+});
+
 app.use(morgan('dev')); // Logging
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
