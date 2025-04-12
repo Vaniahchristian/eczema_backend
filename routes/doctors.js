@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/auth');
-const { MySQL } = require('../models');
-
 const { mysqlPool } = require('../config/database');
 
 // Get all available doctors
@@ -28,20 +26,17 @@ router.get('/', protect, async (req, res) => {
         `;
         console.log('Query:', query);
 
-        // Use connection.query() instead of execute()
-        const [rows] = await mysqlPool.query(query);
+        const [rows] = await mysqlPool.query(query); // Now promise-based
         console.log('Query result rows:', JSON.stringify(rows, null, 2));
 
-        // Ensure rows is an array
         const doctors = Array.isArray(rows) ? rows : [];
         console.log('Doctors array:', JSON.stringify(doctors, null, 2));
 
-        // Transform data for frontend
         const formattedDoctors = doctors.map(doctor => ({
             id: doctor.id,
             name: `${doctor.first_name} ${doctor.last_name}`,
             email: doctor.email,
-            imageUrl: '/placeholder.svg?height=40&width=40', // Default placeholder image
+            imageUrl: '/placeholder.svg?height=40&width=40',
             specialty: doctor.specialty || 'General Practice',
             bio: doctor.bio || '',
             rating: parseFloat(doctor.rating) || 5.0,
@@ -79,7 +74,6 @@ router.get('/:doctorId/available-slots', protect, async (req, res) => {
             });
         }
 
-        // Get doctor's available hours
         const [doctorProfiles] = await mysqlPool.query(
             'SELECT available_hours FROM doctor_profiles WHERE user_id = ?',
             [doctorId]
@@ -94,24 +88,19 @@ router.get('/:doctorId/available-slots', protect, async (req, res) => {
 
         const availableHours = JSON.parse(doctorProfiles[0].available_hours);
         const requestedDate = new Date(date);
-        
-        // Get day of week in lowercase
         const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
         const dayOfWeek = days[requestedDate.getDay()];
 
-        // Get all appointments for this doctor on the requested date
         const [appointments] = await mysqlPool.query(
             'SELECT appointment_date FROM appointments WHERE doctor_id = ? AND DATE(appointment_date) = DATE(?)',
             [doctorId, date]
         );
 
-        // Convert appointments to a Set of time strings for quick lookup
         const bookedSlots = new Set(appointments.map(app => {
             const appDate = new Date(app.appointment_date);
             return appDate.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
         }));
 
-        // If no hours available for this day
         if (!availableHours[dayOfWeek] || !availableHours[dayOfWeek].length) {
             return res.json({
                 success: true,
@@ -122,7 +111,6 @@ router.get('/:doctorId/available-slots', protect, async (req, res) => {
             });
         }
 
-        // Filter out booked slots
         const availableSlots = availableHours[dayOfWeek].filter(time => !bookedSlots.has(time));
 
         res.json({

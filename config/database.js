@@ -1,4 +1,4 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const mongoose = require('mongoose');
 const { Sequelize } = require('sequelize');
 
