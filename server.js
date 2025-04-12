@@ -37,16 +37,29 @@ connectMongoDB();
     await sequelize.authenticate();
     console.log('MySQL connected successfully');
 
-    // Force sync in development, alter in production
-    const syncOptions = {
-      alter: process.env.NODE_ENV === 'production',
-      force: process.env.NODE_ENV !== 'production'
-    };
+    // In production, only alter tables, never force
+    if (process.env.NODE_ENV === 'production') {
+      console.log('Production environment detected, altering tables...');
+      await sequelize.sync({ alter: true });
+    } else {
+      // In development, we need to handle the force sync carefully
+      console.log('Development environment detected, force syncing tables...');
+      
+      // Drop tables in correct order (respecting foreign key constraints)
+      await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
+      
+      // Drop and recreate tables in order
+      await MySQL.Diagnosis.sync({ force: true });
+      await MySQL.Patient.sync({ force: true });
+      await MySQL.User.sync({ force: true });
+      
+      // Re-enable foreign key checks
+      await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
+      
+      // Create associations
+      await sequelize.sync();
+    }
 
-    console.log('Syncing MySQL models with options:', syncOptions);
-
-    // Sync all models
-    await sequelize.sync(syncOptions);
     console.log('MySQL models synced successfully');
 
   } catch (error) {
