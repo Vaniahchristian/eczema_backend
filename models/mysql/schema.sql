@@ -5,38 +5,37 @@ DROP TABLE IF EXISTS patient_medical_history;
 DROP TABLE IF EXISTS doctor_profiles;
 DROP TABLE IF EXISTS users;
 
--- Create Users table
-CREATE TABLE users (
-    user_id VARCHAR(36) PRIMARY KEY,
+-- Create users table
+CREATE TABLE IF NOT EXISTS users (
+    id VARCHAR(36) PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    role ENUM('patient', 'doctor', 'admin') NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('patient', 'doctor', 'researcher', 'admin') DEFAULT 'patient',
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
-    date_of_birth DATE NOT NULL,
-    gender ENUM('male', 'female', 'other') NOT NULL,
+    date_of_birth DATE,
+    gender VARCHAR(50),
     phone_number VARCHAR(20),
     address TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    last_login TIMESTAMP,
-    is_active BOOLEAN DEFAULT true
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Create Doctor Profiles table
-CREATE TABLE doctor_profiles (
-    doctor_id VARCHAR(36) PRIMARY KEY,
+-- Create doctor_profiles table
+CREATE TABLE IF NOT EXISTS doctor_profiles (
+    id VARCHAR(36) PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL,
-    license_number VARCHAR(50) UNIQUE NOT NULL,
-    specialization VARCHAR(100) NOT NULL,
-    qualification TEXT NOT NULL,
-    hospital_affiliation VARCHAR(255),
+    specialty VARCHAR(100) NOT NULL,
+    bio TEXT,
+    rating DECIMAL(3,2) DEFAULT 5.0,
+    experience_years INT DEFAULT 0,
+    clinic_name VARCHAR(255),
+    clinic_address TEXT,
     consultation_fee DECIMAL(10,2),
-    years_of_experience INT,
-    available_days JSON,
+    available_hours JSON,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Create Patient Medical History table

@@ -25,7 +25,7 @@ const app = express();
 const server = http.createServer(app);
 
 // Serve uploaded files
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use('/uploads', express.static(path.join(process.cwd(), 'Uploads')));
 
 // Connect to MongoDB
 connectMongoDB();
@@ -44,18 +44,18 @@ connectMongoDB();
     } else {
       // In development, we need to handle the force sync carefully
       console.log('Development environment detected, force syncing tables...');
-      
+
       // Drop tables in correct order (respecting foreign key constraints)
       await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
-      
+
       // Drop and recreate tables in order
       await MySQL.Diagnosis.sync({ force: true });
       await MySQL.Patient.sync({ force: true });
       await MySQL.User.sync({ force: true });
-      
+
       // Re-enable foreign key checks
       await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
-      
+
       // Create associations
       await sequelize.sync();
     }
@@ -92,26 +92,13 @@ app.use(helmet({
   contentSecurityPolicy: false,
 })); // Security headers with relaxed settings for development
 
-// CORS configuration with detailed logging
+// CORS configuration to allow all origins
 app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  console.log('🌐 CORS - Incoming origin:', origin);
-  
-  const allowedOrigins = [
-    process.env.CLIENT_URL,
-    'http://localhost:3000',
-    'https://eczema-dashboard.vercel.app',
-    'https://eczema-dashboard-git-main-vaniahchristian.vercel.app'
-  ].filter(Boolean);
+  console.log('🌐 CORS - Incoming origin:', req.headers.origin);
 
-  console.log('🌐 CORS - Allowed origins:', allowedOrigins);
-
-  if (origin && allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    console.log(`🌐 CORS - Origin ${origin} is allowed`);
-  } else {
-    console.log(`🌐 CORS - Origin ${origin} is not in allowed list`);
-  }
+  // Allow all origins
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  console.log('🌐 CORS - Allowing all origins');
 
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -141,7 +128,7 @@ app.use('/api/messages', messageRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ 
+  res.json({
     status: 'ok',
     mysql: sequelize.connectionManager.connections.length > 0,
     mongodb: mongoose.connection.readyState === 1,
@@ -151,12 +138,12 @@ app.get('/health', (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        success: false,
-        message: 'Something went wrong!',
-        error: process.env.NODE_ENV === 'development' ? err.message : undefined
-    });
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
 });
 
 // Handle 404
