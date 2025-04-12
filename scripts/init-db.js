@@ -1,51 +1,108 @@
-const { mysqlPool } = require('../config/database');
-const uuidv4 = require('uuid').v4;
+require('dotenv').config();
+const mysql = require('mysql2/promise');
+const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');
+
+// Database configuration
+const dbConfig = {
+    host: process.env.MYSQL_HOST || 'localhost',
+    port: process.env.MYSQL_PORT || 3306,
+    user: process.env.MYSQL_USER || 'root',
+    password: process.env.MYSQL_PASSWORD || '',
+    database: process.env.MYSQL_DATABASE || 'railway',
+    ssl: {
+        rejectUnauthorized: false
+    }
+};
 
 async function createDatabase() {
+    const connection = await mysql.createConnection({
+        host: dbConfig.host,
+        port: dbConfig.port,
+        user: dbConfig.user,
+        password: dbConfig.password,
+        ssl: dbConfig.ssl
+    });
+
     try {
         console.log('Creating database...');
-
-        // Create and use database
-        await mysqlPool.query('DROP DATABASE IF EXISTS eczema;');
-        await mysqlPool.query('CREATE DATABASE eczema;');
-        await mysqlPool.query('USE eczema;');
-
+        await connection.query(`CREATE DATABASE IF NOT EXISTS ${dbConfig.database}`);
         console.log('Database created successfully');
     } catch (error) {
         console.error('Error creating database:', error);
         throw error;
+    } finally {
+        await connection.end();
     }
 }
 
 async function createTables() {
+    const connection = await mysql.createConnection(dbConfig);
+
     try {
         console.log('Creating tables...');
 
-        // Create users table first (no foreign key dependencies)
-        await mysqlPool.query(`
-            CREATE TABLE users (
+        // Drop existing tables in reverse order of dependencies
+        await connection.query('DROP TABLE IF EXISTS appointments');
+        await connection.query('DROP TABLE IF EXISTS diagnoses');
+        await connection.query('DROP TABLE IF EXISTS doctor_profiles');
+        await connection.query('DROP TABLE IF EXISTS patients');
+        await connection.query('DROP TABLE IF EXISTS patient_profiles');
+        await connection.query('DROP TABLE IF EXISTS users');
+
+        // Create users table
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS users (
                 id VARCHAR(36) PRIMARY KEY,
                 email VARCHAR(255) UNIQUE NOT NULL,
                 password VARCHAR(255) NOT NULL,
-                role ENUM('patient', 'doctor', 'researcher', 'admin') NOT NULL DEFAULT 'patient',
-                first_name VARCHAR(100) NOT NULL,
-                last_name VARCHAR(100) NOT NULL,
-                date_of_birth DATE,
-                gender ENUM('male', 'female', 'other'),
-                phone_number VARCHAR(20),
-                address TEXT,
+                role ENUM('patient', 'doctor', 'researcher', 'admin') DEFAULT 'patient',
+                first_name VARCHAR(255) NOT NULL,
+                last_name VARCHAR(255) NOT NULL,
                 image_url VARCHAR(255),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+                createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )
+        `);
+
+        // Create patients table
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS patients (
+                id VARCHAR(36) PRIMARY KEY,
+                user_id VARCHAR(36) NOT NULL,
+                date_of_birth DATE,
+                gender VARCHAR(50),
+                medical_history TEXT,
+                allergies TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            )
+        `);
+
+        // Create patient_profiles table
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS patient_profiles (
+                id VARCHAR(36) PRIMARY KEY,
+                user_id VARCHAR(36) NOT NULL,
+                height DECIMAL(5,2),
+                weight DECIMAL(6,2),
+                blood_type VARCHAR(10),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            )
         `);
 
         // Create doctor_profiles table
-        await mysqlPool.query(`
-            CREATE TABLE doctor_profiles (
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS doctor_profiles (
                 id VARCHAR(36) PRIMARY KEY,
                 user_id VARCHAR(36) NOT NULL,
-                specialty VARCHAR(100) NOT NULL,
+                specialty VARCHAR(100),
                 bio TEXT,
                 rating DECIMAL(3,2) DEFAULT 5.0,
                 experience_years INT DEFAULT 0,
@@ -54,132 +111,129 @@ async function createTables() {
                 consultation_fee DECIMAL(10,2),
                 available_hours JSON,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+                createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            )
         `);
 
-        // Create patient_profiles table
-        await mysqlPool.query(`
-            CREATE TABLE patient_profiles (
+        // Create diagnoses table
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS diagnoses (
                 id VARCHAR(36) PRIMARY KEY,
                 user_id VARCHAR(36) NOT NULL,
-                medical_history TEXT,
-                allergies TEXT,
-                medications TEXT,
+                severity ENUM('mild', 'moderate', 'severe') NOT NULL,
+                confidence FLOAT NOT NULL,
+                notes TEXT,
+                image_url VARCHAR(255),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+                createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            )
         `);
 
         // Create appointments table
-        await mysqlPool.query(`
-            CREATE TABLE appointments (
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS appointments (
                 id VARCHAR(36) PRIMARY KEY,
                 doctor_id VARCHAR(36) NOT NULL,
                 patient_id VARCHAR(36) NOT NULL,
                 appointment_date DATETIME NOT NULL,
-                reason TEXT NOT NULL,
-                appointment_type VARCHAR(50) NOT NULL DEFAULT 'regular',
-                status ENUM('pending', 'confirmed', 'cancelled', 'completed', 'rescheduled') NOT NULL DEFAULT 'pending',
-                mode ENUM('In-person', 'Video', 'Phone') NOT NULL DEFAULT 'In-person',
-                duration INT DEFAULT 30,
-                notes TEXT,
+                reason TEXT,
+                status ENUM('pending', 'confirmed', 'cancelled', 'completed', 'rescheduled') DEFAULT 'pending',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 FOREIGN KEY (doctor_id) REFERENCES users(id),
                 FOREIGN KEY (patient_id) REFERENCES users(id)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            )
         `);
 
         console.log('Tables created successfully');
     } catch (error) {
         console.error('Error creating tables:', error);
         throw error;
+    } finally {
+        await connection.end();
     }
 }
 
 async function insertDummyData() {
+    const connection = await mysql.createConnection(dbConfig);
+
     try {
         console.log('Inserting dummy data...');
+        const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
-        // Insert users
-        const users = [
-            {
-                id: '550e8400-e29b-41d4-a716-446655440000',
-                email: 'doctor1@example.com',
-                password: '$2b$10$EiA3c7avHjGXwTagXqkZ1.YxkGBL3k0vuPkZSO.h6HT6NqhBRGHYe', // password123
-                role: 'doctor',
-                first_name: 'John',
-                last_name: 'Doe',
-                date_of_birth: '1980-01-01',
-                gender: 'male',
-                image_url: '/images/doctors/doctor1.jpg'
-            },
-            {
-                id: '550e8400-e29b-41d4-a716-446655440001',
-                email: 'patient1@example.com',
-                password: '$2b$10$EiA3c7avHjGXwTagXqkZ1.YxkGBL3k0vuPkZSO.h6HT6NqhBRGHYe', // password123
-                role: 'patient',
-                first_name: 'Jane',
-                last_name: 'Smith',
-                date_of_birth: '1990-05-15',
-                gender: 'female',
-                image_url: '/images/patients/patient1.jpg'
-            }
-        ];
+        // Create a test patient
+        const patientId = uuidv4();
+        const patientUserId = uuidv4();
+        const patientPassword = await bcrypt.hash('testpassword', 10);
 
-        for (const user of users) {
-            await mysqlPool.query(
-                'INSERT INTO users (id, email, password, role, first_name, last_name, date_of_birth, gender, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                [user.id, user.email, user.password, user.role, user.first_name, user.last_name, user.date_of_birth, user.gender, user.image_url]
-            );
-        }
+        await connection.query(`
+            INSERT INTO users (id, email, password, role, first_name, last_name, created_at, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [patientUserId, 'test@example.com', patientPassword, 'patient', 'Test', 'User', now, now, now]);
 
-        // Insert doctor profiles
-        const doctorProfiles = [
-            {
-                id: uuidv4(),
-                user_id: '550e8400-e29b-41d4-a716-446655440000',
-                specialty: 'Dermatology',
-                bio: 'Experienced dermatologist specializing in eczema treatment',
-                rating: 4.8,
-                experience_years: 15,
-                clinic_name: 'Healthy Skin Clinic',
-                clinic_address: '123 Medical Center Dr.',
-                consultation_fee: 150.00,
-                available_hours: JSON.stringify({
-                    monday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
-                    tuesday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
-                    wednesday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
-                    thursday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
-                    friday: ['09:00', '10:00', '11:00', '14:00', '15:00']
-                })
-            }
-        ];
+        await connection.query(`
+            INSERT INTO patients (id, user_id, date_of_birth, gender, medical_history, allergies, created_at, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [patientId, patientUserId, '1990-01-01', 'male', 'No significant history', 'None', now, now, now]);
 
-        for (const profile of doctorProfiles) {
-            await mysqlPool.execute(`
-                INSERT INTO doctor_profiles (
-                    id, user_id, specialty, bio, rating, 
-                    experience_years, clinic_name, clinic_address, 
-                    consultation_fee, available_hours
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `, [
-                profile.id, profile.user_id, profile.specialty,
-                profile.bio, profile.rating, profile.experience_years,
-                profile.clinic_name, profile.clinic_address,
-                profile.consultation_fee, profile.available_hours
-            ]);
-        }
+        // Create a test doctor
+        const doctorId = uuidv4();
+        const doctorUserId = uuidv4();
+        const doctorPassword = await bcrypt.hash('doctorpass', 10);
+
+        await connection.query(`
+            INSERT INTO users (id, email, password, role, first_name, last_name, image_url, created_at, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [doctorUserId, 'doctor@example.com', doctorPassword, 'doctor', 'John', 'Smith', '/images/doctors/default.jpg', now, now, now]);
+
+        await connection.query(`
+            INSERT INTO doctor_profiles (id, user_id, specialty, bio, rating, experience_years, clinic_name, clinic_address, consultation_fee, available_hours, created_at, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+            doctorId, 
+            doctorUserId, 
+            'Dermatology',
+            'Experienced dermatologist specializing in eczema treatment',
+            4.8,
+            10,
+            'Healthy Skin Clinic',
+            '123 Medical Center Dr, City',
+            150.00,
+            JSON.stringify({
+                monday: ['09:00', '10:00', '11:00', '14:00', '15:00'],
+                tuesday: ['09:00', '10:00', '11:00', '14:00', '15:00'],
+                wednesday: ['09:00', '10:00', '11:00', '14:00', '15:00']
+            }),
+            now,
+            now,
+            now
+        ]);
+
+        // Create some test diagnoses
+        const diagnosisId1 = uuidv4();
+        const diagnosisId2 = uuidv4();
+
+        await connection.query(`
+            INSERT INTO diagnoses (id, user_id, severity, confidence, notes, image_url, created_at, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?), (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+            diagnosisId1, patientUserId, 'mild', 0.85, 'First diagnosis', 'uploads/test1.jpg', now, now, now,
+            diagnosisId2, patientUserId, 'moderate', 0.92, 'Second diagnosis', 'uploads/test2.jpg', now, now, now
+        ]);
 
         console.log('Dummy data inserted successfully');
     } catch (error) {
         console.error('Error inserting dummy data:', error);
         throw error;
+    } finally {
+        await connection.end();
     }
-}   
+}
 
 async function initializeDatabase() {
     try {

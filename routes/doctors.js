@@ -8,7 +8,7 @@ const { mysqlPool } = require('../config/database');
 // Get all available doctors
 router.get('/', protect, async (req, res) => {
     try {
-        const [doctors] = await mysqlPool.execute(`
+        const [rows] = await mysqlPool.execute(`
             SELECT 
                 u.id, 
                 u.first_name, 
@@ -28,7 +28,7 @@ router.get('/', protect, async (req, res) => {
         `);
 
         // Transform data for frontend
-        const formattedDoctors = doctors.map(doctor => ({
+        const formattedDoctors = rows.map(doctor => ({
             id: doctor.id,
             name: `${doctor.first_name} ${doctor.last_name}`,
             email: doctor.email,
