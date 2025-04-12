@@ -12,11 +12,40 @@ const generateToken = (userId) => {
 exports.register = async (req, res) => {
   try {
     console.log('📝 Registration request:', req.body);
-    const { email, password, first_name, last_name, role, date_of_birth, gender, specialty } = req.body;
+    const { 
+      email, 
+      password, 
+      // Handle both camelCase and snake_case
+      first_name, 
+      firstName,
+      last_name,
+      lastName,
+      date_of_birth,
+      dateOfBirth,
+      gender,
+      role, 
+      specialty 
+    } = req.body;
+
+    // Map fields to snake_case
+    const userData = {
+      email,
+      password,
+      first_name: first_name || firstName,
+      last_name: last_name || lastName,
+      date_of_birth: date_of_birth || dateOfBirth,
+      gender,
+      role: role || 'patient'
+    };
 
     // Validate required fields
-    if (!email || !password || !first_name || !last_name) {
-      console.log('❌ Missing required fields');
+    if (!userData.email || !userData.password || !userData.first_name || !userData.last_name) {
+      console.log('❌ Missing required fields:', {
+        email: !userData.email,
+        password: !userData.password,
+        first_name: !userData.first_name,
+        last_name: !userData.last_name
+      });
       return res.status(400).json({ 
         success: false,
         message: 'Please provide all required fields' 
@@ -24,8 +53,8 @@ exports.register = async (req, res) => {
     }
 
     // Check if user already exists
-    console.log('🔍 Checking if user exists:', email);
-    const existingUser = await MySQL.User.findOne({ where: { email } });
+    console.log('🔍 Checking if user exists:', userData.email);
+    const existingUser = await MySQL.User.findOne({ where: { email: userData.email } });
     if (existingUser) {
       console.log('❌ User already exists');
       return res.status(400).json({
@@ -37,28 +66,28 @@ exports.register = async (req, res) => {
     // Hash password
     console.log('🔒 Hashing password...');
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(userData.password, salt);
 
     // Create user with UUID
     const userId = uuidv4();
     console.log('👤 Creating user with ID:', userId);
     const user = await MySQL.User.create({
       id: userId,
-      email,
+      email: userData.email,
       password: hashedPassword,
-      role: role || 'patient',
-      first_name,
-      last_name
+      role: userData.role,
+      first_name: userData.first_name,
+      last_name: userData.last_name
     });
 
     // If user is a patient, create patient profile
-    if (role === 'patient' || !role) {
+    if (userData.role === 'patient' || !userData.role) {
       console.log('🏥 Creating patient profile');
       await MySQL.Patient.create({
         id: uuidv4(),
         user_id: userId,
-        date_of_birth,
-        gender,
+        date_of_birth: userData.date_of_birth,
+        gender: userData.gender,
         medical_history: '',
         allergies: ''
       });
@@ -85,12 +114,12 @@ exports.register = async (req, res) => {
         token,
         user: {
           id: userId,
-          email,
-          role: role || 'patient',
-          first_name,
-          last_name,
-          date_of_birth,
-          gender
+          email: userData.email,
+          role: userData.role,
+          first_name: userData.first_name,
+          last_name: userData.last_name,
+          date_of_birth: userData.date_of_birth,
+          gender: userData.gender
         }
       }
     });
