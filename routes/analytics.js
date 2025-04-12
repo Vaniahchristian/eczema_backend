@@ -17,25 +17,24 @@ const {
     exportAnalyticsReport
 } = require('../controllers/exportController');
 
-// All analytics routes require authentication and doctor/admin role
+// All analytics routes require authentication
 router.use(protect);
-router.use(authorize('doctor', 'admin'));
 
-// General analytics endpoints
-router.get('/age-distribution', getAgeDistribution);
-router.get('/geographical-distribution', getGeographicalDistribution);
-router.get('/treatment-effectiveness', getTreatmentEffectiveness);
-router.get('/model-confidence', getModelConfidence);
-router.get('/diagnosis-history', getDiagnosisHistory);
+// General analytics endpoints - accessible to all authenticated users
+router.get('/age-distribution', authorize('doctor', 'admin', 'researcher', 'patient'), getAgeDistribution);
+router.get('/geographical-distribution', authorize('doctor', 'admin', 'researcher', 'patient'), getGeographicalDistribution);
+router.get('/treatment-effectiveness', authorize('doctor', 'admin', 'researcher', 'patient'), getTreatmentEffectiveness);
+router.get('/model-confidence', authorize('doctor', 'admin', 'researcher', 'patient'), getModelConfidence);
+router.get('/diagnosis-history', authorize('doctor', 'admin', 'researcher', 'patient'), getDiagnosisHistory);
 
-// Doctor-specific analytics endpoints
-router.get('/doctor/:doctorId/performance', getDoctorPerformance);
-router.get('/doctor/:doctorId/appointments', getDoctorAppointments);
-router.get('/doctor/:doctorId/clinical-insights', getDoctorClinicalInsights);
+// Doctor-specific analytics endpoints - only accessible to doctors and admins
+router.get('/doctor/:doctorId/performance', authorize('doctor', 'admin'), getDoctorPerformance);
+router.get('/doctor/:doctorId/appointments', authorize('doctor', 'admin'), getDoctorAppointments);
+router.get('/doctor/:doctorId/clinical-insights', authorize('doctor', 'admin'), getDoctorClinicalInsights);
 
-// Export endpoints
-router.get('/export/patients', exportPatientRecords);
-router.get('/export/diagnoses', exportDiagnosisData);
-router.get('/export/analytics', exportAnalyticsReport);
+// Export endpoints - accessible to all authenticated users
+router.get('/export/patients', authorize('doctor', 'admin', 'researcher', 'patient'), exportPatientRecords);
+router.get('/export/diagnoses', authorize('doctor', 'admin', 'researcher', 'patient'), exportDiagnosisData);
+router.get('/export/analytics', authorize('doctor', 'admin', 'researcher', 'patient'), exportAnalyticsReport);
 
 module.exports = router;
