@@ -8,7 +8,8 @@ const { mysqlPool } = require('../config/database');
 // Get all available doctors
 router.get('/', protect, async (req, res) => {
     try {
-        const [rows] = await mysqlPool.execute(`
+        console.log('Fetching doctors...');
+        const query = `
             SELECT 
                 u.id, 
                 u.first_name, 
@@ -24,10 +25,18 @@ router.get('/', protect, async (req, res) => {
             FROM users u
             INNER JOIN doctor_profiles dp ON u.id = dp.user_id
             WHERE u.role = 'doctor'
-        `);
+        `;
+        console.log('Query:', query);
+
+        const result = await mysqlPool.execute(query);
+        console.log('Query result:', JSON.stringify(result, null, 2));
+
+        const [rows] = result;
+        console.log('Rows:', JSON.stringify(rows, null, 2));
 
         // Ensure rows is an array
         const doctors = Array.isArray(rows) ? rows : [];
+        console.log('Doctors array:', JSON.stringify(doctors, null, 2));
 
         // Transform data for frontend
         const formattedDoctors = doctors.map(doctor => ({
@@ -43,6 +52,8 @@ router.get('/', protect, async (req, res) => {
             clinicAddress: doctor.clinic_address || '',
             consultationFee: parseFloat(doctor.consultation_fee) || 0
         }));
+
+        console.log('Formatted doctors:', JSON.stringify(formattedDoctors, null, 2));
 
         res.json({
             success: true,

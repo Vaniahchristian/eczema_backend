@@ -183,13 +183,13 @@ async function insertDummyData() {
 
         // Create a test doctor
         const doctorId = uuidv4();
-        const doctorUserId = uuidv4();
+        const doctorUserId = '9b858d75-c2ad-4f53-a2db-f669b85b09fd'; // Use the same ID as in doctor_profiles
         const doctorPassword = await bcrypt.hash('doctorpass', 10);
 
         await connection.query(`
-            INSERT INTO users (id, email, password, role, first_name, last_name, image_url, created_at, createdAt, updatedAt)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [doctorUserId, 'doctor@example.com', doctorPassword, 'doctor', 'John', 'Smith', '/images/doctors/default.jpg', now, now, now]);
+            INSERT INTO users (id, email, password, role, first_name, last_name, created_at, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [doctorUserId, 'doctor@example.com', doctorPassword, 'doctor', 'John', 'Smith', now, now, now]);
 
         await connection.query(`
             INSERT INTO doctor_profiles (id, user_id, specialty, bio, rating, experience_years, clinic_name, clinic_address, consultation_fee, available_hours, created_at, createdAt, updatedAt)
