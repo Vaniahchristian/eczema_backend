@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
 const { exportDiagnosisData, exportAnalyticsReport } = require('../controllers/exportController');
-const MySQL = require('../db/mysql'); // assuming MySQL is defined in this file
-const { Op } = require('sequelize'); // assuming sequelize is installed
+const { sequelize } = require('../config/database');
+const { MySQL } = require('../models');
+const { Op } = require('sequelize');
 
 // All routes require authentication
 router.use(protect);
@@ -15,7 +16,7 @@ router.get('/export/analytics', authorize('doctor', 'admin', 'researcher', 'pati
 // Analytics data routes - accessible to all authenticated users
 router.get('/age-distribution', authorize('doctor', 'admin', 'researcher', 'patient'), async (req, res) => {
   try {
-    const [results] = await MySQL.sequelize.query(`
+    const [results] = await sequelize.query(`
       SELECT 
         CASE 
           WHEN age < 18 THEN 'Under 18'
@@ -48,7 +49,7 @@ router.get('/age-distribution', authorize('doctor', 'admin', 'researcher', 'pati
 
 router.get('/geographical-distribution', authorize('doctor', 'admin', 'researcher', 'patient'), async (req, res) => {
   try {
-    const [results] = await MySQL.sequelize.query(`
+    const [results] = await sequelize.query(`
       SELECT 
         region,
         COUNT(*) as count
@@ -73,7 +74,7 @@ router.get('/geographical-distribution', authorize('doctor', 'admin', 'researche
 
 router.get('/treatment-effectiveness', authorize('doctor', 'admin', 'researcher', 'patient'), async (req, res) => {
   try {
-    const [results] = await MySQL.sequelize.query(`
+    const [results] = await sequelize.query(`
       SELECT 
         treatment_type,
         COUNT(CASE WHEN outcome = 'improved' THEN 1 END) as success_count,
@@ -100,7 +101,7 @@ router.get('/treatment-effectiveness', authorize('doctor', 'admin', 'researcher'
 
 router.get('/model-confidence', authorize('doctor', 'admin', 'researcher', 'patient'), async (req, res) => {
   try {
-    const [results] = await MySQL.sequelize.query(`
+    const [results] = await sequelize.query(`
       SELECT 
         CASE 
           WHEN confidence >= 0.9 THEN 'Very High'

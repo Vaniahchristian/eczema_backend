@@ -1,7 +1,6 @@
-const mysql = require('mysql2/promise');
+const mysql = require('mysql2');
 const mongoose = require('mongoose');
 const { Sequelize } = require('sequelize');
-const mysql2 = require('mysql2');
 
 // Determine environment
 const isTest = process.env.NODE_ENV === 'test';
@@ -9,14 +8,10 @@ const isTest = process.env.NODE_ENV === 'test';
 // MySQL Configuration
 const mysqlConfig = {
   host: process.env.MYSQL_HOST,
-  port: process.env.MYSQL_PORT || 3306,
+  port: parseInt(process.env.MYSQL_PORT, 10),
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-  multipleStatements: true
+  database: process.env.MYSQL_DATABASE
 };
 
 // Create MySQL connection pool
@@ -29,12 +24,19 @@ const sequelize = new Sequelize(
   process.env.MYSQL_PASSWORD,
   {
     host: process.env.MYSQL_HOST,
+    port: parseInt(process.env.MYSQL_PORT, 10),
     dialect: 'mysql',
     pool: {
       max: 5,
       min: 0,
       acquire: 30000,
       idle: 10000
+    },
+    dialectOptions: {
+      connectTimeout: 60000, // 60 seconds
+      ssl: process.env.NODE_ENV === 'production' ? {
+        rejectUnauthorized: false
+      } : false
     },
     logging: console.log
   }
@@ -44,6 +46,17 @@ const sequelize = new Sequelize(
 const mongoConfig = {
   url: process.env.MONGODB_URI || 'mongodb+srv://admin:0754092850@todoapp.aqby3.mongodb.net/TRY'
 };
+
+// Connect to MongoDB
+async function connectMongoDB() {
+  try {
+    await mongoose.connect(mongoConfig.url);
+    console.log('MongoDB connected successfully');
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    process.exit(1);
+  }
+}
 
 // Test MySQL connection and ensure database exists
 async function testMySQLConnection() {
@@ -64,18 +77,6 @@ async function testMySQLConnection() {
     return true;
   } catch (error) {
     console.error('MySQL connection error:', error);
-    return false;
-  }
-}
-
-// Connect to MongoDB
-async function connectMongoDB() {
-  try {
-    await mongoose.connect(mongoConfig.url);
-    console.log('MongoDB connected successfully');
-    return true;
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
     return false;
   }
 }
