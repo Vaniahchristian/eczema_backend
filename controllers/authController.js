@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { MySQL } = require('../models');
-const { User, PatientProfile, DoctorProfile } = MySQL;
 const { v4: uuidv4 } = require('uuid');
 
 const generateToken = (userId) => {
@@ -12,10 +11,10 @@ const generateToken = (userId) => {
 
 exports.register = async (req, res) => {
   try {
-    const { email, password, firstName, lastName, role, dateOfBirth, gender, specialty } = req.body;
+    const { email, password, first_name, last_name, role, date_of_birth, gender, specialty } = req.body;
 
     // Validate required fields
-    if (!email || !password || !firstName || !lastName || !dateOfBirth || !gender) {
+    if (!email || !password || !first_name || !last_name) {
       return res.status(400).json({ 
         success: false,
         message: 'Please provide all required fields' 
@@ -23,7 +22,7 @@ exports.register = async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = await User.findByEmail(email);
+    const existingUser = await MySQL.User.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({
         success: false,
@@ -35,44 +34,26 @@ exports.register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create user
-    const userId = await User.create({
+    // Create user with UUID
+    const userId = uuidv4();
+    const user = await MySQL.User.create({
+      id: userId,
       email,
       password: hashedPassword,
       role: role || 'patient',
-      firstName: firstName,
-      lastName: lastName,
-      dateOfBirth: dateOfBirth,
-      gender: gender
+      first_name,
+      last_name
     });
 
     // If user is a patient, create patient profile
     if (role === 'patient' || !role) {
-      await PatientProfile.create({
-        userId,
-        medicalHistory: '',
-        allergies: '',
-        medications: ''
-      });
-    }
-
-    // If user is a doctor, create doctor profile
-    if (role === 'doctor') {
-      const defaultSpecialty = 'Dermatologist';
-      await DoctorProfile.create({
+      await MySQL.Patient.create({
         id: uuidv4(),
-        userId,
-        specialty: specialty || defaultSpecialty,
-        bio: `Dr. ${lastName} is a specialist in ${specialty || defaultSpecialty}.`,
-        rating: 5.0,
-        experienceYears: 0,
-        available_hours: JSON.stringify({
-          monday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
-          tuesday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
-          wednesday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
-          thursday: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
-          friday: ['09:00', '10:00', '11:00', '14:00', '15:00']
-        })
+        user_id: userId,
+        date_of_birth,
+        gender,
+        medical_history: '',
+        allergies: ''
       });
     }
 
@@ -96,9 +77,9 @@ exports.register = async (req, res) => {
           id: userId,
           email,
           role: role || 'patient',
-          firstName,
-          lastName,
-          dateOfBirth,
+          first_name,
+          last_name,
+          date_of_birth,
           gender
         }
       }
@@ -126,7 +107,7 @@ exports.login = async (req, res) => {
     }
 
     // Find user
-    const user = await User.findByEmail(email);
+    const user = await MySQL.User.findOne({ where: { email } });
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -163,10 +144,8 @@ exports.login = async (req, res) => {
           id: user.id,
           email: user.email,
           role: user.role,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          dateOfBirth: user.dateOfBirth,
-          gender: user.gender
+          first_name: user.first_name,
+          last_name: user.last_name
         }
       }
     });
@@ -182,7 +161,14 @@ exports.login = async (req, res) => {
 
 exports.getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await MySQL.User.findOne({
+      where: { id: req.user.id },
+      include: [{
+        model: MySQL.Patient,
+        as: 'patient'
+      }]
+    });
+
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -195,10 +181,14 @@ exports.getProfile = async (req, res) => {
       id: user.id,
       email: user.email,
       role: user.role,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      dateOfBirth: user.dateOfBirth,
-      gender: user.gender
+      first_name: user.first_name,
+      last_name: user.last_name,
+      ...(user.patient && {
+        date_of_birth: user.patient.date_of_birth,
+        gender: user.patient.gender,
+        medical_history: user.patient.medical_history,
+        allergies: user.patient.allergies
+      })
     };
 
     res.json({
@@ -217,34 +207,54 @@ exports.getProfile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    const { firstName, lastName, dateOfBirth, gender } = req.body;
+    const { first_name, last_name, date_of_birth, gender, medical_history, allergies } = req.body;
     const userId = req.user.id;
 
-    // Map API fields to database fields
-    await User.update(userId, {
-      firstName,
-      lastName,
-      dateOfBirth,
-      gender
+    // Update user
+    await MySQL.User.update({
+      first_name,
+      last_name
+    }, {
+      where: { id: userId }
     });
 
-    const updatedUser = await User.findById(userId);
+    // Update patient profile if exists
+    if (date_of_birth || gender || medical_history || allergies) {
+      await MySQL.Patient.update({
+        date_of_birth,
+        gender,
+        medical_history,
+        allergies
+      }, {
+        where: { user_id: userId }
+      });
+    }
 
-    // Map database fields to API response format
-    const userProfile = {
-      id: updatedUser.id,
-      email: updatedUser.email,
-      role: updatedUser.role,
-      firstName: updatedUser.firstName,
-      lastName: updatedUser.lastName,
-      dateOfBirth: updatedUser.dateOfBirth,
-      gender: updatedUser.gender
-    };
+    // Get updated profile
+    const user = await MySQL.User.findOne({
+      where: { id: userId },
+      include: [{
+        model: MySQL.Patient,
+        as: 'patient'
+      }]
+    });
 
     res.json({
       success: true,
       message: 'Profile updated successfully',
-      data: userProfile
+      data: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        ...(user.patient && {
+          date_of_birth: user.patient.date_of_birth,
+          gender: user.patient.gender,
+          medical_history: user.patient.medical_history,
+          allergies: user.patient.allergies
+        })
+      }
     });
   } catch (error) {
     console.error('Update profile error:', error);

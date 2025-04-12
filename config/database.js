@@ -4,14 +4,15 @@ const { Sequelize } = require('sequelize');
 
 // Determine environment
 const isTest = process.env.NODE_ENV === 'test';
+const isDev = process.env.NODE_ENV === 'development';
 
 // MySQL Configuration
 const mysqlConfig = {
-  host: process.env.MYSQL_HOST,
-  port: parseInt(process.env.MYSQL_PORT, 10),
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE
+  host: process.env.MYSQL_HOST || 'localhost',
+  port: parseInt(process.env.MYSQL_PORT || '3306', 10),
+  user: process.env.MYSQL_USER || 'root',
+  password: process.env.MYSQL_PASSWORD || '',
+  database: process.env.MYSQL_DATABASE || 'eczema_dev'
 };
 
 // Create MySQL connection pool
@@ -19,12 +20,12 @@ const mysqlPool = mysql.createPool(mysqlConfig);
 
 // Create Sequelize instance
 const sequelize = new Sequelize(
-  process.env.MYSQL_DATABASE,
-  process.env.MYSQL_USER,
-  process.env.MYSQL_PASSWORD,
+  mysqlConfig.database,
+  mysqlConfig.user,
+  mysqlConfig.password,
   {
-    host: process.env.MYSQL_HOST,
-    port: parseInt(process.env.MYSQL_PORT, 10),
+    host: mysqlConfig.host,
+    port: mysqlConfig.port,
     dialect: 'mysql',
     pool: {
       max: 5,
@@ -33,18 +34,19 @@ const sequelize = new Sequelize(
       idle: 10000
     },
     dialectOptions: {
-      connectTimeout: 60000, // 60 seconds
-      ssl: process.env.NODE_ENV === 'production' ? {
+      // Enable SSL only for production (Railway)
+      ssl: !isDev ? {
         rejectUnauthorized: false
-      } : false
+      } : false,
+      connectTimeout: 60000
     },
-    logging: console.log
+    logging: isDev ? console.log : false
   }
 );
 
 // MongoDB Configuration
 const mongoConfig = {
-  url: process.env.MONGODB_URI || 'mongodb+srv://admin:0754092850@todoapp.aqby3.mongodb.net/TRY'
+  url: process.env.MONGODB_URI || 'mongodb://localhost:27017/eczema_dev'
 };
 
 // Connect to MongoDB
@@ -58,41 +60,9 @@ async function connectMongoDB() {
   }
 }
 
-// Test MySQL connection and ensure database exists
-async function testMySQLConnection() {
-  try {
-    // Create database if it doesn't exist
-    const tempPool = mysql.createPool({
-      ...mysqlConfig,
-      database: undefined // Temporarily remove database to create it
-    });
-
-    await tempPool.query('CREATE DATABASE IF NOT EXISTS eczema');
-    await tempPool.end();
-
-    // Test connection with main pool
-    const connection = await mysqlPool.getConnection();
-    console.log('MySQL connected successfully');
-    connection.release();
-    return true;
-  } catch (error) {
-    console.error('MySQL connection error:', error);
-    return false;
-  }
-}
-
-// Initialize databases
-async function initializeDatabases() {
-  await Promise.all([
-    testMySQLConnection(),
-    connectMongoDB()
-  ]);
-}
-
 module.exports = {
+  connectMongoDB,
   mysqlPool,
   sequelize,
-  connectMongoDB,
-  initializeDatabases,
-  mysqlConfig
+  isDev
 };

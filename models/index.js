@@ -52,6 +52,13 @@ const MySQL = {
       type: Sequelize.DATE,
       defaultValue: Sequelize.NOW
     }
+  }, {
+    // Model methods
+    classMethods: {
+      async findByEmail(email) {
+        return await this.findOne({ where: { email } });
+      }
+    }
   }),
   Patient: sequelize.define('patients', {
     id: {
