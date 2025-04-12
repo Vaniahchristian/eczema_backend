@@ -26,18 +26,21 @@ router.get('/', protect, async (req, res) => {
             WHERE u.role = 'doctor'
         `);
 
+        // Ensure rows is an array
+        const doctors = Array.isArray(rows) ? rows : [];
+
         // Transform data for frontend
-        const formattedDoctors = rows.map(doctor => ({
+        const formattedDoctors = doctors.map(doctor => ({
             id: doctor.id,
             name: `${doctor.first_name} ${doctor.last_name}`,
             email: doctor.email,
             imageUrl: '/placeholder.svg?height=40&width=40', // Default placeholder image
-            specialty: doctor.specialty,
-            bio: doctor.bio,
+            specialty: doctor.specialty || 'General Practice',
+            bio: doctor.bio || '',
             rating: parseFloat(doctor.rating) || 5.0,
             experienceYears: doctor.experience_years || 0,
-            clinicName: doctor.clinic_name,
-            clinicAddress: doctor.clinic_address,
+            clinicName: doctor.clinic_name || '',
+            clinicAddress: doctor.clinic_address || '',
             consultationFee: parseFloat(doctor.consultation_fee) || 0
         }));
 
