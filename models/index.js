@@ -1,8 +1,6 @@
 const { Sequelize } = require('sequelize');
 const mongoose = require('mongoose');
-
-// MySQL Models
-const mysqlPool = require('../config/database').mysqlPool;
+const { sequelize } = require('../config/database');
 
 // MongoDB Schemas
 const userSchema = new mongoose.Schema({
@@ -34,7 +32,7 @@ const User = mongoose.model('User', userSchema);
 
 // MySQL models
 const MySQL = {
-  User: mysqlPool.define('users', {
+  User: sequelize.define('users', {
     id: {
       type: Sequelize.STRING,
       primaryKey: true
@@ -55,7 +53,7 @@ const MySQL = {
       defaultValue: Sequelize.NOW
     }
   }),
-  Patient: mysqlPool.define('patients', {
+  Patient: sequelize.define('patients', {
     id: {
       type: Sequelize.STRING,
       primaryKey: true
@@ -76,7 +74,7 @@ const MySQL = {
       defaultValue: Sequelize.NOW
     }
   }),
-  Diagnosis: mysqlPool.define('diagnoses', {
+  Diagnosis: sequelize.define('diagnoses', {
     id: {
       type: Sequelize.STRING,
       primaryKey: true

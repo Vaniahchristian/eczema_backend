@@ -5,11 +5,10 @@ const cors = require('cors');
 const morgan = require('morgan');
 const http = require('http');
 const helmet = require('helmet');
-//const imageProcessor = require('./middleware/imageProcessor');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const WebSocketServer = require('./websocket');
-const { mysqlPool, connectMongoDB } = require('./config/database');
+const { mysqlPool, connectMongoDB, sequelize } = require('./config/database');
 const { MySQL } = require('./models');
 
 // Import routes
@@ -34,9 +33,9 @@ connectMongoDB();
 // Test MySQL connection and sync models
 (async () => {
   try {
-    const connection = await mysqlPool.getConnection();
+    // Test MySQL connection
+    await sequelize.authenticate();
     console.log('MySQL connected successfully');
-    connection.release();
 
     // Force sync in development, alter in production
     const syncOptions = {
@@ -47,50 +46,9 @@ connectMongoDB();
     console.log('Syncing MySQL models with options:', syncOptions);
 
     // Sync all models
-    await MySQL.User.sync(syncOptions);
-    await MySQL.Patient.sync(syncOptions);
-    await MySQL.Diagnosis.sync(syncOptions);
-    
+    await sequelize.sync(syncOptions);
     console.log('MySQL models synced successfully');
 
-    // Create default tables if they don't exist (production only)
-    if (process.env.NODE_ENV === 'production') {
-      // Ensure tables exist
-      await mysqlPool.query(`
-        CREATE TABLE IF NOT EXISTS users (
-          id VARCHAR(255) PRIMARY KEY,
-          email VARCHAR(255) UNIQUE,
-          password VARCHAR(255),
-          role ENUM('patient', 'doctor', 'researcher', 'admin') DEFAULT 'patient',
-          first_name VARCHAR(255),
-          last_name VARCHAR(255),
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        CREATE TABLE IF NOT EXISTS patients (
-          id VARCHAR(255) PRIMARY KEY,
-          user_id VARCHAR(255),
-          date_of_birth DATE,
-          gender VARCHAR(50),
-          medical_history TEXT,
-          allergies TEXT,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (user_id) REFERENCES users(id)
-        );
-
-        CREATE TABLE IF NOT EXISTS diagnoses (
-          id VARCHAR(255) PRIMARY KEY,
-          user_id VARCHAR(255),
-          severity ENUM('mild', 'moderate', 'severe') NOT NULL,
-          confidence FLOAT NOT NULL,
-          notes TEXT,
-          image_url VARCHAR(255),
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (user_id) REFERENCES users(id)
-        );
-      `);
-      console.log('Production tables verified');
-    }
   } catch (error) {
     console.error('MySQL connection/sync error:', error);
     // Don't exit in production, just log the error
@@ -172,7 +130,7 @@ app.use('/api/messages', messageRoutes);
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok',
-    mysql: mysqlPool.pool.pool.state === 'authenticated',
+    mysql: sequelize.connectionManager.connections.length > 0,
     mongodb: mongoose.connection.readyState === 1,
     websocket: wsServer.wss.clients.size
   });
