@@ -11,10 +11,12 @@ const generateToken = (userId) => {
 
 exports.register = async (req, res) => {
   try {
+    console.log('📝 Registration request:', req.body);
     const { email, password, first_name, last_name, role, date_of_birth, gender, specialty } = req.body;
 
     // Validate required fields
     if (!email || !password || !first_name || !last_name) {
+      console.log('❌ Missing required fields');
       return res.status(400).json({ 
         success: false,
         message: 'Please provide all required fields' 
@@ -22,8 +24,10 @@ exports.register = async (req, res) => {
     }
 
     // Check if user already exists
+    console.log('🔍 Checking if user exists:', email);
     const existingUser = await MySQL.User.findOne({ where: { email } });
     if (existingUser) {
+      console.log('❌ User already exists');
       return res.status(400).json({
         success: false,
         message: 'User already exists with this email'
@@ -31,11 +35,13 @@ exports.register = async (req, res) => {
     }
 
     // Hash password
+    console.log('🔒 Hashing password...');
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create user with UUID
     const userId = uuidv4();
+    console.log('👤 Creating user with ID:', userId);
     const user = await MySQL.User.create({
       id: userId,
       email,
@@ -47,6 +53,7 @@ exports.register = async (req, res) => {
 
     // If user is a patient, create patient profile
     if (role === 'patient' || !role) {
+      console.log('🏥 Creating patient profile');
       await MySQL.Patient.create({
         id: uuidv4(),
         user_id: userId,
@@ -58,9 +65,11 @@ exports.register = async (req, res) => {
     }
 
     // Generate token
+    console.log('🔑 Generating token');
     const token = generateToken(userId);
 
     // Set token in cookie
+    console.log('🍪 Setting cookie');
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -68,6 +77,7 @@ exports.register = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     });
 
+    console.log('✅ Registration successful');
     res.status(201).json({
       success: true,
       message: 'User registered successfully',
@@ -85,7 +95,7 @@ exports.register = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('❌ Registration error:', error);
     res.status(500).json({
       success: false,
       message: 'Error during registration',
@@ -96,10 +106,12 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
+    console.log('📝 Login request:', { email: req.body.email });
     const { email, password } = req.body;
 
     // Validate input
     if (!email || !password) {
+      console.log('❌ Missing email or password');
       return res.status(400).json({
         success: false,
         message: 'Please provide email and password'
@@ -107,8 +119,10 @@ exports.login = async (req, res) => {
     }
 
     // Find user
+    console.log('🔍 Finding user:', email);
     const user = await MySQL.User.findOne({ where: { email } });
     if (!user) {
+      console.log('❌ User not found');
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials'
@@ -116,8 +130,10 @@ exports.login = async (req, res) => {
     }
 
     // Verify password
+    console.log('🔒 Verifying password');
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      console.log('❌ Invalid password');
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials'
@@ -125,9 +141,11 @@ exports.login = async (req, res) => {
     }
 
     // Generate token
+    console.log('🔑 Generating token');
     const token = generateToken(user.id);
 
     // Set token in cookie
+    console.log('🍪 Setting cookie');
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -135,6 +153,7 @@ exports.login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     });
 
+    console.log('✅ Login successful');
     res.json({
       success: true,
       message: 'Login successful',
@@ -150,7 +169,7 @@ exports.login = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('❌ Login error:', error);
     res.status(500).json({
       success: false,
       message: 'Error during login',
