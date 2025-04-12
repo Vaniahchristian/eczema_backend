@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 const mongoose = require('mongoose');
 const { sequelize } = require('../config/database');
 
@@ -34,25 +34,27 @@ const User = mongoose.model('User', userSchema);
 const MySQL = {
   User: sequelize.define('users', {
     id: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
       primaryKey: true
     },
     email: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
       unique: true
     },
-    password: Sequelize.STRING,
+    password: DataTypes.STRING,
     role: {
-      type: Sequelize.ENUM('patient', 'doctor', 'researcher', 'admin'),
+      type: DataTypes.ENUM('patient', 'doctor', 'researcher', 'admin'),
       defaultValue: 'patient'
     },
-    first_name: Sequelize.STRING,
-    last_name: Sequelize.STRING,
+    first_name: DataTypes.STRING,
+    last_name: DataTypes.STRING,
+    image_url: DataTypes.STRING,
     created_at: {
-      type: Sequelize.DATE,
-      defaultValue: Sequelize.NOW
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
     }
   }, {
+    timestamps: true,
     // Model methods
     classMethods: {
       async findByEmail(email) {

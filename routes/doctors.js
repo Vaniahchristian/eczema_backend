@@ -14,7 +14,6 @@ router.get('/', protect, async (req, res) => {
                 u.first_name, 
                 u.last_name, 
                 u.email,
-                u.image_url,
                 dp.specialty,
                 dp.bio,
                 dp.rating,
@@ -32,7 +31,7 @@ router.get('/', protect, async (req, res) => {
             id: doctor.id,
             name: `${doctor.first_name} ${doctor.last_name}`,
             email: doctor.email,
-            imageUrl: doctor.image_url || '/placeholder.svg?height=40&width=40',
+            imageUrl: '/placeholder.svg?height=40&width=40', // Default placeholder image
             specialty: doctor.specialty,
             bio: doctor.bio,
             rating: parseFloat(doctor.rating) || 5.0,
