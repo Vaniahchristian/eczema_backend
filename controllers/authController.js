@@ -149,7 +149,14 @@ exports.login = async (req, res) => {
 
     // Find user
     console.log('🔍 Finding user:', email);
-    const user = await MySQL.User.findOne({ where: { email } });
+    const user = await MySQL.User.findOne({
+      where: { email },
+      include: [{
+        model: MySQL.Patient,
+        as: 'patient'
+      }]
+    });
+
     if (!user) {
       console.log('❌ User not found');
       return res.status(401).json({
@@ -187,13 +194,17 @@ exports.login = async (req, res) => {
       success: true,
       message: 'Login successful',
       data: {
-        token,
+        token, // Important: Send token in response body
         user: {
           id: user.id,
           email: user.email,
           role: user.role,
           first_name: user.first_name,
-          last_name: user.last_name
+          last_name: user.last_name,
+          ...(user.patient && {
+            date_of_birth: user.patient.date_of_birth,
+            gender: user.patient.gender
+          })
         }
       }
     });

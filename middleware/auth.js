@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const { MySQL } = require('../models');
-const { User } = MySQL;
 
 exports.protect = async (req, res, next) => {
   try {
@@ -24,8 +23,8 @@ exports.protect = async (req, res, next) => {
       console.log(' Token found in cookies');
     }
 
-    if (!token) {
-      console.log(' No token found');
+    if (!token || token === 'null') {
+      console.log(' No valid token found');
       return res.status(401).json({
         success: false,
         message: 'Not authorized to access this route'
@@ -37,7 +36,13 @@ exports.protect = async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
       console.log(' Token verified:', { userId: decoded.id });
 
-      const user = await User.findById(decoded.id);
+      const user = await MySQL.User.findOne({ 
+        where: { id: decoded.id },
+        include: [{
+          model: MySQL.Patient,
+          as: 'patient'
+        }]
+      });
       
       if (!user) {
         console.log(' User not found:', decoded.id);
@@ -58,8 +63,12 @@ exports.protect = async (req, res, next) => {
         id: user.id,
         email: user.email,
         role: user.role,
-        firstName: user.first_name,
-        lastName: user.last_name
+        first_name: user.first_name,
+        last_name: user.last_name,
+        ...(user.patient && {
+          date_of_birth: user.patient.date_of_birth,
+          gender: user.patient.gender
+        })
       };
       
       next();
