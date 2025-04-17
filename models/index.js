@@ -60,7 +60,10 @@ const MySQL = {
     gender: DataTypes.STRING,
     image_url: DataTypes.STRING
   }, {
-    tableName: 'users'
+    tableName: 'users',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
   }),
 
   Patient: sequelize.define('patients', {
@@ -84,7 +87,10 @@ const MySQL = {
       allowNull: true
     }
   }, {
-    tableName: 'patients'
+    tableName: 'patients',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
   }),
 
   DoctorProfile: sequelize.define('doctor_profiles', {
@@ -131,7 +137,10 @@ const MySQL = {
       }
     }
   }, {
-    tableName: 'doctor_profiles'
+    tableName: 'doctor_profiles',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
   }),
 
   Diagnosis: sequelize.define('diagnoses', {
@@ -157,7 +166,10 @@ const MySQL = {
     notes: DataTypes.TEXT,
     image_url: DataTypes.STRING
   }, {
-    tableName: 'diagnoses'
+    tableName: 'diagnoses',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
   }),
 
   Treatment: sequelize.define('treatments', {
@@ -191,7 +203,10 @@ const MySQL = {
     start_date: DataTypes.DATE,
     end_date: DataTypes.DATE
   }, {
-    tableName: 'treatments'
+    tableName: 'treatments',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
   })
 };
 

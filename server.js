@@ -25,6 +25,9 @@ const { errorHandler } = require('./middleware/errorHandler');
 const app = express();
 const server = http.createServer(app);
 
+// Trust proxy - required for rate limiting behind reverse proxies
+app.set('trust proxy', 1);
+
 // Serve uploaded files with size limit
 const uploadPath = path.join(process.cwd(), 'uploads');
 app.use('/uploads', express.static(uploadPath, {
