@@ -4,12 +4,15 @@ const { Storage } = require('@google-cloud/storage');
 let storage;
 if (process.env.NODE_ENV === 'production') {
   // In production (Render), use credentials from environment variable
+  console.log('Initializing GCS in production mode');
   storage = new Storage({
     projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
     credentials: JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS || '{}')
   });
 } else {
   // In development, use key file
+  console.log('Initializing GCS in development mode');
+  console.log('Using key file:', process.env.GOOGLE_CLOUD_KEY_FILE);
   storage = new Storage({
     keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE,
     projectId: process.env.GOOGLE_CLOUD_PROJECT_ID
@@ -17,10 +20,12 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const bucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
+console.log('Using GCS bucket:', process.env.GOOGLE_CLOUD_BUCKET_NAME);
 
 // Upload file to Google Cloud Storage
 const uploadFile = async (file) => {
   try {
+    console.log('Starting file upload to GCS:', file.originalname);
     const blob = bucket.file(file.originalname);
     const blobStream = blob.createWriteStream({
       resumable: false,
@@ -31,16 +36,23 @@ const uploadFile = async (file) => {
 
     return new Promise((resolve, reject) => {
       blobStream.on('error', (error) => {
+        console.error('Blob stream error:', error);
         reject(error);
       });
 
       blobStream.on('finish', async () => {
-        // Make the file public
-        await blob.makePublic();
-        
-        // Get the public URL
-        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
-        resolve(publicUrl);
+        try {
+          // Make the file public
+          await blob.makePublic();
+          
+          // Get the public URL
+          const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+          console.log('File uploaded successfully to:', publicUrl);
+          resolve(publicUrl);
+        } catch (error) {
+          console.error('Error making blob public:', error);
+          reject(error);
+        }
       });
 
       blobStream.end(file.buffer);

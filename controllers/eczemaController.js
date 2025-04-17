@@ -88,7 +88,14 @@ exports.analyzeImage = async (req, res) => {
 
     // Upload image to Google Cloud Storage
     console.log('Uploading image to Google Cloud Storage...');
-    const imageUrl = await uploadFile(req.file);
+    let imageUrl;
+    try {
+      imageUrl = await uploadFile(req.file);
+      console.log('Successfully uploaded to GCS, URL:', imageUrl);
+    } catch (error) {
+      console.error('GCS Upload error:', error);
+      throw error;
+    }
 
     // Analyze the image using the buffer from multer
     const analysis = await analyzeEczemaImage(req.file.buffer);
