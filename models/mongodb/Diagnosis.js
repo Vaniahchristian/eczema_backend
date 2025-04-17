@@ -29,9 +29,8 @@ const diagnosisSchema = new mongoose.Schema({
     }
   },
   mlResults: {
-    hasEczema: {
+    prediction: {
       type: String,
-      enum: ['Eczema', 'Not Eczema'],
       required: true
     },
     confidence: Number,

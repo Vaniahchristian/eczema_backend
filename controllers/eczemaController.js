@@ -57,7 +57,7 @@ const getDiagnosisStats = async () => {
         _id: null,
         total: { $sum: 1 },
         eczema: {
-          $sum: { $cond: ['$mlResults.hasEczema', 1, 0] }
+          $sum: { $cond: ['$mlResults.prediction', 1, 0] }
         },
         pending: {
           $sum: { $cond: [{ $eq: ['$status', 'pending_review'] }, 1, 0] }

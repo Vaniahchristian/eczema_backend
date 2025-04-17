@@ -97,7 +97,7 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
                 format: 'JPEG'
             },
             mlResults: {
-                hasEczema: response.data.eczemaPrediction,
+                prediction: response.data.eczemaPrediction,
                 confidence: response.data.eczemaConfidence,
                 severity: response.data.eczemaSeverity.toLowerCase(),
                 affectedAreas: [response.data.bodyPart],
@@ -117,7 +117,7 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
             success: true,
             data: {
                 diagnosisId: diagnosis.diagnosisId,
-                isEczema: diagnosis.mlResults.hasEczema,
+                isEczema: diagnosis.mlResults.prediction,
                 severity: diagnosis.mlResults.severity,
                 confidence: diagnosis.mlResults.confidence,
                 bodyPart: response.data.bodyPart,
@@ -159,7 +159,7 @@ router.get('/diagnoses', async (req, res) => {
 
         const formattedDiagnoses = diagnoses.map(diagnosis => ({
             diagnosisId: diagnosis.diagnosisId,
-            isEczema: diagnosis.mlResults.hasEczema,
+            isEczema: diagnosis.mlResults.prediction,
             severity: diagnosis.mlResults.severity,
             confidence: diagnosis.mlResults.confidence,
             bodyPart: diagnosis.mlResults.affectedAreas[0],
@@ -201,7 +201,7 @@ router.get('/diagnoses/:diagnosisId', async (req, res) => {
 
         const formattedDiagnosis = {
             diagnosisId: diagnosis.diagnosisId,
-            isEczema: diagnosis.mlResults.hasEczema,
+            isEczema: diagnosis.mlResults.prediction,
             severity: diagnosis.mlResults.severity,
             confidence: diagnosis.mlResults.confidence,
             bodyPart: diagnosis.mlResults.affectedAreas[0],
@@ -252,7 +252,7 @@ router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, r
 
         const formattedDiagnosis = {
             diagnosisId: diagnosis.diagnosisId,
-            isEczema: diagnosis.mlResults.hasEczema,
+            isEczema: diagnosis.mlResults.prediction,
             severity: diagnosis.doctorReview.updatedSeverity || diagnosis.mlResults.severity,
             confidence: diagnosis.mlResults.confidence,
             bodyPart: diagnosis.mlResults.affectedAreas[0],
