@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const WebSocketServer = require('./websocket');
 const { mysqlPool, connectMongoDB, sequelize } = require('./config/database');
 const { MySQL } = require('./models');
+const { apiLimiter, authLimiter } = require('./middleware/rateLimiter');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -24,11 +25,33 @@ const { errorHandler } = require('./middleware/errorHandler');
 const app = express();
 const server = http.createServer(app);
 
-// Serve uploaded files
-app.use('/uploads', express.static(path.join(process.cwd(), 'Uploads')));
+// Serve uploaded files with size limit
+const uploadPath = path.join(process.cwd(), 'uploads');
+app.use('/uploads', express.static(uploadPath, {
+  maxAge: '1d',
+  limit: '50mb'
+}));
 
-// Connect to MongoDB
-connectMongoDB();
+// Connect to MongoDB with retry logic
+const connectMongoDBWithRetry = async (retries = 5, delay = 5000) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      await connectMongoDB();
+      console.log('MongoDB connected successfully');
+      return;
+    } catch (error) {
+      console.error(`MongoDB connection attempt ${i + 1} failed:`, error);
+      if (i < retries - 1) await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  if (process.env.NODE_ENV === 'production') {
+    console.error('Failed to connect to MongoDB after retries');
+  } else {
+    process.exit(1);
+  }
+};
+
+connectMongoDBWithRetry();
 
 // Test MySQL connection and sync models
 (async () => {
@@ -42,22 +65,19 @@ connectMongoDB();
       console.log('Production environment detected, altering tables...');
       await sequelize.sync({ alter: true });
     } else {
-      // In development, we need to handle the force sync carefully
-      console.log('Development environment detected, force syncing tables...');
-
-      // Drop tables in correct order (respecting foreign key constraints)
-      await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
-
-      // Drop and recreate tables in order
-      await MySQL.Diagnosis.sync({ force: true });
-      await MySQL.Patient.sync({ force: true });
-      await MySQL.User.sync({ force: true });
-
-      // Re-enable foreign key checks
-      await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
-
-      // Create associations
-      await sequelize.sync();
+      // In development, alter tables by default
+      console.log('Development environment detected, altering tables...');
+      await sequelize.sync({ alter: true });
+      
+      // Only force sync if explicitly set in environment
+      if (process.env.FORCE_SYNC === 'true') {
+        console.log('Force sync enabled, dropping and recreating tables...');
+        await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
+        await MySQL.Diagnosis.sync({ force: true });
+        await MySQL.Patient.sync({ force: true });
+        await MySQL.User.sync({ force: true });
+        await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
+      }
     }
 
     console.log('MySQL models synced successfully');
@@ -88,34 +108,34 @@ app.use((req, res, next) => {
 
 // Middleware
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" },
-  contentSecurityPolicy: false,
-})); // Security headers with relaxed settings for development
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", process.env.FRONTEND_URL || "https://eczema-dashboard-final.vercel.app"]
+    }
+  },
+  crossOriginResourcePolicy: { policy: "same-site" }
+}));
 
-// CORS configuration to allow all origins
-app.use((req, res, next) => {
-  console.log('🌐 CORS - Incoming origin:', req.headers.origin);
+// CORS configuration with specific origin
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "https://eczema-dashboard-final.vercel.app",
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-  // Allow all origins
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  console.log('🌐 CORS - Allowing all origins');
+app.use(morgan('dev'));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(cookieParser());
 
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-
-  if (req.method === 'OPTIONS') {
-    console.log('🌐 CORS - Handling OPTIONS preflight request');
-    return res.sendStatus(200);
-  }
-
-  next();
-});
-
-app.use(morgan('dev')); // Logging
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser()); // Parse cookies
+// Apply rate limiting
+app.use('/api/auth', authLimiter);
+app.use('/api', apiLimiter);
 
 // Routes
 app.use('/api/auth', authRoutes);

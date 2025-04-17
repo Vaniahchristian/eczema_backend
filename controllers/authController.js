@@ -4,7 +4,10 @@ const { MySQL } = require('../models');
 const { v4: uuidv4 } = require('uuid');
 
 const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET || 'your-secret-key', {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET is not set in environment variables');
+  }
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d'
   });
 };
@@ -179,12 +182,12 @@ exports.register = async (req, res) => {
   }
 };
 
-// Rest of the authController.js remains unchanged
 exports.login = async (req, res) => {
   try {
-    console.log('📝 Login request:', { email: req.body.email });
+    console.log('📝 Login attempt:', { email: req.body.email });
     const { email, password } = req.body;
 
+    // Validate input
     if (!email || !password) {
       console.log('❌ Missing email or password');
       return res.status(400).json({
@@ -193,45 +196,51 @@ exports.login = async (req, res) => {
       });
     }
 
-    console.log('🔍 Finding user:', email);
+    // Find user and include related profile
     const user = await MySQL.User.findOne({
       where: { email },
       include: [{
         model: MySQL.Patient,
         as: 'patient'
+      }, {
+        model: MySQL.DoctorProfile,
+        as: 'doctor_profile'
       }]
     });
 
     if (!user) {
-      console.log('❌ User not found');
+      console.log('❌ User not found:', email);
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials'
       });
     }
 
-    console.log('🔒 Verifying password');
+    // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      console.log('❌ Invalid password');
+      console.log('❌ Invalid password for user:', email);
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials'
       });
     }
 
-    console.log('🔑 Generating token');
+    // Generate token
+    console.log('✅ Login successful for user:', email);
     const token = generateToken(user.id);
 
-    console.log('🍪 Setting cookie');
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
+    // Set cookie in production
+    if (process.env.NODE_ENV === 'production') {
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      });
+    }
 
-    console.log('✅ Login successful');
+    // Send response
     res.json({
       success: true,
       message: 'Login successful',
@@ -245,13 +254,24 @@ exports.login = async (req, res) => {
           last_name: user.last_name,
           ...(user.patient && {
             date_of_birth: user.patient.date_of_birth,
-            gender: user.patient.gender
+            gender: user.patient.gender,
+            medical_history: user.patient.medical_history,
+            allergies: user.patient.allergies
+          }),
+          ...(user.doctor_profile && {
+            specialty: user.doctor_profile.specialty,
+            bio: user.doctor_profile.bio,
+            rating: user.doctor_profile.rating,
+            experience_years: user.doctor_profile.experience_years,
+            clinic_name: user.doctor_profile.clinic_name,
+            clinic_address: user.doctor_profile.clinic_address,
+            consultation_fee: user.doctor_profile.consultation_fee
           })
         }
       }
     });
   } catch (error) {
-    console.error('❌ Login error:', error);
+    console.error('Login error:', error);
     res.status(500).json({
       success: false,
       message: 'Error during login',

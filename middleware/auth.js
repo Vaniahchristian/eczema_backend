@@ -1,6 +1,12 @@
 const jwt = require('jsonwebtoken');
 const { MySQL } = require('../models');
 
+// Ensure JWT_SECRET is set
+if (!process.env.JWT_SECRET) {
+  console.error('JWT_SECRET is not set in environment variables!');
+  process.exit(1);
+}
+
 exports.protect = async (req, res, next) => {
   try {
     let token;
@@ -33,7 +39,7 @@ exports.protect = async (req, res, next) => {
 
     try {
       console.log(' Verifying token...');
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       console.log(' Token verified:', { userId: decoded.id });
 
       const user = await MySQL.User.findOne({ 
