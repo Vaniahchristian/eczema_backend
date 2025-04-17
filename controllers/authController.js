@@ -108,6 +108,16 @@ exports.register = async (req, res) => {
         }, { transaction });
       } else if (userData.role === 'doctor') {
         console.log('👨‍⚕️ Creating doctor profile...');
+        const defaultAvailableHours = {
+          monday: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'],
+          tuesday: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'],
+          wednesday: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'],
+          thursday: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'],
+          friday: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'],
+          saturday: [],
+          sunday: []
+        };
+
         await MySQL.DoctorProfile.create({
           id: uuidv4(),
           user_id: user.id,
@@ -117,15 +127,7 @@ exports.register = async (req, res) => {
           clinic_name: userData.clinic_name || '',
           clinic_address: userData.clinic_address || '',
           consultation_fee: userData.consultation_fee || 0,
-          available_hours: userData.available_hours || {
-            monday: [],
-            tuesday: [],
-            wednesday: [],
-            thursday: [],
-            friday: [],
-            saturday: [],
-            sunday: []
-          }
+          available_hours: JSON.stringify(userData.available_hours || defaultAvailableHours)
         }, { transaction });
       }
 

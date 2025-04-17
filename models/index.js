@@ -126,15 +126,23 @@ const MySQL = {
       defaultValue: 0
     },
     available_hours: {
-      type: DataTypes.JSON,
-      defaultValue: {
-        monday: [],
-        tuesday: [],
-        wednesday: [],
-        thursday: [],
-        friday: [],
+      type: DataTypes.TEXT,
+      allowNull: false,
+      defaultValue: JSON.stringify({
+        monday: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'],
+        tuesday: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'],
+        wednesday: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'],
+        thursday: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'],
+        friday: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'],
         saturday: [],
         sunday: []
+      }),
+      get() {
+        const rawValue = this.getDataValue('available_hours');
+        return rawValue ? JSON.parse(rawValue) : null;
+      },
+      set(value) {
+        this.setDataValue('available_hours', typeof value === 'string' ? value : JSON.stringify(value));
       }
     }
   }, {
