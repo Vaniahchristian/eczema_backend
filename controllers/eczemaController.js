@@ -1,18 +1,15 @@
 const { Mongo } = require('../models');
 const { Diagnosis, Analytics, Advisory } = Mongo;
-const fs = require('fs').promises;
 const axios = require('axios');
 const FormData = require('form-data');
-const path = require('path');
+const { uploadFile } = require('../config/storage');
 
 // Analyze eczema image using ML model
-const analyzeEczemaImage = async (imagePath) => {
+const analyzeEczemaImage = async (fileBuffer) => {
   try {
-    const imageBuffer = await fs.readFile(imagePath);
-    
-    // Create form data with the image
+    // Create form data with the image buffer
     const formData = new FormData();
-    formData.append('image', imageBuffer, {
+    formData.append('image', fileBuffer, {
       filename: 'image.jpg',
       contentType: 'image/jpeg'
     });
@@ -89,34 +86,43 @@ exports.analyzeImage = async (req, res) => {
       });
     }
 
-    // Process image with sharp
-    const processedImagePath = path.join('uploads', `processed_${req.file.filename}`);
-    // await sharp(req.file.path)
-    //   .resize(800, 800, { fit: 'inside' })
-    //   .jpeg({ quality: 80 })
-    //   .toFile(processedImagePath);
+    // Upload image to Google Cloud Storage
+    console.log('Uploading image to Google Cloud Storage...');
+    const imageUrl = await uploadFile(req.file);
 
-    // Analyze the processed image
-    const analysis = await analyzeEczemaImage(req.file.path);
+    // Analyze the image using the buffer from multer
+    const analysis = await analyzeEczemaImage(req.file.buffer);
 
     // Create diagnosis record in MongoDB
     const diagnosis = await Diagnosis.create({
-      patient_id: req.user.user_id,
-      image_path: req.file.path,
-      severity: analysis.severity,
-      confidence_score: analysis.confidence,
-      areas_affected: analysis.areas_affected,
+      diagnosisId: require('crypto').randomUUID(), // Generate a unique ID
+      patientId: req.user.user_id,
+      imageId: req.file.originalname,
+      imageUrl: imageUrl,
+      imageMetadata: {
+        originalFileName: req.file.originalname,
+        uploadDate: new Date(),
+        fileSize: req.file.size,
+        format: req.file.mimetype.includes('png') ? 'PNG' : 'JPEG'
+      },
+      mlResults: {
+        severity: analysis.severity,
+        confidence: analysis.confidence,
+        areasAffected: analysis.areas_affected,
+        prediction: analysis.prediction,
+        requiresDoctorReview: analysis.requiresDoctorReview
+      },
       symptoms: [],
-      analyzed_at: new Date()
+      analyzedAt: new Date()
     });
 
     // Update analytics
     await Analytics.create({
-      diagnosis_id: diagnosis._id,
+      diagnosis_id: diagnosis.diagnosisId,
       patient_id: req.user.user_id,
       severity: analysis.severity,
       model_version: '1.0',
-      processing_time_ms: 1000, // Simulated processing time
+      processing_time_ms: 1000,
       confidence_score: analysis.confidence
     });
 
@@ -126,13 +132,13 @@ exports.analyzeImage = async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-        diagnosis_id: diagnosis._id,
+        diagnosis_id: diagnosis.diagnosisId,
         severity: analysis.severity,
         confidence: analysis.confidence,
         areas_affected: analysis.areas_affected,
         symptoms: [],
         recommendations: advisory ? advisory.recommendations : [],
-        image_url: `/uploads/${req.file.filename}`,
+        image_url: imageUrl,
         prediction: analysis.prediction,
         requiresDoctorReview: analysis.requiresDoctorReview
       }
@@ -161,7 +167,7 @@ exports.updateSymptoms = async (req, res) => {
       });
     }
 
-    if (diagnosis.patient_id !== req.user.user_id) {
+    if (diagnosis.patientId !== req.user.user_id) {
       return res.status(403).json({
         success: false,
         message: 'Not authorized to update this record'
@@ -169,8 +175,8 @@ exports.updateSymptoms = async (req, res) => {
     }
 
     diagnosis.symptoms = symptoms;
-    diagnosis.severity = severity;
-    diagnosis.updated_at = new Date();
+    diagnosis.mlResults.severity = severity;
+    diagnosis.updatedAt = new Date();
     await diagnosis.save();
 
     res.json({
@@ -190,8 +196,8 @@ exports.updateSymptoms = async (req, res) => {
 exports.getPatientHistory = async (req, res) => {
   try {
     const diagnoses = await Diagnosis.find({ 
-      patient_id: req.user.user_id 
-    }).sort({ analyzed_at: -1 });
+      patientId: req.user.user_id 
+    }).sort({ analyzedAt: -1 });
 
     const analytics = await Analytics.find({
       patient_id: req.user.user_id
@@ -200,7 +206,16 @@ exports.getPatientHistory = async (req, res) => {
     res.json({
       success: true,
       data: {
-        diagnoses,
+        diagnoses: diagnoses.map(d => ({
+          diagnosis_id: d.diagnosisId,
+          severity: d.mlResults.severity,
+          confidence: d.mlResults.confidence,
+          areas_affected: d.mlResults.areasAffected,
+          image_url: d.imageUrl,
+          symptoms: d.symptoms,
+          analyzed_at: d.analyzedAt,
+          requires_doctor_review: d.mlResults.requiresDoctorReview
+        })),
         analytics: analytics.map(a => ({
           diagnosis_id: a.diagnosis_id,
           severity: a.severity,
