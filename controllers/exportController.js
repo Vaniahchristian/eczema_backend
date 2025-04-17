@@ -59,20 +59,11 @@ const exportController = {
         }
     },
 
-    // Export diagnosis data in Excel format
+    // Export diagnosis data in CSV format
     async exportDiagnosisData(req, res) {
         try {
             const { startDate, endDate } = req.query;
             const userId = req.user.id;
-
-            // Get user from MongoDB
-            const user = await User.findOne({ id: userId });
-            if (!user) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'User not found'
-                });
-            }
 
             // Get diagnoses from MySQL
             const diagnoses = await MySQL.Diagnosis.findAll({
@@ -87,6 +78,13 @@ const exportController = {
                 order: [['created_at', 'DESC']]
             });
 
+            if (!diagnoses || diagnoses.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'No diagnoses found for the given period'
+                });
+            }
+
             // Create CSV
             const csvStringifier = createObjectCsvStringifier({
                 header: [
@@ -98,16 +96,16 @@ const exportController = {
             });
 
             const records = diagnoses.map(d => ({
-                date: d.created_at.toISOString().split('T')[0],
+                date: moment(d.created_at).format('YYYY-MM-DD'),
                 severity: d.severity,
-                confidence: d.confidence,
+                confidence: d.confidence.toFixed(2),
                 notes: d.notes || ''
             }));
 
             const csvString = csvStringifier.getHeaderString() + csvStringifier.stringifyRecords(records);
 
             res.setHeader('Content-Type', 'text/csv');
-            res.setHeader('Content-Disposition', `attachment; filename=diagnoses-${new Date().toISOString().split('T')[0]}.csv`);
+            res.setHeader('Content-Disposition', `attachment; filename=diagnoses-${moment().format('YYYY-MM-DD')}.csv`);
             res.send(csvString);
 
         } catch (error) {
@@ -119,16 +117,32 @@ const exportController = {
         }
     },
 
-    // Export analytics report
+    // Export analytics report as PDF
     async exportAnalyticsReport(req, res) {
         try {
             const { startDate, endDate } = req.query;
             const userId = req.user.id;
 
+            // Get user with patient data
+            const user = await MySQL.User.findOne({
+                where: { id: userId },
+                include: [{
+                    model: MySQL.Patient,
+                    as: 'patient'
+                }]
+            });
+
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'User not found'
+                });
+            }
+
             // Create PDF document
             const doc = new PDFDocument();
             res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', `attachment; filename=analytics-${new Date().toISOString().split('T')[0]}.pdf`);
+            res.setHeader('Content-Disposition', `attachment; filename=analytics-${moment().format('YYYY-MM-DD')}.pdf`);
             doc.pipe(res);
 
             // Add title
@@ -137,32 +151,22 @@ const exportController = {
 
             // Add date range
             if (startDate && endDate) {
-                doc.fontSize(12).text(`Date Range: ${new Date(startDate).toLocaleDateString()} - ${new Date(endDate).toLocaleDateString()}`);
+                doc.fontSize(12).text(`Date Range: ${moment(startDate).format('YYYY-MM-DD')} - ${moment(endDate).format('YYYY-MM-DD')}`);
                 doc.moveDown();
             }
 
-            // Get user details
-            const user = await User.findOne({ id: userId });
-            if (user) {
-                doc.fontSize(14).text('User Information');
-                doc.fontSize(12).text(`Name: ${user.first_name} ${user.last_name}`);
-                doc.fontSize(12).text(`Email: ${user.email}`);
-                doc.moveDown();
-            }
+            // Add user information
+            doc.fontSize(14).text('User Information');
+            doc.fontSize(12).text(`Name: ${user.first_name} ${user.last_name}`);
+            doc.fontSize(12).text(`Email: ${user.email}`);
+            doc.moveDown();
 
-            // Get patient details from MySQL
-            const patient = await MySQL.Patient.findOne({
-                where: { user_id: userId },
-                include: [{
-                    model: MySQL.User,
-                    as: 'user'
-                }]
-            });
-
-            if (patient) {
+            // Add patient information if available
+            if (user.patient) {
                 doc.fontSize(14).text('Patient Information');
-                doc.fontSize(12).text(`Date of Birth: ${patient.date_of_birth ? new Date(patient.date_of_birth).toLocaleDateString() : 'Not provided'}`);
-                doc.fontSize(12).text(`Gender: ${patient.gender || 'Not provided'}`);
+                doc.fontSize(12).text(`Date of Birth: ${user.patient.date_of_birth ? moment(user.patient.date_of_birth).format('YYYY-MM-DD') : 'Not provided'}`);
+                doc.fontSize(12).text(`Gender: ${user.patient.gender || 'Not provided'}`);
+                doc.fontSize(12).text(`Region: ${user.patient.region || 'Not provided'}`);
                 doc.moveDown();
             }
 
@@ -190,6 +194,10 @@ const exportController = {
                 Object.entries(severityCount).forEach(([severity, count]) => {
                     doc.fontSize(12).text(`${severity}: ${count} diagnoses`);
                 });
+                
+                // Calculate average confidence
+                const avgConfidence = diagnoses.reduce((sum, d) => sum + d.confidence, 0) / diagnoses.length;
+                doc.fontSize(12).text(`Average Confidence: ${avgConfidence.toFixed(2)}`);
                 
                 doc.moveDown();
             }
