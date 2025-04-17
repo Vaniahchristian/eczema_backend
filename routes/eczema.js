@@ -8,33 +8,15 @@ const axios = require('axios');
 const FormData = require('form-data');
 const path = require('path');
 const fs = require('fs').promises;
+const { uploadFile } = require('../config/storage');
 
-// Configure multer for image upload
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/diagnoses');
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
+// Configure multer for memory storage
 const upload = multer({
-    storage: storage,
+    storage: multer.memoryStorage(),
     limits: {
         fileSize: 5 * 1024 * 1024 // 5MB limit
     }
 });
-
-// Ensure upload directory exists
-(async () => {
-    try {
-        await fs.mkdir('uploads/diagnoses', { recursive: true });
-    } catch (err) {
-        console.error('Failed to create upload directory:', err);
-    }
-})();
 
 // Protect all routes
 router.use(protect);
@@ -49,15 +31,41 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
             });
         }
 
+        console.log('File received:', {
+            originalname: req.file.originalname,
+            mimetype: req.file.mimetype,
+            size: req.file.size
+        });
+
+        // Upload image to Google Cloud Storage
+        console.log('Starting Google Cloud Storage upload...');
+        let imageUrl;
+        try {
+            console.log('GCS Config:', {
+                projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
+                bucketName: process.env.GOOGLE_CLOUD_BUCKET_NAME,
+                hasCredentials: !!process.env.GOOGLE_CLOUD_CREDENTIALS
+            });
+            
+            imageUrl = await uploadFile(req.file);
+            console.log('Successfully uploaded to GCS, URL:', imageUrl);
+        } catch (error) {
+            console.error('GCS Upload error:', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Failed to upload image to cloud storage'
+            });
+        }
+
         // Get ML API URL from environment or use local fallback
         const ML_API_URL = process.env.ML_API_URL || 'http://localhost:5001';
         console.log('Using ML API URL:', ML_API_URL);
 
-        // Create form data with the image
+        // Create form data with the image buffer
         const formData = new FormData();
-        formData.append('image', await fs.readFile(req.file.path), {
-            filename: req.file.filename,
-            contentType: 'image/jpeg'
+        formData.append('image', req.file.buffer, {
+            filename: req.file.originalname,
+            contentType: req.file.mimetype
         });
 
         // Send directly to Flask API with increased timeout
@@ -68,7 +76,7 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
                 'Accept': 'application/json'
             },
             maxBodyLength: Infinity,
-            timeout: 10000000 // Increased to 60 seconds
+            timeout: 60000 // 60 seconds
         });
 
         console.log('Received response:', response.data);
@@ -76,7 +84,6 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
         // Generate unique IDs
         const diagnosisId = uuidv4();
         const imageId = uuidv4();
-        const imageUrl = `/uploads/diagnoses/${req.file.filename}`;
 
         // Combine recommendations and skincare tips
         const allRecommendations = [
@@ -94,7 +101,7 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
                 originalFileName: req.file.originalname,
                 uploadDate: new Date(),
                 fileSize: req.file.size,
-                format: 'JPEG'
+                format: req.file.mimetype
             },
             mlResults: {
                 prediction: response.data.eczemaPrediction,
@@ -120,9 +127,9 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
                 isEczema: diagnosis.mlResults.prediction,
                 severity: diagnosis.mlResults.severity,
                 confidence: diagnosis.mlResults.confidence,
-                bodyPart: response.data.bodyPart,
-                bodyPartConfidence: response.data.bodyPartConfidence,
-                recommendations: allRecommendations,
+                bodyPart: diagnosis.mlResults.affectedAreas[0],
+                bodyPartConfidence: diagnosis.mlResults.bodyPartConfidence,
+                recommendations: diagnosis.recommendations.precautions,
                 needsDoctorReview: diagnosis.status === 'pending_review',
                 imageUrl: diagnosis.imageUrl,
                 status: diagnosis.status,
