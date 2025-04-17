@@ -101,7 +101,7 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
                 originalFileName: req.file.originalname,
                 uploadDate: new Date(),
                 fileSize: req.file.size,
-                format: req.file.mimetype
+                format: req.file.mimetype === 'image/jpeg' ? 'JPEG' : 'PNG'
             },
             mlResults: {
                 prediction: response.data.eczemaPrediction,
