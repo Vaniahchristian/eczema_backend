@@ -2,11 +2,11 @@ const { Storage } = require('@google-cloud/storage');
 
 // Create storage instance
 let storage;
-if (process.env.NODE_ENV === 'production') {
-  // In production (Render), use credentials from environment variable
-  console.log('Initializing GCS in production mode');
-  try {
-    const credentials = JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS || '{}');
+try {
+  // First try to use credentials from environment variable
+  if (process.env.GOOGLE_CLOUD_CREDENTIALS) {
+    console.log('Initializing GCS with credentials from environment');
+    const credentials = JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS);
     console.log('Parsed credentials:', {
       projectId: credentials.project_id,
       clientEmail: credentials.client_email,
@@ -16,18 +16,21 @@ if (process.env.NODE_ENV === 'production') {
       projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
       credentials
     });
-  } catch (error) {
-    console.error('Error parsing GCS credentials:', error);
-    throw error;
+  } 
+  // Fallback to key file if environment credentials not found
+  else if (process.env.GOOGLE_CLOUD_KEY_FILE) {
+    console.log('Initializing GCS with key file');
+    console.log('Using key file:', process.env.GOOGLE_CLOUD_KEY_FILE);
+    storage = new Storage({
+      keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE,
+      projectId: process.env.GOOGLE_CLOUD_PROJECT_ID
+    });
+  } else {
+    throw new Error('No Google Cloud credentials found in environment or key file');
   }
-} else {
-  // In development, use key file
-  console.log('Initializing GCS in development mode');
-  console.log('Using key file:', process.env.GOOGLE_CLOUD_KEY_FILE);
-  storage = new Storage({
-    keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE,
-    projectId: process.env.GOOGLE_CLOUD_PROJECT_ID
-  });
+} catch (error) {
+  console.error('Error initializing GCS:', error);
+  throw error;
 }
 
 const bucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
