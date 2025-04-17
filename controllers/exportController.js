@@ -78,14 +78,7 @@ const exportController = {
                 order: [['created_at', 'DESC']]
             });
 
-            if (!diagnoses || diagnoses.length === 0) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'No diagnoses found for the given period'
-                });
-            }
-
-            // Create CSV
+            // Create CSV even if no diagnoses found
             const csvStringifier = createObjectCsvStringifier({
                 header: [
                     { id: 'date', title: 'Date' },
@@ -98,7 +91,7 @@ const exportController = {
             const records = diagnoses.map(d => ({
                 date: moment(d.created_at).format('YYYY-MM-DD'),
                 severity: d.severity,
-                confidence: d.confidence.toFixed(2),
+                confidence: d.confidence ? d.confidence.toFixed(2) : 'N/A',
                 notes: d.notes || ''
             }));
 
@@ -179,12 +172,12 @@ const exportController = {
                             [Op.between]: [new Date(startDate), new Date(endDate)]
                         }
                     } : {})
-                }
+                },
+                order: [['created_at', 'DESC']]
             });
 
+            doc.fontSize(14).text('Diagnosis Summary');
             if (diagnoses.length > 0) {
-                doc.fontSize(14).text('Diagnosis Summary');
-                
                 // Calculate severity distribution
                 const severityCount = diagnoses.reduce((acc, d) => {
                     acc[d.severity] = (acc[d.severity] || 0) + 1;
@@ -196,10 +189,35 @@ const exportController = {
                 });
                 
                 // Calculate average confidence
-                const avgConfidence = diagnoses.reduce((sum, d) => sum + d.confidence, 0) / diagnoses.length;
+                const avgConfidence = diagnoses.reduce((sum, d) => sum + (d.confidence || 0), 0) / diagnoses.length;
                 doc.fontSize(12).text(`Average Confidence: ${avgConfidence.toFixed(2)}`);
-                
-                doc.moveDown();
+            } else {
+                doc.fontSize(12).text('No diagnoses found for the selected period');
+            }
+            doc.moveDown();
+
+            // Add treatments summary if available
+            const treatments = await MySQL.Treatment.findAll({
+                where: {
+                    user_id: userId,
+                    ...(startDate && endDate ? {
+                        created_at: {
+                            [Op.between]: [new Date(startDate), new Date(endDate)]
+                        }
+                    } : {})
+                }
+            });
+
+            if (treatments.length > 0) {
+                doc.fontSize(14).text('Treatment Summary');
+                const treatmentsByType = treatments.reduce((acc, t) => {
+                    acc[t.treatment_type] = (acc[t.treatment_type] || 0) + 1;
+                    return acc;
+                }, {});
+
+                Object.entries(treatmentsByType).forEach(([type, count]) => {
+                    doc.fontSize(12).text(`${type}: ${count} treatments`);
+                });
             }
 
             // Finalize PDF
