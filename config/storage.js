@@ -48,6 +48,27 @@ try {
 const bucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
 console.log('Using GCS bucket:', process.env.GOOGLE_CLOUD_BUCKET_NAME);
 
+// Disable uniform bucket-level access
+const setupBucket = async () => {
+  try {
+    console.log('Checking bucket configuration...');
+    await bucket.setMetadata({
+      iamConfiguration: {
+        uniformBucketLevelAccess: {
+          enabled: false,
+        },
+      },
+    });
+    console.log('Uniform bucket-level access disabled successfully');
+  } catch (error) {
+    console.error('Error configuring bucket:', error);
+    // Don't throw error as this might fail due to permissions but uploads might still work
+  }
+};
+
+// Run setup
+setupBucket().catch(console.error);
+
 // Upload file to Google Cloud Storage
 const uploadFile = async (file) => {
   try {
