@@ -20,7 +20,18 @@ const authLimiter = rateLimit({
   }
 });
 
+// More lenient limiter for profile endpoints
+const profileLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 30, // Limit each IP to 30 requests per minute
+  message: {
+    success: false,
+    message: 'Too many profile requests, please try again after a minute'
+  }
+});
+
 module.exports = {
   apiLimiter,
-  authLimiter
+  authLimiter,
+  profileLimiter
 };

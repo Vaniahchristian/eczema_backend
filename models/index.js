@@ -62,6 +62,7 @@ const MySQL = {
   }, {
     tableName: 'users'
   }),
+
   Patient: sequelize.define('patients', {
     id: {
       type: DataTypes.STRING,
@@ -77,10 +78,15 @@ const MySQL = {
     date_of_birth: DataTypes.DATE,
     gender: DataTypes.STRING,
     medical_history: DataTypes.TEXT,
-    allergies: DataTypes.TEXT
+    allergies: DataTypes.TEXT,
+    region: {
+      type: DataTypes.STRING,
+      allowNull: true
+    }
   }, {
     tableName: 'patients'
   }),
+
   DoctorProfile: sequelize.define('doctor_profiles', {
     id: {
       type: DataTypes.STRING,
@@ -127,6 +133,7 @@ const MySQL = {
   }, {
     tableName: 'doctor_profiles'
   }),
+
   Diagnosis: sequelize.define('diagnoses', {
     id: {
       type: DataTypes.STRING,
@@ -151,35 +158,97 @@ const MySQL = {
     image_url: DataTypes.STRING
   }, {
     tableName: 'diagnoses'
+  }),
+
+  Treatment: sequelize.define('treatments', {
+    id: {
+      type: DataTypes.STRING,
+      primaryKey: true
+    },
+    diagnosis_id: {
+      type: DataTypes.STRING,
+      references: {
+        model: 'diagnoses',
+        key: 'id'
+      }
+    },
+    user_id: {
+      type: DataTypes.STRING,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
+    },
+    treatment_type: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    description: DataTypes.TEXT,
+    outcome: {
+      type: DataTypes.ENUM('improved', 'no_change', 'worsened'),
+      defaultValue: 'no_change'
+    },
+    start_date: DataTypes.DATE,
+    end_date: DataTypes.DATE
+  }, {
+    tableName: 'treatments'
   })
 };
 
 // Create associations
 MySQL.User.hasOne(MySQL.Patient, {
   foreignKey: 'user_id',
-  as: 'patient'
+  as: 'patient',
+  onDelete: 'CASCADE'
 });
 MySQL.Patient.belongsTo(MySQL.User, {
   foreignKey: 'user_id',
-  as: 'user'
+  as: 'user',
+  onDelete: 'CASCADE'
 });
 
 MySQL.User.hasOne(MySQL.DoctorProfile, {
   foreignKey: 'user_id',
-  as: 'doctor_profile'
+  as: 'doctor_profile',
+  onDelete: 'CASCADE'
 });
 MySQL.DoctorProfile.belongsTo(MySQL.User, {
   foreignKey: 'user_id',
-  as: 'user'
+  as: 'user',
+  onDelete: 'CASCADE'
 });
 
 MySQL.User.hasMany(MySQL.Diagnosis, {
   foreignKey: 'user_id',
-  as: 'diagnoses'
+  as: 'diagnoses',
+  onDelete: 'CASCADE'
 });
 MySQL.Diagnosis.belongsTo(MySQL.User, {
   foreignKey: 'user_id',
-  as: 'user'
+  as: 'user',
+  onDelete: 'CASCADE'
+});
+
+MySQL.User.hasMany(MySQL.Treatment, {
+  foreignKey: 'user_id',
+  as: 'treatments',
+  onDelete: 'CASCADE'
+});
+MySQL.Treatment.belongsTo(MySQL.User, {
+  foreignKey: 'user_id',
+  as: 'user',
+  onDelete: 'CASCADE'
+});
+
+MySQL.Diagnosis.hasMany(MySQL.Treatment, {
+  foreignKey: 'diagnosis_id',
+  as: 'treatments',
+  onDelete: 'CASCADE'
+});
+MySQL.Treatment.belongsTo(MySQL.Diagnosis, {
+  foreignKey: 'diagnosis_id',
+  as: 'diagnosis',
+  onDelete: 'CASCADE'
 });
 
 module.exports = {
