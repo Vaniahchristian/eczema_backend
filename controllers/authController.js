@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { MySQL } = require('../models');
+const { MySQL, sequelize } = require('../models');
 const { v4: uuidv4 } = require('uuid');
 
 const generateToken = (userId) => {
@@ -80,7 +80,7 @@ exports.register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(userData.password, salt);
 
     // Start a transaction for atomicity
-    const transaction = await MySQL.sequelize.transaction();
+    const transaction = await sequelize.transaction();
     try {
       // Create user with UUID
       const userId = uuidv4();
@@ -135,13 +135,12 @@ exports.register = async (req, res) => {
 
       // Commit transaction
       await transaction.commit();
+      console.log('✅ User registered successfully');
 
       // Generate token
-      console.log('🔑 Generating token');
       const token = generateToken(userId);
 
-      // Set token in cookie
-      console.log('🍪 Setting cookie');
+      // Set cookie
       res.cookie('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -149,26 +148,19 @@ exports.register = async (req, res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
       });
 
-      console.log('✅ Registration successful');
       res.status(201).json({
         success: true,
         message: 'User registered successfully',
         data: {
-          token,
-          user: {
-            id: userId,
-            email: userData.email,
-            role: userData.role,
-            first_name: userData.first_name,
-            last_name: userData.last_name,
-            date_of_birth: userData.date_of_birth,
-            gender: userData.gender,
-            ...(userData.role === 'doctor' && { specialty })
-          }
+          id: userId,
+          email: userData.email,
+          role: userData.role,
+          first_name: userData.first_name,
+          last_name: userData.last_name,
+          token
         }
       });
     } catch (error) {
-      // Rollback transaction on error
       await transaction.rollback();
       throw error;
     }
@@ -176,7 +168,7 @@ exports.register = async (req, res) => {
     console.error('❌ Registration error:', error);
     res.status(500).json({
       success: false,
-      message: 'Error during registration',
+      message: 'Error registering user',
       error: error.message
     });
   }

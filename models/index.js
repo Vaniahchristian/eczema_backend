@@ -184,5 +184,6 @@ MySQL.Diagnosis.belongsTo(MySQL.User, {
 
 module.exports = {
   MySQL,
-  User
+  User,
+  sequelize
 };
