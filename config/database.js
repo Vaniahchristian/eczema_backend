@@ -38,7 +38,27 @@ const sequelize = new Sequelize(
       ssl: !isDev ? {
         rejectUnauthorized: false
       } : false,
-      connectTimeout: 60000
+      connectTimeout: 60000,
+      // Fix for datetime issues
+      dateStrings: true,
+      typeCast: function (field, next) {
+        if (field.type === 'DATETIME') {
+          return field.string();
+        }
+        return next();
+      }
+    },
+    define: {
+      // Add default timestamp values
+      timestamps: true,
+      createdAt: {
+        type: 'TIMESTAMP',
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+      updatedAt: {
+        type: 'TIMESTAMP',
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+      }
     },
     logging: isDev ? console.log : false
   }

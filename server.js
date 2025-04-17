@@ -60,31 +60,32 @@ connectMongoDBWithRetry();
     await sequelize.authenticate();
     console.log('MySQL connected successfully');
 
-    // In production, only alter tables, never force
-    if (process.env.NODE_ENV === 'production') {
-      console.log('Production environment detected, altering tables...');
+    // Sync strategy based on environment
+    const syncOptions = {
+      // In production, only alter tables, never force
+      alter: process.env.NODE_ENV === 'production' ? true : false,
+      // In development, use force only if explicitly set
+      force: process.env.NODE_ENV !== 'production' && process.env.FORCE_SYNC === 'true'
+    };
+
+    if (syncOptions.force) {
+      console.log('Force sync enabled, dropping and recreating tables...');
+      // Drop tables in correct order
+      await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
+      await sequelize.sync({ force: true });
+      await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
+    } else if (syncOptions.alter) {
+      console.log(`${process.env.NODE_ENV} environment detected, altering tables...`);
       await sequelize.sync({ alter: true });
     } else {
-      // In development, alter tables by default
-      console.log('Development environment detected, altering tables...');
-      await sequelize.sync({ alter: true });
-      
-      // Only force sync if explicitly set in environment
-      if (process.env.FORCE_SYNC === 'true') {
-        console.log('Force sync enabled, dropping and recreating tables...');
-        await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
-        await MySQL.Diagnosis.sync({ force: true });
-        await MySQL.Patient.sync({ force: true });
-        await MySQL.User.sync({ force: true });
-        await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
-      }
+      console.log('Synchronizing tables without modifications...');
+      await sequelize.sync();
     }
 
     console.log('MySQL models synced successfully');
-
   } catch (error) {
     console.error('MySQL connection/sync error:', error);
-    // Don't exit in production, just log the error
+    // In development, exit on error
     if (process.env.NODE_ENV !== 'production') {
       process.exit(1);
     }
