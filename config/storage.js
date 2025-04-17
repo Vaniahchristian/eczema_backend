@@ -5,10 +5,21 @@ let storage;
 if (process.env.NODE_ENV === 'production') {
   // In production (Render), use credentials from environment variable
   console.log('Initializing GCS in production mode');
-  storage = new Storage({
-    projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
-    credentials: JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS || '{}')
-  });
+  try {
+    const credentials = JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS || '{}');
+    console.log('Parsed credentials:', {
+      projectId: credentials.project_id,
+      clientEmail: credentials.client_email,
+      hasPrivateKey: !!credentials.private_key
+    });
+    storage = new Storage({
+      projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
+      credentials
+    });
+  } catch (error) {
+    console.error('Error parsing GCS credentials:', error);
+    throw error;
+  }
 } else {
   // In development, use key file
   console.log('Initializing GCS in development mode');
@@ -25,7 +36,12 @@ console.log('Using GCS bucket:', process.env.GOOGLE_CLOUD_BUCKET_NAME);
 // Upload file to Google Cloud Storage
 const uploadFile = async (file) => {
   try {
-    console.log('Starting file upload to GCS:', file.originalname);
+    console.log('Starting file upload to GCS:', {
+      filename: file.originalname,
+      mimetype: file.mimetype,
+      size: file.size
+    });
+
     const blob = bucket.file(file.originalname);
     const blobStream = blob.createWriteStream({
       resumable: false,
@@ -42,6 +58,7 @@ const uploadFile = async (file) => {
 
       blobStream.on('finish', async () => {
         try {
+          console.log('Stream finished, making blob public...');
           // Make the file public
           await blob.makePublic();
           
@@ -55,6 +72,7 @@ const uploadFile = async (file) => {
         }
       });
 
+      console.log('Writing buffer to blob stream...');
       blobStream.end(file.buffer);
     });
   } catch (error) {

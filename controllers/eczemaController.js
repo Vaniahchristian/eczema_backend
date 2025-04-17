@@ -86,17 +86,31 @@ exports.analyzeImage = async (req, res) => {
       });
     }
 
+    console.log('File received:', {
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size
+    });
+
     // Upload image to Google Cloud Storage
-    console.log('Uploading image to Google Cloud Storage...');
+    console.log('Starting Google Cloud Storage upload...');
     let imageUrl;
     try {
+      console.log('GCS Config:', {
+        projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
+        bucketName: process.env.GOOGLE_CLOUD_BUCKET_NAME,
+        hasCredentials: !!process.env.GOOGLE_CLOUD_CREDENTIALS
+      });
+      
       imageUrl = await uploadFile(req.file);
       console.log('Successfully uploaded to GCS, URL:', imageUrl);
     } catch (error) {
       console.error('GCS Upload error:', error);
-      throw error;
+      // Continue with ML analysis even if upload fails
+      imageUrl = null;
     }
 
+    console.log('Starting ML analysis...');
     // Analyze the image using the buffer from multer
     const analysis = await analyzeEczemaImage(req.file.buffer);
 
