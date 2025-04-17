@@ -49,16 +49,11 @@ const sequelize = new Sequelize(
       }
     },
     define: {
-      // Add default timestamp values
+      // Add default timestamp handling
       timestamps: true,
-      createdAt: {
-        type: 'TIMESTAMP',
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-      },
-      updatedAt: {
-        type: 'TIMESTAMP',
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
-      }
+      underscored: true,
+      createdAt: 'created_at',
+      updatedAt: 'updated_at'
     },
     logging: isDev ? console.log : false
   }
