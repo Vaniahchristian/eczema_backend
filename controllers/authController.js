@@ -55,13 +55,13 @@ exports.register = async (req, res) => {
     }
 
     // Validate doctor-specific fields
-    if (userData.role === 'doctor' && !specialty) {
-      console.log('❌ Specialty required for doctor');
-      return res.status(400).json({
-        success: false,
-        message: 'Specialty is required for doctor registration'
-      });
-    }
+    // if (userData.role === 'doctor' && !specialty) {
+    //   console.log('❌ Specialty required for doctor');
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: 'Specialty is required for doctor registration'
+    //   });
+    // }
 
     // Check if user already exists
     console.log('🔍 Checking if user exists:', userData.email);
@@ -82,11 +82,10 @@ exports.register = async (req, res) => {
     // Start a transaction for atomicity
     const transaction = await sequelize.transaction();
     try {
-      // Create user with UUID
-      const userId = uuidv4();
-      console.log('👤 Creating user with ID:', userId);
+      // Create user
+      console.log('👤 Creating user...');
       const user = await MySQL.User.create({
-        id: userId,
+        id: uuidv4(),
         email: userData.email,
         password: hashedPassword,
         role: userData.role,
@@ -96,32 +95,29 @@ exports.register = async (req, res) => {
         gender: userData.gender
       }, { transaction });
 
-      // If user is a patient, create patient profile
-      if (userData.role === 'patient' || !userData.role) {
-        console.log('🏥 Creating patient profile');
+      // Create role-specific profile
+      if (userData.role === 'patient') {
+        console.log('🏥 Creating patient profile...');
         await MySQL.Patient.create({
           id: uuidv4(),
-          user_id: userId,
+          user_id: user.id,
           date_of_birth: userData.date_of_birth,
           gender: userData.gender,
           medical_history: '',
           allergies: ''
         }, { transaction });
-      }
-      // If user is a doctor, create doctor profile
-      else if (userData.role === 'doctor') {
-        console.log('👩‍⚕️ Creating doctor profile');
+      } else if (userData.role === 'doctor') {
+        console.log('👨‍⚕️ Creating doctor profile...');
         await MySQL.DoctorProfile.create({
           id: uuidv4(),
-          user_id: userId,
-          specialty: specialty,
-          bio: '',
-          rating: 5.0,
-          experience_years: 0,
-          clinic_name: '',
-          clinic_address: '',
-          consultation_fee: 0,
-          available_hours: {
+          user_id: user.id,
+          specialty: userData.specialty || 'Dermatologist',
+          bio: userData.bio || '',
+          experience_years: userData.experience_years || 0,
+          clinic_name: userData.clinic_name || '',
+          clinic_address: userData.clinic_address || '',
+          consultation_fee: userData.consultation_fee || 0,
+          available_hours: userData.available_hours || {
             monday: [],
             tuesday: [],
             wednesday: [],
@@ -138,7 +134,7 @@ exports.register = async (req, res) => {
       console.log('✅ User registered successfully');
 
       // Generate token
-      const token = generateToken(userId);
+      const token = generateToken(user.id);
 
       // Set cookie
       res.cookie('token', token, {
@@ -152,7 +148,7 @@ exports.register = async (req, res) => {
         success: true,
         message: 'User registered successfully',
         data: {
-          id: userId,
+          id: user.id,
           email: userData.email,
           role: userData.role,
           first_name: userData.first_name,

@@ -107,7 +107,8 @@ const MySQL = {
     },
     specialty: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true,
+      defaultValue: 'Dermatologist'
     },
     bio: DataTypes.TEXT,
     rating: {
