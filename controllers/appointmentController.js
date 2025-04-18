@@ -3,7 +3,7 @@ const { MySQL } = require('../models');
 const { sequelize } = require('../config/database');
 
 // Create a new appointment
-exports.createAppointment = async (req, res) => {
+const createAppointment = async (req, res) => {
   const { doctor_id, patient_id, appointment_date, reason, appointment_type, mode, duration } = req.body;
 
   try {
@@ -34,7 +34,7 @@ exports.createAppointment = async (req, res) => {
 };
 
 // Get appointment by ID
-exports.getAppointmentById = async (req, res) => {
+const getAppointmentById = async (req, res) => {
   try {
     const appointment = await MySQL.Appointment.findByPk(req.params.id, {
       include: [
@@ -77,7 +77,7 @@ exports.getAppointmentById = async (req, res) => {
 };
 
 // Get doctor's appointments
-exports.getDoctorAppointments = async (req, res) => {
+const getDoctorAppointments = async (req, res) => {
   try {
     const { status, startDate, endDate } = req.query;
     const where = { doctor_id: req.params.doctorId };
@@ -125,7 +125,7 @@ exports.getDoctorAppointments = async (req, res) => {
 };
 
 // Get patient's appointments
-exports.getPatientAppointments = async (req, res) => {
+const getPatientAppointments = async (req, res) => {
   try {
     const { status } = req.query;
     const where = { patient_id: req.params.patientId };
@@ -165,7 +165,7 @@ exports.getPatientAppointments = async (req, res) => {
 };
 
 // Update appointment status
-exports.updateAppointmentStatus = async (req, res) => {
+const updateAppointmentStatus = async (req, res) => {
   try {
     const [updated] = await MySQL.Appointment.update({
       status: req.body.status
@@ -194,7 +194,7 @@ exports.updateAppointmentStatus = async (req, res) => {
 };
 
 // Update appointment
-exports.updateAppointment = async (req, res) => {
+const updateAppointment = async (req, res) => {
   try {
     const [updated] = await MySQL.Appointment.update(req.body, {
       where: { id: req.params.id }
@@ -221,7 +221,7 @@ exports.updateAppointment = async (req, res) => {
 };
 
 // Check doctor's availability
-exports.checkAvailability = async (req, res) => {
+const checkAvailability = async (req, res) => {
   try {
     const { doctorId, appointmentDate } = req.query;
     const date = new Date(appointmentDate);
@@ -254,4 +254,14 @@ exports.checkAvailability = async (req, res) => {
       error: error.message
     });
   }
+};
+
+module.exports = {
+  createAppointment,
+  getAppointmentById,
+  getDoctorAppointments,
+  getPatientAppointments,
+  updateAppointmentStatus,
+  updateAppointment,
+  checkAvailability
 };
