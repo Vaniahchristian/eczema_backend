@@ -11,15 +11,15 @@ const createAppointment = async (req, res) => {
       doctor_id,
       patient_id,
       appointment_date,
-      reason,
-      mode = 'video',
-      duration = 30,
+      reason_for_visit,
+      mode,
+      duration,
       appointment_type = 'first_visit'
     } = req.body;
 
     // Validate required fields
-    if (!doctor_id || !patient_id || !appointment_date) {
-      console.error('Missing required fields:', { doctor_id, patient_id, appointment_date });
+    if (!doctor_id || !patient_id || !appointment_date || !reason_for_visit) {
+      console.error('Missing required fields:', { doctor_id, patient_id, appointment_date, reason_for_visit });
       return res.status(400).json({
         success: false,
         message: 'Missing required fields'
@@ -43,23 +43,17 @@ const createAppointment = async (req, res) => {
 
     // Create appointment using Sequelize
     const appointment = await MySQL.Appointment.create({
-      id: uuidv4(),
+      appointment_id: uuidv4(),
       doctor_id,
       patient_id,
       appointment_date,
-      reason: reason || '',
-      mode,
-      duration,
+      reason_for_visit,
       appointment_type,
-      status: 'pending'
+      status: 'pending',
+      notes: ''
     });
 
-    console.log('Appointment created successfully:', {
-      appointmentId: appointment.id,
-      status: 'pending'
-    });
-
-    console.log('New appointment details:', appointment);
+    console.log('Appointment created successfully:', appointment);
 
     res.status(201).json({
       success: true,

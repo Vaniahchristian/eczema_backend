@@ -2,15 +2,15 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../config/database');
 
 const Appointment = sequelize.define('appointments', {
-  id: {
+  appointment_id: {
     type: DataTypes.STRING,
     primaryKey: true
   },
   doctor_id: {
     type: DataTypes.STRING,
     references: {
-      model: 'users',
-      key: 'id'
+      model: 'doctor_profiles',
+      key: 'doctor_id'
     },
     allowNull: false
   },
@@ -18,7 +18,7 @@ const Appointment = sequelize.define('appointments', {
     type: DataTypes.STRING,
     references: {
       model: 'users',
-      key: 'id'
+      key: 'user_id'
     },
     allowNull: false
   },
@@ -26,12 +26,12 @@ const Appointment = sequelize.define('appointments', {
     type: DataTypes.DATE,
     allowNull: false
   },
-  reason: {
+  reason_for_visit: {
     type: DataTypes.TEXT,
-    allowNull: true
+    allowNull: false
   },
   status: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM('pending', 'confirmed', 'completed', 'cancelled'),
     defaultValue: 'pending',
     allowNull: false
   },
