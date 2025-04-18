@@ -14,7 +14,7 @@ const createAppointment = async (req, res) => {
       reason,
       mode,
       duration,
-      appointment_type = 'general' // Default to 'general' if not specified
+      appointment_type = 'first_visit' // Default to 'first_visit' if not specified
     } = req.body;
 
     // Validate required fields
@@ -27,12 +27,12 @@ const createAppointment = async (req, res) => {
     }
 
     // Validate appointment_type
-    const validTypes = ['general', 'follow_up', 'emergency'];
+    const validTypes = ['first_visit', 'follow_up', 'emergency'];
     if (appointment_type && !validTypes.includes(appointment_type)) {
       console.error('Invalid appointment type:', appointment_type);
       return res.status(400).json({
         success: false,
-        message: 'Invalid appointment type. Must be one of: general, follow_up, emergency'
+        message: 'Invalid appointment type. Must be one of: first_visit, follow_up, emergency'
       });
     }
 
@@ -50,7 +50,7 @@ const createAppointment = async (req, res) => {
       reason: reason || '',
       mode: mode || 'video',
       duration: duration || 30,
-      appointment_type: appointment_type || 'general',
+      appointment_type: appointment_type || 'first_visit',
       status: 'pending'
     });
 
