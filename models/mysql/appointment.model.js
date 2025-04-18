@@ -32,23 +32,13 @@ const Appointment = sequelize.define('appointments', {
   },
   status: {
     type: DataTypes.ENUM('pending', 'confirmed', 'completed', 'cancelled'),
-    defaultValue: 'pending',
-    allowNull: false
+    allowNull: false,
+    defaultValue: 'pending'
   },
   appointment_type: {
     type: DataTypes.ENUM('first_visit', 'follow_up', 'emergency'),
-    defaultValue: 'first_visit',
-    allowNull: false
-  },
-  mode: {
-    type: DataTypes.STRING,
-    defaultValue: 'video',
-    allowNull: false
-  },
-  duration: {
-    type: DataTypes.INTEGER,
-    defaultValue: 30,
-    allowNull: false
+    allowNull: false,
+    defaultValue: 'first_visit'
   },
   notes: {
     type: DataTypes.TEXT,
@@ -60,19 +50,5 @@ const Appointment = sequelize.define('appointments', {
   createdAt: 'created_at',
   updatedAt: 'updated_at'
 });
-
-// Add associations
-Appointment.associate = (models) => {
-  Appointment.belongsTo(models.User, {
-    foreignKey: 'doctor_id',
-    as: 'doctor',
-    onDelete: 'CASCADE'
-  });
-  Appointment.belongsTo(models.User, {
-    foreignKey: 'patient_id',
-    as: 'patient',
-    onDelete: 'CASCADE'
-  });
-};
 
 module.exports = Appointment;
