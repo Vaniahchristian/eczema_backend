@@ -1,32 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const { protect } = require('../middleware/auth');
-const { authorize } = require('../middleware/auth');
-const {
-    createAppointment,
-    getAppointments,
-    updateAppointmentStatus,
-    getDoctorAvailability,
-    getUpcomingAppointments,
-    rescheduleAppointment
-} = require('../controllers/appointmentController');
+const { auth } = require('../middleware/auth');
+const appointmentController = require('../controllers/appointmentController');
 
-// Create new appointment
-router.post('/', protect, createAppointment);
+// Create a new appointment
+router.post('/', auth, appointmentController.createAppointment);
 
-// Get all appointments (with filters for patient/doctor)
-router.get('/', protect, getAppointments);
+// Get appointment by ID
+router.get('/:id', auth, appointmentController.getAppointmentById);
 
-// Get upcoming appointments
-router.get('/upcoming', protect, getUpcomingAppointments);
+// Get doctor's appointments
+router.get('/doctor/:doctorId', auth, appointmentController.getDoctorAppointments);
 
-// Get doctor's available time slots
-router.get('/availability/:doctorId', protect, getDoctorAvailability);
+// Get patient's appointments
+router.get('/patient/:patientId', auth, appointmentController.getPatientAppointments);
 
-// Update appointment status (confirm/cancel/complete)
-router.put('/:appointmentId/status', protect, updateAppointmentStatus);
+// Update appointment status
+router.patch('/:id/status', auth, appointmentController.updateAppointmentStatus);
 
-// Reschedule appointment
-router.put('/:appointmentId/reschedule', protect, rescheduleAppointment);
+// Update appointment details
+router.put('/:id', auth, appointmentController.updateAppointment);
+
+// Check doctor's availability
+router.get('/availability', auth, appointmentController.checkAvailability);
 
 module.exports = router;

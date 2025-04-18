@@ -216,6 +216,56 @@ const MySQL = {
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
+  }),
+
+  Appointment: sequelize.define('appointments', {
+    id: {
+      type: DataTypes.STRING,
+      primaryKey: true
+    },
+    doctor_id: {
+      type: DataTypes.STRING,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
+    },
+    patient_id: {
+      type: DataTypes.STRING,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
+    },
+    appointment_date: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    reason: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    status: {
+      type: DataTypes.ENUM('pending', 'confirmed', 'cancelled', 'completed'),
+      defaultValue: 'pending'
+    },
+    appointment_type: {
+      type: DataTypes.ENUM('regular', 'follow_up', 'emergency'),
+      defaultValue: 'regular'
+    },
+    mode: {
+      type: DataTypes.ENUM('in_person', 'video', 'phone'),
+      defaultValue: 'in_person'
+    },
+    duration: {
+      type: DataTypes.INTEGER,
+      defaultValue: 30
+    }
+  }, {
+    tableName: 'appointments',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
   })
 };
 
@@ -272,6 +322,30 @@ MySQL.Diagnosis.hasMany(MySQL.Treatment, {
 MySQL.Treatment.belongsTo(MySQL.Diagnosis, {
   foreignKey: 'diagnosis_id',
   as: 'diagnosis',
+  onDelete: 'CASCADE'
+});
+
+MySQL.User.hasMany(MySQL.Appointment, {
+  foreignKey: 'doctor_id',
+  as: 'doctor_appointments',
+  onDelete: 'CASCADE'
+});
+
+MySQL.User.hasMany(MySQL.Appointment, {
+  foreignKey: 'patient_id',
+  as: 'patient_appointments',
+  onDelete: 'CASCADE'
+});
+
+MySQL.Appointment.belongsTo(MySQL.User, {
+  foreignKey: 'doctor_id',
+  as: 'doctor',
+  onDelete: 'CASCADE'
+});
+
+MySQL.Appointment.belongsTo(MySQL.User, {
+  foreignKey: 'patient_id',
+  as: 'patient',
   onDelete: 'CASCADE'
 });
 
