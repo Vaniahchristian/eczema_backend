@@ -4,30 +4,73 @@ const { sequelize } = require('../config/database');
 
 // Create a new appointment
 const createAppointment = async (req, res) => {
-  const { doctor_id, patient_id, appointment_date, reason, appointment_type, mode, duration } = req.body;
-
   try {
+    console.log('Creating appointment with data:', req.body);
+
+    const {
+      doctor_id,
+      patient_id,
+      appointment_date,
+      reason,
+      mode,
+      duration,
+      appointment_type = 'general' // Default to 'general' if not specified
+    } = req.body;
+
+    // Validate required fields
+    if (!doctor_id || !patient_id || !appointment_date) {
+      console.error('Missing required fields:', { doctor_id, patient_id, appointment_date });
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields'
+      });
+    }
+
+    // Validate appointment_type
+    const validTypes = ['general', 'follow_up', 'emergency'];
+    if (appointment_type && !validTypes.includes(appointment_type)) {
+      console.error('Invalid appointment type:', appointment_type);
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid appointment type. Must be one of: general, follow_up, emergency'
+      });
+    }
+
+    console.log('Checking doctor availability for:', {
+      doctorId: doctor_id,
+      appointmentDate: appointment_date
+    });
+
     // Create appointment using Sequelize
     const appointment = await MySQL.Appointment.create({
       id: uuidv4(),
       doctor_id,
       patient_id,
       appointment_date,
-      reason,
-      appointment_type,
-      mode,
-      duration,
+      reason: reason || '',
+      mode: mode || 'video',
+      duration: duration || 30,
+      appointment_type: appointment_type || 'general',
       status: 'pending'
     });
 
+    console.log('Appointment created successfully:', {
+      appointmentId: appointment.id,
+      status: 'pending'
+    });
+
+    console.log('New appointment details:', appointment);
+
     res.status(201).json({
       success: true,
-      data: appointment
+      data: appointment,
+      message: 'Appointment created successfully'
     });
   } catch (error) {
-    console.error('Create appointment error:', error);
+    console.error('Error creating appointment:', error);
     res.status(500).json({
       success: false,
+      message: 'Error creating appointment',
       error: error.message
     });
   }
