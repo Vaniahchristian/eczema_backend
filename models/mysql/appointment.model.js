@@ -28,21 +28,21 @@ const Appointment = sequelize.define('appointments', {
   },
   reason: {
     type: DataTypes.TEXT,
-    allowNull: false
+    allowNull: true
   },
   status: {
-    type: DataTypes.ENUM('pending', 'confirmed', 'completed', 'cancelled'),
+    type: DataTypes.STRING,
     defaultValue: 'pending',
     allowNull: false
   },
   appointment_type: {
-    type: DataTypes.ENUM('regular', 'first_visit', 'follow_up', 'emergency'),
-    defaultValue: 'regular',
+    type: DataTypes.ENUM('first_visit', 'follow_up', 'emergency'),
+    defaultValue: 'first_visit',
     allowNull: false
   },
   mode: {
     type: DataTypes.STRING,
-    defaultValue: 'In-person',
+    defaultValue: 'video',
     allowNull: false
   },
   duration: {
