@@ -15,6 +15,15 @@ const mysqlConfig = {
   database: process.env.MYSQL_DATABASE || 'eczema_dev'
 };
 
+// Override port for production environment if connecting to Railway.app
+if (!isDev && !isTest) {
+  mysqlConfig.host = 'centerbeam.proxy.rlwy.net';
+  mysqlConfig.port = 17053;
+  mysqlConfig.user = 'root';
+  mysqlConfig.password = 'xmFjYAcsjbnLaJXMdiuYhEnZDkpNerWy';
+  mysqlConfig.database = 'railway';
+}
+
 // Create MySQL connection pool
 const mysqlPool = mysql.createPool(mysqlConfig);
 
@@ -34,10 +43,10 @@ const sequelize = new Sequelize(
       idle: 10000
     },
     dialectOptions: {
-      // Enable SSL only for production (Railway)
-      ssl: !isDev ? {
+      // Explicitly disable SSL for local development
+      ssl: isDev ? null : {
         rejectUnauthorized: false
-      } : false,
+      },
       connectTimeout: 60000,
       // Fix for datetime issues
       dateStrings: true,

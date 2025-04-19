@@ -36,7 +36,7 @@ const Appointment = sequelize.define('appointments', {
     defaultValue: 'pending'
   },
   appointment_type: {
-    type: DataTypes.ENUM('first_visit', 'follow_up', 'emergency'),
+    type: DataTypes.STRING(20),
     allowNull: false,
     defaultValue: 'first_visit'
   },

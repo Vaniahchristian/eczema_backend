@@ -9,8 +9,8 @@ const dbConfig = {
     port: process.env.MYSQL_PORT || 3306,
     user: process.env.MYSQL_USER || 'root',
     password: process.env.MYSQL_PASSWORD || '',
-    database: process.env.MYSQL_DATABASE || 'railway',
-    ssl: {
+    database: process.env.MYSQL_DATABASE || 'eczema_dev',
+    ssl: process.env.NODE_ENV === 'development' ? null : {
         rejectUnauthorized: false
     }
 };
@@ -107,11 +107,11 @@ async function createTables() {
                 specialty VARCHAR(100) NOT NULL,
                 bio TEXT,
                 rating DECIMAL(3,2) DEFAULT 5.0,
-                experience_years INT DEFAULT 0,
+                experience_years INT,
                 clinic_name VARCHAR(255),
                 clinic_address TEXT,
-                consultation_fee DECIMAL(10,2) DEFAULT 0,
-                available_hours JSON,
+                consultation_fee DECIMAL(10,2),
+                available_hours TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -123,8 +123,8 @@ async function createTables() {
             CREATE TABLE IF NOT EXISTS diagnoses (
                 id VARCHAR(36) PRIMARY KEY,
                 user_id VARCHAR(36) NOT NULL,
-                severity ENUM('mild', 'moderate', 'severe') NOT NULL,
-                confidence FLOAT NOT NULL,
+                severity VARCHAR(50) NOT NULL,
+                confidence DECIMAL(5,2) NOT NULL,
                 notes TEXT,
                 image_url VARCHAR(255),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -140,12 +140,16 @@ async function createTables() {
                 doctor_id VARCHAR(36) NOT NULL,
                 patient_id VARCHAR(36) NOT NULL,
                 appointment_date DATETIME NOT NULL,
-                reason TEXT,
-                status ENUM('pending', 'confirmed', 'cancelled', 'completed', 'rescheduled') DEFAULT 'pending',
+                status ENUM('pending', 'confirmed', 'completed', 'cancelled') NOT NULL,
+                reason_for_visit TEXT NOT NULL,
+                appointment_type VARCHAR(20) NOT NULL,
+                mode VARCHAR(20),
+                duration INT,
+                notes TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                FOREIGN KEY (doctor_id) REFERENCES users(id) ON DELETE CASCADE,
-                FOREIGN KEY (patient_id) REFERENCES users(id) ON DELETE CASCADE
+                FOREIGN KEY (patient_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (doctor_id) REFERENCES doctor_profiles(id) ON DELETE CASCADE
             )
         `);
 
@@ -163,31 +167,49 @@ async function insertDummyData() {
 
     try {
         console.log('Inserting dummy data...');
+
         const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
         // Create a test patient
         const patientId = uuidv4();
         const patientUserId = uuidv4();
-        const patientPassword = await bcrypt.hash('testpassword', 10);
+        const patientPassword = await bcrypt.hash('patientpass', 10);
 
         await connection.query(`
             INSERT INTO users (id, email, password, role, first_name, last_name, date_of_birth, gender, created_at, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [patientUserId, 'test@example.com', patientPassword, 'patient', 'Test', 'User', '1990-01-01', 'male', now, now]);
+        `, [patientUserId, 'patient@example.com', patientPassword, 'patient', 'Alex', 'Johnson', '1990-05-20', 'male', now, now]);
 
         await connection.query(`
             INSERT INTO patients (id, user_id, date_of_birth, gender, medical_history, allergies, created_at, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `, [patientId, patientUserId, '1990-01-01', 'male', 'No significant history', 'None', now, now]);
+        `, [patientId, patientUserId, '1990-05-20', 'male', 'History of eczema', 'Peanuts, Pollen', now, now]);
 
         await connection.query(`
             INSERT INTO patient_profiles (id, user_id, height, weight, blood_type, medical_history, allergies, medications, created_at, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [uuidv4(), patientUserId, 175.5, 70.0, 'O+', 'No significant history', 'None', 'None', now, now]);
+        `, [
+            uuidv4(),
+            patientUserId,
+            175.5,
+            70.2,
+            'O+',
+            'History of eczema since childhood',
+            'Peanuts, Pollen',
+            'Antihistamines, Topical steroids',
+            now,
+            now
+        ]);
+
+        // Create another test patient
+        await connection.query(`
+            INSERT INTO users (id, email, password, role, first_name, last_name, date_of_birth, gender, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [uuidv4(), 'patient2@example.com', await bcrypt.hash('patientpass2', 10), 'patient', 'Sarah', 'Williams', '1985-11-30', 'female', now, now]);
 
         // Create a test doctor
         const doctorId = uuidv4();
-        const doctorUserId = uuidv4(); // Use a new UUID instead of hardcoded
+        const doctorUserId = uuidv4();
         const doctorPassword = await bcrypt.hash('doctorpass', 10);
 
         await connection.query(`

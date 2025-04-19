@@ -63,31 +63,21 @@ connectMongoDBWithRetry();
     await sequelize.authenticate();
     console.log('MySQL connected successfully');
 
-    // Sync strategy based on environment
-    const syncOptions = {
-      // In production, only alter tables, never force
-      alter: process.env.NODE_ENV === 'production' ? true : false,
-      // In development, use force only if explicitly set
-      force: process.env.NODE_ENV !== 'production' && process.env.FORCE_SYNC === 'true'
-    };
-
-    if (syncOptions.force) {
-      console.log('Force sync enabled, dropping and recreating tables...');
-      // Drop tables in correct order
-      await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
-      await sequelize.sync({ force: true });
-      await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
-    } else if (syncOptions.alter) {
-      console.log(`${process.env.NODE_ENV} environment detected, altering tables...`);
-      await sequelize.sync({ alter: true });
+    // In production, we use migrations instead of sync
+    if (process.env.NODE_ENV === 'production') {
+      console.log('Production environment detected, skipping sync...');
     } else {
-      console.log('Synchronizing tables without modifications...');
-      await sequelize.sync();
+      // In development, only sync if explicitly set
+      const shouldSync = process.env.FORCE_SYNC === 'true';
+      if (shouldSync) {
+        console.log('Development sync enabled...');
+        await sequelize.sync();
+      }
     }
 
-    console.log('MySQL models synced successfully');
+    console.log('MySQL setup completed successfully');
   } catch (error) {
-    console.error('MySQL connection/sync error:', error);
+    console.error('MySQL connection error:', error);
     // In development, exit on error
     if (process.env.NODE_ENV !== 'production') {
       process.exit(1);
