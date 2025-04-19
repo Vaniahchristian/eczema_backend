@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const WebSocketServer = require('./websocket');
+const SocketService = require('./services/socketService');
 const { mysqlPool, connectMongoDB, sequelize } = require('./config/database');
 const { MySQL } = require('./models');
 const { apiLimiter, authLimiter } = require('./middleware/rateLimiter');
@@ -24,6 +25,7 @@ const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 const server = http.createServer(app);
+const socketService = new SocketService(server);
 
 // Trust proxy - required for rate limiting behind reverse proxies
 app.set('trust proxy', 1);

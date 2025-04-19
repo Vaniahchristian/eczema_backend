@@ -314,6 +314,192 @@ const messageController = {
                 message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to add reaction'
             });
         }
+    },
+
+    getConversation: async (req, res) => {
+        try {
+            const userId = req.user.id;
+            const { conversationId } = req.params;
+
+            const conversation = await Conversation.findOne({
+                _id: conversationId,
+                'participants.userId': userId
+            }).populate('lastMessage');
+
+            if (!conversation) {
+                return res.status(404).json({ success: false, message: 'Conversation not found' });
+            }
+
+            const otherParticipant = conversation.participants.find(p => p.userId !== userId);
+            const [userRows] = await mysqlPool.query(
+                'SELECT id, first_name AS firstName, last_name AS lastName, role, image_url AS profileImage FROM users WHERE id = ?',
+                [otherParticipant.userId]
+            );
+            const participantDetail = userRows[0];
+
+            const unreadCount = await conversation.getUnreadCount(userId);
+
+            const formattedConversation = {
+                id: conversation._id,
+                participantId: otherParticipant.userId,
+                participantName: participantDetail ? `${participantDetail.firstName} ${participantDetail.lastName}` : 'Unknown User',
+                participantRole: participantDetail?.role || 'unknown',
+                participantImage: participantDetail?.profileImage,
+                unreadCount,
+                status: conversation.isActive ? 'active' : 'archived',
+                lastMessage: conversation.lastMessage ? {
+                    id: conversation.lastMessage._id,
+                    content: conversation.lastMessage.content,
+                    timestamp: conversation.lastMessage.createdAt,
+                    status: conversation.lastMessage.status
+                } : null
+            };
+
+            res.json({ success: true, data: formattedConversation });
+        } catch (error) {
+            console.error('Error in getConversation:', error);
+            res.status(500).json({ success: false, message: 'Failed to fetch conversation' });
+        }
+    },
+
+    updateConversation: async (req, res) => {
+        try {
+            const userId = req.user.id;
+            const { conversationId } = req.params;
+            const { isActive } = req.body;
+
+            const conversation = await Conversation.findOne({
+                _id: conversationId,
+                'participants.userId': userId
+            });
+
+            if (!conversation) {
+                return res.status(404).json({ success: false, message: 'Conversation not found' });
+            }
+
+            conversation.isActive = isActive;
+            await conversation.save();
+
+            res.json({ success: true, data: { isActive } });
+        } catch (error) {
+            console.error('Error in updateConversation:', error);
+            res.status(500).json({ success: false, message: 'Failed to update conversation' });
+        }
+    },
+
+    archiveConversation: async (req, res) => {
+        try {
+            const userId = req.user.id;
+            const { conversationId } = req.params;
+
+            const conversation = await Conversation.findOne({
+                _id: conversationId,
+                'participants.userId': userId
+            });
+
+            if (!conversation) {
+                return res.status(404).json({ success: false, message: 'Conversation not found' });
+            }
+
+            conversation.isActive = false;
+            await conversation.save();
+
+            res.json({ success: true, message: 'Conversation archived successfully' });
+        } catch (error) {
+            console.error('Error in archiveConversation:', error);
+            res.status(500).json({ success: false, message: 'Failed to archive conversation' });
+        }
+    },
+
+    deleteMessage: async (req, res) => {
+        try {
+            const userId = req.user.id;
+            const { messageId } = req.params;
+
+            const message = await Message.findOne({
+                _id: messageId,
+                $or: [
+                    { patientId: userId },
+                    { doctorId: userId }
+                ]
+            });
+
+            if (!message) {
+                return res.status(404).json({ success: false, message: 'Message not found' });
+            }
+
+            // Only allow deletion if user is the sender
+            const isSender = (message.fromDoctor && message.doctorId === userId) ||
+                           (!message.fromDoctor && message.patientId === userId);
+
+            if (!isSender) {
+                return res.status(403).json({ success: false, message: 'Not authorized to delete this message' });
+            }
+
+            // Soft delete by marking content as deleted
+            await Message.updateOne(
+                { _id: messageId },
+                { 
+                    content: '[Message deleted]',
+                    isDeleted: true,
+                    deletedAt: new Date()
+                }
+            );
+
+            res.json({ success: true, message: 'Message deleted successfully' });
+        } catch (error) {
+            console.error('Error in deleteMessage:', error);
+            res.status(500).json({ success: false, message: 'Failed to delete message' });
+        }
+    },
+
+    removeReaction: async (req, res) => {
+        try {
+            const userId = req.user.id;
+            const { messageId } = req.params;
+
+            const message = await Message.findOne({
+                _id: messageId,
+                $or: [
+                    { fromDoctor: true, doctorId: { $ne: userId } },
+                    { fromDoctor: false, patientId: { $ne: userId } }
+                ]
+            });
+
+            if (!message) {
+                return res.status(403).json({ success: false, message: 'Not authorized to remove reaction from this message' });
+            }
+
+            await Message.updateOne({ _id: messageId }, { $unset: { reaction: 1 } });
+
+            res.json({ success: true, message: 'Reaction removed successfully' });
+        } catch (error) {
+            console.error('Error in removeReaction:', error);
+            res.status(500).json({ success: false, message: 'Failed to remove reaction' });
+        }
+    },
+
+    setTypingStatus: async (req, res) => {
+        try {
+            const userId = req.user.id;
+            const { conversationId } = req.params;
+            const { isTyping } = req.body;
+
+            const conversation = await Conversation.findOne({
+                _id: conversationId,
+                'participants.userId': userId
+            });
+
+            if (!conversation) {
+                return res.status(404).json({ success: false, message: 'Conversation not found' });
+            }
+
+            // This will be handled by WebSocket, just return success
+            res.json({ success: true });
+        } catch (error) {
+            console.error('Error in setTypingStatus:', error);
+            res.status(500).json({ success: false, message: 'Failed to set typing status' });
+        }
     }
 };
 

@@ -1,0 +1,390 @@
+{
+	"info": {
+		"_postman_id": "8f5e9b2a-4b2d-4e1c-9f5d-7c9e8b2e4f1d",
+		"name": "Eczema Messaging API",
+		"description": "API collection for testing the Eczema app messaging system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Conversations",
+			"item": [
+				{
+					"name": "Get All Conversations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/conversations",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "messages", "conversations"]
+						}
+					}
+				},
+				{
+					"name": "Create Conversation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"participantId\": \"{{otherUserId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/conversations",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "messages", "conversations"]
+						}
+					}
+				},
+				{
+					"name": "Get Single Conversation",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/conversations/{{conversationId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "messages", "conversations", "{{conversationId}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Conversation",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"isActive\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/conversations/{{conversationId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "messages", "conversations", "{{conversationId}}"]
+						}
+					}
+				},
+				{
+					"name": "Archive Conversation",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/conversations/{{conversationId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "messages", "conversations", "{{conversationId}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Messages",
+			"item": [
+				{
+					"name": "Get Messages in Conversation",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/conversations/{{conversationId}}/messages?page=1&limit=20",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "messages", "conversations", "{{conversationId}}", "messages"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Send Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"Hello, how are you?\",\n    \"type\": \"text\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/conversations/{{conversationId}}/messages",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "messages", "conversations", "{{conversationId}}", "messages"]
+						}
+					}
+				},
+				{
+					"name": "Delete Message",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/conversations/{{conversationId}}/messages/{{messageId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "messages", "conversations", "{{conversationId}}", "messages", "{{messageId}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Message Status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"read\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/messages/{{messageId}}/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "messages", "messages", "{{messageId}}", "status"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Reactions",
+			"item": [
+				{
+					"name": "Add Reaction",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reaction\": \"❤️\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/messages/{{messageId}}/reaction",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "messages", "messages", "{{messageId}}", "reaction"]
+						}
+					}
+				},
+				{
+					"name": "Remove Reaction",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/messages/{{messageId}}/reaction",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "messages", "messages", "{{messageId}}", "reaction"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "File Upload",
+			"item": [
+				{
+					"name": "Upload File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/upload",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "messages", "upload"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Typing",
+			"item": [
+				{
+					"name": "Set Typing Status",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"isTyping\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/conversations/{{conversationId}}/typing",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "messages", "conversations", "{{conversationId}}", "typing"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "conversationId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "messageId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "otherUserId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

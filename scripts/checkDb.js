@@ -10,6 +10,7 @@ async function checkDb() {
         as: 'patient'
       }]
     });
+    
 
     console.log('\nUsers found:', users.length);
     users.forEach(user => {

@@ -10,6 +10,7 @@ async function deployDatabase() {
         await sequelize.authenticate();
         console.log('Database connection successful.');
 
+        
         // Run migrations instead of force sync
         console.log('Running migrations...');
         await execPromise('npx sequelize-cli db:migrate');
