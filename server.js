@@ -7,7 +7,7 @@ const http = require('http');
 const helmet = require('helmet');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const WebSocketServer = require('./websocket');
+const { Server } = require('socket.io');
 const SocketService = require('./services/socketService');
 const { mysqlPool, connectMongoDB, sequelize } = require('./config/database');
 const { MySQL } = require('./models');
@@ -25,7 +25,19 @@ const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 const server = http.createServer(app);
-const socketService = new SocketService(server);
+
+// Create a single Socket.IO instance
+const io = new Server(server, {
+  path: '/socket.io',
+  cors: {
+    origin: process.env.FRONTEND_URL || 'https://eczema-dashboard-final.vercel.app',
+    methods: ['GET', 'POST'],
+    credentials: true
+  },
+  transports: ['websocket', 'polling']
+});
+
+const socketService = new SocketService(io);
 
 // Trust proxy - required for rate limiting behind reverse proxies
 app.set('trust proxy', 1);
@@ -98,12 +110,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Create HTTP server
-const wsServer = new SocketService(server);
-
 // Configure WebSocket heartbeat and timeout
-wsServer.io.engine.pingTimeout = 30000; // 30 seconds
-wsServer.io.engine.pingInterval = 25000; // 25 seconds
+io.engine.pingTimeout = 30000; // 30 seconds
+io.engine.pingInterval = 25000; // 25 seconds
 
 // Handle WebSocket errors at the server level
 server.on('upgrade', (request, socket, head) => {
@@ -165,7 +174,7 @@ app.get('/health', (req, res) => {
     status: 'ok',
     mysql: sequelize.connectionManager.connections.length > 0,
     mongodb: mongoose.connection.readyState === 1,
-    websocket: wsServer.io.engine.clientsCount
+    websocket: io.engine.clientsCount
   });
 });
 
