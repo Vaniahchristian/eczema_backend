@@ -1,29 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/auth');
-const messageController = require('../controllers/messageController');
+const {
+    getConversations,
+    getMessages,
+    sendMessage,
+    createConversation,
+    updateMessageStatus,
+    markConversationAsRead,
+    deleteMessage,
+    reactToMessage
+} = require('../controllers/messageController');
 
-// File upload
-router.post('/upload', protect, messageController.uploadFile);
+// Conversation routes
+router.get('/conversations', protect, getConversations);
+router.post('/conversations', protect, createConversation);
 
-// Conversations
-router.get('/conversations', protect, messageController.getConversations);
-router.post('/conversations', protect, messageController.createConversation);
-router.get('/conversations/:conversationId', protect, messageController.getConversation);
-router.put('/conversations/:conversationId', protect, messageController.updateConversation);
-router.delete('/conversations/:conversationId', protect, messageController.archiveConversation);
-
-// Messages
-router.get('/conversations/:conversationId/messages', protect, messageController.getMessages);
-router.post('/conversations/:conversationId/messages', protect, messageController.sendMessage);
-router.delete('/conversations/:conversationId/messages/:messageId', protect, messageController.deleteMessage);
-
-// Message status and reactions
-router.put('/messages/:messageId/status', protect, messageController.updateMessageStatus);
-router.put('/messages/:messageId/reaction', protect, messageController.addReaction);
-router.delete('/messages/:messageId/reaction', protect, messageController.removeReaction);
-
-// Typing indicators
-router.post('/conversations/:conversationId/typing', protect, messageController.setTypingStatus);
+// Message routes
+router.get('/conversations/:conversationId/messages', protect, getMessages);
+router.post('/conversations/:conversationId/messages', protect, sendMessage);
+router.put('/messages/:messageId/status', protect, updateMessageStatus);
+router.put('/messages/:messageId/reaction', protect, reactToMessage);
+router.delete('/messages/:messageId', protect, deleteMessage);
 
 module.exports = router;

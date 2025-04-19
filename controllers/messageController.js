@@ -3,6 +3,7 @@ const Message = require('../models/mongodb/Message');
 const Conversation = require('../models/mongodb/Conversation');
 const multer = require('multer');
 const path = require('path');
+const { socketService } = require('../services/socketService');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -231,27 +232,86 @@ const messageController = {
 
     createConversation: async (req, res) => {
         try {
-            const userId = req.user.id;
-            const { participantId } = req.body;
+            const { doctorId } = req.body;
+            const patientId = req.user.id;
 
-            const existingConversation = await Conversation.findOne({
-                participants: { $all: [{ userId }, { userId: participantId }] }
-            });
+            // Check if doctor exists
+            const [doctors] = await mysqlPool.query(
+                'SELECT u.id, u.first_name, u.last_name, dp.specialty FROM users u INNER JOIN doctor_profiles dp ON u.id = dp.user_id WHERE u.id = ? AND u.role = "doctor"',
+                [doctorId]
+            );
 
-            if (existingConversation) {
-                return res.json({ success: true, data: { id: existingConversation._id } });
+            if (doctors.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Doctor not found'
+                });
             }
 
-            const conversation = await Conversation.create({
-                participants: [{ userId }, { userId: participantId }]
-            });
+            // Check if conversation already exists
+            const [existingConversations] = await mysqlPool.query(
+                'SELECT id FROM conversations WHERE (patient_id = ? AND doctor_id = ?) OR (patient_id = ? AND doctor_id = ?)',
+                [patientId, doctorId, doctorId, patientId]
+            );
 
-            res.json({ success: true, data: { id: conversation._id } });
+            if (existingConversations.length > 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Conversation already exists'
+                });
+            }
+
+            // Create new conversation
+            const [result] = await mysqlPool.query(
+                'INSERT INTO conversations (patient_id, doctor_id) VALUES (?, ?)',
+                [patientId, doctorId]
+            );
+
+            const conversationId = result.insertId;
+
+            // Get conversation details
+            const [conversations] = await mysqlPool.query(`
+                SELECT 
+                    c.id,
+                    c.patient_id as patientId,
+                    c.doctor_id as doctorId,
+                    CONCAT(u.first_name, ' ', u.last_name) as participantName,
+                    u.role as participantRole,
+                    dp.specialty,
+                    dp.rating
+                FROM conversations c
+                INNER JOIN users u ON u.id = c.doctor_id
+                INNER JOIN doctor_profiles dp ON dp.user_id = c.doctor_id
+                WHERE c.id = ?
+            `, [conversationId]);
+
+            if (conversations.length === 0) {
+                throw new Error('Failed to fetch created conversation');
+            }
+
+            const conversation = {
+                id: conversations[0].id,
+                participantId: conversations[0].doctorId,
+                participantName: conversations[0].participantName,
+                participantRole: conversations[0].participantRole,
+                participantImage: '/placeholder.svg',
+                specialty: conversations[0].specialty,
+                rating: conversations[0].rating,
+                unreadCount: 0
+            };
+
+            // Notify the doctor about new conversation
+            socketService.emitToUser(doctorId, 'conversation:new', conversation);
+
+            res.json({
+                success: true,
+                data: conversation
+            });
         } catch (error) {
-            console.error('Error in createConversation:', error);
+            console.error('Create conversation error:', error);
             res.status(500).json({
                 success: false,
-                message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to create conversation'
+                message: 'Error creating conversation'
             });
         }
     },
