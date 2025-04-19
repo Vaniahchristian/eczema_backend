@@ -98,13 +98,21 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-const wsServer = new WebSocketServer(server, {
-  cors: corsOptions,
-  path: '/socket.io',
-  transports: ['websocket', 'polling'],
-  allowEIO3: true,
-  pingTimeout: 60000,
-  pingInterval: 25000
+// Create HTTP server
+const wsServer = new SocketService(server);
+
+// Configure WebSocket heartbeat and timeout
+wsServer.io.engine.pingTimeout = 30000; // 30 seconds
+wsServer.io.engine.pingInterval = 25000; // 25 seconds
+
+// Handle WebSocket errors at the server level
+server.on('upgrade', (request, socket, head) => {
+  socket.on('error', (err) => {
+    console.error('WebSocket connection error:', err);
+    if (!socket.destroyed) {
+      socket.destroy();
+    }
+  });
 });
 
 // Custom request logger
@@ -157,7 +165,7 @@ app.get('/health', (req, res) => {
     status: 'ok',
     mysql: sequelize.connectionManager.connections.length > 0,
     mongodb: mongoose.connection.readyState === 1,
-    websocket: wsServer.wss.clients.size
+    websocket: wsServer.io.engine.clientsCount
   });
 });
 
@@ -192,6 +200,7 @@ mongoose.connection.on('reconnected', () => {
   console.log('MongoDB reconnected');
 });
 
+// Start the server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

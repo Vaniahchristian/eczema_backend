@@ -8,19 +8,38 @@ class SocketService {
     constructor(server) {
         console.log('Initializing SocketService...');
         this.io = new Server(server, {
+            path: '/socket.io',
             cors: {
                 origin: process.env.CLIENT_URL || 'https://eczema-dashboard-final.vercel.app',
                 methods: ['GET', 'POST'],
                 credentials: true
-            }
+            },
+            allowEIO3: true,
+            transports: ['websocket', 'polling'],
+            maxHttpBufferSize: 1e6,
+            pingTimeout: 30000,
+            pingInterval: 25000,
+            upgradeTimeout: 10000,
+            allowUpgrades: true,
+            cookie: false
         });
-        console.log('Socket.IO server created with CORS origin:', process.env.CLIENT_URL || 'https://eczema-dashboard-final.vercel.app');
+        
+        console.log('Socket.IO server created with config:', {
+            cors: this.io.opts.cors,
+            transports: this.io.opts.transports,
+            path: this.io.opts.path
+        });
         
         this.userSockets = new Map(); // userId -> Set of socket ids
         this.socketUsers = new Map(); // socket id -> userId
 
         this.setupMiddleware();
         this.setupEventHandlers();
+        
+        // Handle errors at the IO level
+        this.io.engine.on('connection_error', (err) => {
+            console.error('Socket.IO connection error:', err);
+        });
     }
 
     setupMiddleware() {
@@ -36,6 +55,18 @@ class SocketService {
                 const decoded = jwt.verify(token, process.env.JWT_SECRET);
                 socket.userId = decoded.id;
                 socket.userRole = decoded.role;
+                
+                // Validate user exists in database
+                const [rows] = await mysqlPool.query(
+                    'SELECT id, role FROM users WHERE id = ?',
+                    [decoded.id]
+                );
+                
+                if (!rows || rows.length === 0) {
+                    console.log('Socket connection rejected: User not found');
+                    return next(new Error('Authentication error: User not found'));
+                }
+                
                 console.log(`Socket authenticated for user ${socket.userId} (${socket.userRole})`);
                 next();
             } catch (error) {
@@ -134,52 +165,61 @@ class SocketService {
 
     async handleSendMessage(socket, { conversationId, content, type = 'text', attachments = [] }) {
         try {
+            console.log(`Processing message from ${socket.userId} in conversation ${conversationId}`);
+            
             const conversation = await Conversation.findById(conversationId);
-            if (!conversation) return;
+            if (!conversation) {
+                console.log('Conversation not found:', conversationId);
+                socket.emit('message:error', { error: 'Conversation not found' });
+                return;
+            }
 
             const isParticipant = conversation.participants.some(p => p.userId === socket.userId);
-            if (!isParticipant) return;
+            if (!isParticipant) {
+                console.log('User not authorized for conversation:', socket.userId);
+                socket.emit('message:error', { error: 'Not authorized' });
+                return;
+            }
 
-            // Get the other participant
-            const otherParticipant = conversation.participants.find(p => p.userId !== socket.userId);
-            
-            // Create message
+            // Create new message
             const message = await Message.create({
                 conversationId,
-                patientId: socket.userRole === 'patient' ? socket.userId : otherParticipant.userId,
-                doctorId: socket.userRole === 'doctor' ? socket.userId : otherParticipant.userId,
-                fromDoctor: socket.userRole === 'doctor',
+                senderId: socket.userId,
+                senderRole: socket.userRole,
                 content,
                 type,
-                attachments
+                attachments,
+                status: 'sent'
             });
 
-            // Update conversation's last message
-            await Conversation.updateOne(
-                { _id: conversationId },
-                { 
-                    lastMessage: message._id,
-                    updatedAt: new Date()
-                }
-            );
+            // Update conversation
+            conversation.lastMessage = message._id;
+            conversation.updatedAt = new Date();
 
-            // Get sender details from MySQL
-            const [rows] = await mysqlPool.query(
-                'SELECT first_name AS firstName, last_name AS lastName, role, image_url AS profileImage FROM users WHERE id = ?',
+            // Update unread counts for other participants
+            conversation.participants.forEach(participant => {
+                if (participant.userId !== socket.userId) {
+                    const currentCount = conversation.unreadCounts.get(participant.userId) || 0;
+                    conversation.unreadCounts.set(participant.userId, currentCount + 1);
+                }
+            });
+            await conversation.save();
+
+            // Get sender details
+            const [senderRows] = await mysqlPool.query(
+                'SELECT first_name, last_name, role, image_url FROM users WHERE id = ?',
                 [socket.userId]
             );
-            const sender = rows[0];
+            const sender = senderRows[0];
 
             const messageData = {
                 id: message._id,
                 conversationId,
                 content,
-                patientId: message.patientId,
-                doctorId: message.doctorId,
-                fromDoctor: message.fromDoctor,
-                senderName: `${sender.firstName} ${sender.lastName}`,
-                senderRole: sender.role,
-                senderImage: sender.profileImage,
+                senderId: socket.userId,
+                senderRole: socket.userRole,
+                senderName: `${sender.first_name} ${sender.last_name}`,
+                senderImage: sender.image_url,
                 timestamp: message.createdAt,
                 status: message.status,
                 type,
@@ -189,12 +229,15 @@ class SocketService {
             // Emit to all participants in the conversation
             this.io.to(`conversation:${conversationId}`).emit('message:new', messageData);
 
-            // Send notification to offline participants
-            const offlineParticipantId = otherParticipant.userId;
-            if (!this.userSockets.has(offlineParticipantId)) {
-                // Here you would integrate with your push notification service
-                console.log(`Should send push notification to user ${offlineParticipantId}`);
-            }
+            // Send notifications to offline participants
+            conversation.participants.forEach(participant => {
+                if (participant.userId !== socket.userId && !this.userSockets.has(participant.userId)) {
+                    console.log(`Should send push notification to user ${participant.userId}`);
+                    // Implement push notification here
+                }
+            });
+
+            console.log('Message sent successfully:', message._id);
         } catch (error) {
             console.error('Error in handleSendMessage:', error);
             socket.emit('message:error', { error: 'Failed to send message' });
@@ -210,27 +253,49 @@ class SocketService {
 
     async handleMessageRead(socket, { messageId }) {
         try {
+            console.log(`Marking message ${messageId} as read by ${socket.userId}`);
+            
             const message = await Message.findById(messageId);
-            if (!message) return;
+            if (!message) {
+                console.log('Message not found:', messageId);
+                return;
+            }
+
+            const conversation = await Conversation.findById(message.conversationId);
+            if (!conversation) {
+                console.log('Conversation not found for message:', messageId);
+                return;
+            }
 
             // Verify user is participant
-            const isRecipient = (socket.userRole === 'doctor' && !message.fromDoctor) ||
-                              (socket.userRole === 'patient' && message.fromDoctor);
-            if (!isRecipient) return;
-
-            await Message.updateOne({ _id: messageId }, { status: 'read' });
-
-            // Notify sender that message was read
-            const senderId = message.fromDoctor ? message.doctorId : message.patientId;
-            const senderSockets = this.userSockets.get(senderId);
-            if (senderSockets) {
-                senderSockets.forEach(socketId => {
-                    this.io.to(socketId).emit('message:status', {
-                        messageId,
-                        status: 'read'
-                    });
-                });
+            const isParticipant = conversation.participants.some(p => p.userId === socket.userId);
+            if (!isParticipant) {
+                console.log('User not authorized to mark message as read:', socket.userId);
+                return;
             }
+
+            // Add user to readBy if not already present
+            if (!message.readBy.some(read => read.userId === socket.userId)) {
+                message.readBy.push({
+                    userId: socket.userId,
+                    timestamp: new Date()
+                });
+                message.status = 'read';
+                await message.save();
+            }
+
+            // Update conversation unread count
+            conversation.unreadCounts.set(socket.userId, 0);
+            await conversation.save();
+
+            // Notify sender
+            this.io.to(`conversation:${message.conversationId}`).emit('message:status', {
+                messageId: message._id,
+                status: 'read',
+                readBy: message.readBy
+            });
+
+            console.log('Message marked as read:', messageId);
         } catch (error) {
             console.error('Error in handleMessageRead:', error);
         }

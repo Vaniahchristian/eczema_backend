@@ -35,61 +35,93 @@ const uploadFile = [
 const messageController = {
     uploadFile,
 
+    createConversation: async (req, res) => {
+        try {
+            const { doctorId } = req.body;
+            const patientId = req.user.id;
+
+            // Validate doctor exists
+            const [doctorRows] = await mysqlPool.query(
+                'SELECT id, first_name, last_name, role FROM users WHERE id = ? AND role = ?',
+                [doctorId, 'doctor']
+            );
+
+            if (!doctorRows || doctorRows.length === 0) {
+                return res.status(404).json({ error: 'Doctor not found' });
+            }
+
+            // Check if conversation already exists
+            const existingConversation = await Conversation.findOne({
+                'participants': {
+                    $all: [
+                        { $elemMatch: { userId: patientId, role: 'patient' } },
+                        { $elemMatch: { userId: doctorId, role: 'doctor' } }
+                    ]
+                }
+            });
+
+            if (existingConversation) {
+                return res.json(existingConversation);
+            }
+
+            // Create new conversation
+            const conversation = await Conversation.create({
+                participants: [
+                    { userId: patientId, role: 'patient' },
+                    { userId: doctorId, role: 'doctor' }
+                ],
+                status: 'active',
+                unreadCounts: new Map([[patientId, 0], [doctorId, 0]])
+            });
+
+            res.json(conversation);
+        } catch (error) {
+            console.error('Create conversation error:', error);
+            res.status(500).json({ error: 'Failed to create conversation' });
+        }
+    },
+
     getConversations: async (req, res) => {
         try {
             const userId = req.user.id;
-            const conversations = await Conversation.aggregate([
-                { $match: { 'participants.userId': userId } },
-                { $sort: { updatedAt: -1 } },
-                { $lookup: { from: 'messages', localField: 'lastMessage', foreignField: '_id', as: 'lastMessage' } },
-                { $unwind: { path: '$lastMessage', preserveNullAndEmptyArrays: true } }
-            ]);
+            const userRole = req.user.role;
 
-            // Hydrate aggregation results into Mongoose models
-            const hydratedConversations = conversations.map(conv => Conversation.hydrate(conv));
+            // Find all conversations where user is a participant
+            const conversations = await Conversation.find({
+                'participants.userId': userId,
+                status: 'active'
+            })
+            .sort({ updatedAt: -1 })
+            .populate('lastMessage');
 
-            const participantIds = hydratedConversations.flatMap(conv =>
-                conv.participants.map(p => p.userId).filter(id => id !== userId)
-            );
-            const allUserIds = [...new Set([userId, ...participantIds])];
-            if (allUserIds.length === 0) {
-                return res.json({ success: true, data: [] });
-            }
-
-            const [rows] = await mysqlPool.query(
-                'SELECT id, first_name AS firstName, last_name AS lastName, role, image_url AS profileImage FROM users WHERE id IN (?)',
-                [allUserIds]
-            );
-            const userMap = new Map(rows.map(row => [row.id, row]));
-
-            const formattedConversations = await Promise.all(hydratedConversations.map(async conv => {
+            // Get other participants' details from MySQL
+            const conversationData = await Promise.all(conversations.map(async (conv) => {
                 const otherParticipant = conv.participants.find(p => p.userId !== userId);
-                if (!otherParticipant) return null;
-                const participantDetail = userMap.get(otherParticipant.userId);
+                
+                const [userRows] = await mysqlPool.query(
+                    'SELECT first_name, last_name, role, image_url FROM users WHERE id = ?',
+                    [otherParticipant.userId]
+                );
 
-                const unreadCount = await conv.getUnreadCount(userId);
-
+                const user = userRows[0];
+                
                 return {
                     id: conv._id,
                     participantId: otherParticipant.userId,
-                    participantName: participantDetail ? `${participantDetail.firstName} ${participantDetail.lastName}` : 'Unknown User',
-                    participantRole: participantDetail?.role || 'unknown',
-                    participantImage: participantDetail?.profileImage,
-                    unreadCount,
-                    status: conv.isActive ? 'active' : 'archived',
-                    lastMessage: conv.lastMessage ? {
-                        id: conv.lastMessage._id,
-                        content: conv.lastMessage.content,
-                        timestamp: conv.lastMessage.createdAt,
-                        status: conv.lastMessage.status
-                    } : null
+                    participantName: `${user.first_name} ${user.last_name}`,
+                    participantRole: user.role,
+                    participantImage: user.image_url,
+                    lastMessage: conv.lastMessage,
+                    unreadCount: conv.unreadCounts.get(userId) || 0,
+                    status: conv.status,
+                    updatedAt: conv.updatedAt
                 };
             }));
 
-            res.json({ success: true, data: formattedConversations.filter(Boolean) });
+            res.json(conversationData);
         } catch (error) {
-            console.error('Error in getConversations:', error);
-            res.status(500).json({ success: false, message: 'Failed to fetch conversations' });
+            console.error('Get conversations error:', error);
+            res.status(500).json({ error: 'Failed to fetch conversations' });
         }
     },
 
@@ -97,63 +129,47 @@ const messageController = {
         try {
             const { conversationId } = req.params;
             const userId = req.user.id;
-            const { page = 1, limit = 20 } = req.query;
 
+            // Verify user is participant
             const conversation = await Conversation.findOne({
                 _id: conversationId,
                 'participants.userId': userId
             });
+
             if (!conversation) {
-                return res.status(403).json({ success: false, message: 'Not authorized to view these messages' });
+                return res.status(403).json({ error: 'Not authorized to view this conversation' });
             }
 
+            // Get messages
             const messages = await Message.find({ conversationId })
-                .sort('createdAt')
-                .skip((page - 1) * limit)
-                .limit(parseInt(limit));
+                .sort({ createdAt: -1 })
+                .limit(50);
 
-            if (messages.length === 0) {
-                return res.json({ success: true, data: [] });
-            }
-
-            const userIds = [...new Set(messages.flatMap(m => [m.patientId, m.doctorId]))];
-            if (userIds.length === 0) {
-                return res.json({ success: true, data: [] });
-            }
-
-            const [rows] = await mysqlPool.query(
-                'SELECT id, first_name as firstName, last_name as lastName, role, image_url as profileImage FROM users WHERE id IN (?)',
-                [userIds]
+            // Mark messages as read
+            await Message.updateMany(
+                {
+                    conversationId,
+                    senderId: { $ne: userId },
+                    'readBy.userId': { $ne: userId }
+                },
+                {
+                    $push: {
+                        readBy: {
+                            userId,
+                            timestamp: new Date()
+                        }
+                    }
+                }
             );
-            const userMap = new Map(rows.map(row => [row.id, row]));
 
-            const formattedMessages = messages.map(message => {
-                const sender = userMap.get(message.fromDoctor ? message.doctorId : message.patientId);
-                if (!sender) return null;
+            // Update unread count
+            conversation.unreadCounts.set(userId, 0);
+            await conversation.save();
 
-                return {
-                    id: message._id,
-                    content: message.content,
-                    patientId: message.patientId,
-                    doctorId: message.doctorId,
-                    fromDoctor: message.fromDoctor,
-                    senderName: `${sender.firstName} ${sender.lastName}`,
-                    senderRole: sender.role,
-                    senderImage: sender.profileImage,
-                    timestamp: message.createdAt,
-                    status: message.status,
-                    type: message.type || 'text',
-                    attachments: message.attachments || []
-                };
-            }).filter(Boolean);
-
-            res.json({ success: true, data: formattedMessages });
+            res.json(messages);
         } catch (error) {
-            console.error('Error in getMessages:', error);
-            res.status(500).json({
-                success: false,
-                message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to fetch messages'
-            });
+            console.error('Get messages error:', error);
+            res.status(500).json({ error: 'Failed to fetch messages' });
         }
     },
 
@@ -226,92 +242,6 @@ const messageController = {
             res.status(500).json({
                 success: false,
                 message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to send message'
-            });
-        }
-    },
-
-    createConversation: async (req, res) => {
-        try {
-            const { doctorId } = req.body;
-            const patientId = req.user.id;
-
-            // Check if doctor exists
-            const [doctors] = await mysqlPool.query(
-                'SELECT u.id, u.first_name, u.last_name, dp.specialty FROM users u INNER JOIN doctor_profiles dp ON u.id = dp.user_id WHERE u.id = ? AND u.role = "doctor"',
-                [doctorId]
-            );
-
-            if (doctors.length === 0) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Doctor not found'
-                });
-            }
-
-            // Check if conversation already exists
-            const [existingConversations] = await mysqlPool.query(
-                'SELECT id FROM conversations WHERE (patient_id = ? AND doctor_id = ?) OR (patient_id = ? AND doctor_id = ?)',
-                [patientId, doctorId, doctorId, patientId]
-            );
-
-            if (existingConversations.length > 0) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Conversation already exists'
-                });
-            }
-
-            // Create new conversation
-            const [result] = await mysqlPool.query(
-                'INSERT INTO conversations (patient_id, doctor_id) VALUES (?, ?)',
-                [patientId, doctorId]
-            );
-
-            const conversationId = result.insertId;
-
-            // Get conversation details
-            const [conversations] = await mysqlPool.query(`
-                SELECT 
-                    c.id,
-                    c.patient_id as patientId,
-                    c.doctor_id as doctorId,
-                    CONCAT(u.first_name, ' ', u.last_name) as participantName,
-                    u.role as participantRole,
-                    dp.specialty,
-                    dp.rating
-                FROM conversations c
-                INNER JOIN users u ON u.id = c.doctor_id
-                INNER JOIN doctor_profiles dp ON dp.user_id = c.doctor_id
-                WHERE c.id = ?
-            `, [conversationId]);
-
-            if (conversations.length === 0) {
-                throw new Error('Failed to fetch created conversation');
-            }
-
-            const conversation = {
-                id: conversations[0].id,
-                participantId: conversations[0].doctorId,
-                participantName: conversations[0].participantName,
-                participantRole: conversations[0].participantRole,
-                participantImage: '/placeholder.svg',
-                specialty: conversations[0].specialty,
-                rating: conversations[0].rating,
-                unreadCount: 0
-            };
-
-            // Notify the doctor about new conversation
-            socketService.emitToUser(doctorId, 'conversation:new', conversation);
-
-            res.json({
-                success: true,
-                data: conversation
-            });
-        } catch (error) {
-            console.error('Create conversation error:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Error creating conversation'
             });
         }
     },
@@ -397,7 +327,7 @@ const messageController = {
             );
             const participantDetail = userRows[0];
 
-            const unreadCount = await conversation.getUnreadCount(userId);
+            const unreadCount = conversation.unreadCounts.get(userId) || 0;
 
             const formattedConversation = {
                 id: conversation._id,
@@ -406,7 +336,7 @@ const messageController = {
                 participantRole: participantDetail?.role || 'unknown',
                 participantImage: participantDetail?.profileImage,
                 unreadCount,
-                status: conversation.isActive ? 'active' : 'archived',
+                status: conversation.status,
                 lastMessage: conversation.lastMessage ? {
                     id: conversation.lastMessage._id,
                     content: conversation.lastMessage.content,
@@ -437,7 +367,7 @@ const messageController = {
                 return res.status(404).json({ success: false, message: 'Conversation not found' });
             }
 
-            conversation.isActive = isActive;
+            conversation.status = isActive ? 'active' : 'archived';
             await conversation.save();
 
             res.json({ success: true, data: { isActive } });
@@ -461,7 +391,7 @@ const messageController = {
                 return res.status(404).json({ success: false, message: 'Conversation not found' });
             }
 
-            conversation.isActive = false;
+            conversation.status = 'archived';
             await conversation.save();
 
             res.json({ success: true, message: 'Conversation archived successfully' });
