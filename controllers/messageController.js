@@ -560,6 +560,10 @@ const messageController = {
             console.error('Error in setTypingStatus:', error);
             res.status(500).json({ success: false, message: 'Failed to set typing status' });
         }
+    },
+
+    reactToMessage: function(req, res) {
+        return this.addReaction(req, res);
     }
 };
 
