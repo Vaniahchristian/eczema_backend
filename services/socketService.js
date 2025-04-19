@@ -6,13 +6,15 @@ const { mysqlPool } = require('../config/database');
 
 class SocketService {
     constructor(server) {
+        console.log('Initializing SocketService...');
         this.io = new Server(server, {
             cors: {
-                origin: process.env.CLIENT_URL,
+                origin: process.env.CLIENT_URL || 'https://eczema-dashboard-final.vercel.app',
                 methods: ['GET', 'POST'],
                 credentials: true
             }
         });
+        console.log('Socket.IO server created with CORS origin:', process.env.CLIENT_URL || 'https://eczema-dashboard-final.vercel.app');
         
         this.userSockets = new Map(); // userId -> Set of socket ids
         this.socketUsers = new Map(); // socket id -> userId
@@ -26,30 +28,65 @@ class SocketService {
             try {
                 const token = socket.handshake.auth.token;
                 if (!token) {
-                    return next(new Error('Authentication error'));
+                    console.log('Socket connection rejected: No token provided');
+                    return next(new Error('Authentication error: No token provided'));
                 }
 
+                console.log('Authenticating socket connection...');
                 const decoded = jwt.verify(token, process.env.JWT_SECRET);
                 socket.userId = decoded.id;
                 socket.userRole = decoded.role;
+                console.log(`Socket authenticated for user ${socket.userId} (${socket.userRole})`);
                 next();
             } catch (error) {
-                next(new Error('Authentication error'));
+                console.error('Socket authentication error:', error);
+                next(new Error('Authentication error: Invalid token'));
             }
         });
     }
 
     setupEventHandlers() {
         this.io.on('connection', (socket) => {
-            console.log(`User connected: ${socket.userId}`);
+            console.log(`Socket connected - ID: ${socket.id}, User: ${socket.userId}, Role: ${socket.userRole}`);
             this.handleConnection(socket);
 
-            socket.on('disconnect', () => this.handleDisconnect(socket));
-            socket.on('join:conversation', (conversationId) => this.handleJoinConversation(socket, conversationId));
-            socket.on('leave:conversation', (conversationId) => this.handleLeaveConversation(socket, conversationId));
-            socket.on('message:send', (data) => this.handleSendMessage(socket, data));
-            socket.on('message:typing', (data) => this.handleTyping(socket, data));
-            socket.on('message:read', (data) => this.handleMessageRead(socket, data));
+            socket.on('disconnect', () => {
+                console.log(`Socket disconnected - ID: ${socket.id}, User: ${socket.userId}`);
+                this.handleDisconnect(socket);
+            });
+
+            socket.on('join:conversation', (conversationId) => {
+                console.log(`User ${socket.userId} joining conversation: ${conversationId}`);
+                this.handleJoinConversation(socket, conversationId);
+            });
+
+            socket.on('leave:conversation', (conversationId) => {
+                console.log(`User ${socket.userId} leaving conversation: ${conversationId}`);
+                this.handleLeaveConversation(socket, conversationId);
+            });
+
+            socket.on('message:send', (data) => {
+                console.log(`New message from user ${socket.userId} in conversation ${data.conversationId}:`, {
+                    type: data.type,
+                    hasAttachments: data.attachments?.length > 0
+                });
+                this.handleSendMessage(socket, data);
+            });
+
+            socket.on('message:typing', (data) => {
+                console.log(`Typing status from user ${socket.userId} in conversation ${data.conversationId}: ${data.isTyping}`);
+                this.handleTyping(socket, data);
+            });
+
+            socket.on('message:read', (data) => {
+                console.log(`Message ${data.messageId} marked as read by user ${socket.userId}`);
+                this.handleMessageRead(socket, data);
+            });
+
+            // Log any errors
+            socket.on('error', (error) => {
+                console.error(`Socket error for user ${socket.userId}:`, error);
+            });
         });
     }
 

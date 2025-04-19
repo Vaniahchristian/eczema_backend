@@ -88,7 +88,24 @@ connectMongoDBWithRetry();
 })();
 
 // Initialize WebSocket server for real-time updates
-const wsServer = new WebSocketServer(server);
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || "https://eczema-dashboard-final.vercel.app",
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['set-cookie']
+};
+
+app.use(cors(corsOptions));
+
+const wsServer = new WebSocketServer(server, {
+  cors: corsOptions,
+  path: '/socket.io',
+  transports: ['websocket', 'polling'],
+  allowEIO3: true,
+  pingTimeout: 60000,
+  pingInterval: 25000
+});
 
 // Custom request logger
 app.use((req, res, next) => {
@@ -114,14 +131,6 @@ app.use(helmet({
     }
   },
   crossOriginResourcePolicy: { policy: "same-site" }
-}));
-
-// CORS configuration with specific origin
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "https://eczema-dashboard-final.vercel.app",
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(morgan('dev'));
