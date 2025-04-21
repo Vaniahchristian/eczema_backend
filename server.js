@@ -12,6 +12,10 @@ const SocketService = require('./services/socketService');
 const { mysqlPool, connectMongoDB, sequelize } = require('./config/database');
 const { MySQL } = require('./models');
 const { apiLimiter, authLimiter } = require('./middleware/rateLimiter');
+const { logger, requestLogger, errorLogger, captureResponseBody } = require('./middleware/logger');
+ // Assuming this middleware is defined elsewhere
+const analyticsService = require('./services/analyticsService'); // Assuming this service is defined elsewhere
+const { protect } = require('./middleware/auth');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -158,17 +162,25 @@ server.on('upgrade', (request, socket, head) => {
 
 // Custom request logger
 app.use((req, res, next) => {
-  console.log('📝 Incoming Request:', {
+  logger.info('📝 Incoming Request', {
     method: req.method,
     path: req.path,
     origin: req.headers.origin,
     cookies: req.cookies,
-    authorization: req.headers.authorization ? 'Present' : 'Not present'
+    query: req.query,
+    body: req.method !== 'GET' ? req.body : undefined,
+    files: req.files,
+    authorization: req.headers.authorization ? 'Present' : 'Not present',
+    userAgent: req.headers['user-agent'],
+    contentType: req.headers['content-type'],
+    timestamp: new Date().toISOString()
   });
   next();
 });
 
 // Middleware
+app.use(captureResponseBody);
+app.use(requestLogger);
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -205,6 +217,47 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/research', researchRoutes);
 app.use('/api/messages', messageRoutes);
 
+// Add new analytics routes
+app.get('/api/analytics/daily-active-users', protect, async (req, res) => {
+  try {
+    const { start, end } = req.query;
+    const data = await analyticsService.getDailyActiveUsers({ start: new Date(start), end: new Date(end) });
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/analytics/hourly-diagnoses', protect, async (req, res) => {
+  try {
+    const { start, end } = req.query;
+    const data = await analyticsService.getHourlyDiagnosisDistribution({ start: new Date(start), end: new Date(end) });
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/analytics/user-retention', protect, async (req, res) => {
+  try {
+    const { start, end } = req.query;
+    const data = await analyticsService.getUserRetention({ start: new Date(start), end: new Date(end) });
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/analytics/user-activity', protect, async (req, res) => {
+  try {
+    const { start, end } = req.query;
+    const data = await analyticsService.getUserActivity({ start: new Date(start), end: new Date(end) });
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({
@@ -216,13 +269,10 @@ app.get('/health', (req, res) => {
 });
 
 // Error handling middleware
+app.use(errorLogger);
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    success: false,
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined
-  });
+  logger.error(err.stack);
+  res.status(500).send({ error: 'Something broke!' });
 });
 
 // Handle 404

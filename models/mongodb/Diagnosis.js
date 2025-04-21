@@ -69,6 +69,50 @@ const diagnosisSchema = new mongoose.Schema({
       enum: ['mild', 'moderate', 'severe']
     },
     treatmentPlan: String
+  },
+  // Pre-diagnosis survey data
+  preDiagnosisSurvey: {
+    eczemaHistory: {
+      type: String,
+      enum: ['new', '<1', '1-5', '5-10', '>10']
+    },
+    lastFlareup: {
+      type: String,
+      enum: ['current', '<1w', '1-4w', '1-6m', '>6m']
+    },
+    flareupTriggers: [String],
+    currentSymptoms: String,
+    previousTreatments: String,
+    severity: {
+      type: String,
+      enum: ['mild', 'moderate', 'severe']
+    }
+  },
+  // Post-diagnosis survey data
+  postDiagnosisSurvey: {
+    diagnosisAccuracy: {
+      type: Number,
+      min: 1,
+      max: 10
+    },
+    diagnosisHelpfulness: {
+      type: Number,
+      min: 1,
+      max: 10
+    },
+    treatmentClarity: {
+      type: Number,
+      min: 1,
+      max: 10
+    },
+    userConfidence: {
+      type: Number,
+      min: 1,
+      max: 10
+    },
+    feedback: String,
+    wouldRecommend: Boolean,
+    submittedAt: Date
   }
 }, {
   timestamps: true

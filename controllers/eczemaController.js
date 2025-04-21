@@ -254,3 +254,121 @@ exports.getPatientHistory = async (req, res) => {
     });
   }
 };
+
+exports.diagnose = async (req, res) => {
+  try {
+    const imageFile = req.file;
+    const { preDiagnosisData } = req.body;
+
+    if (!imageFile) {
+      return res.status(400).json({
+        success: false,
+        message: 'No image file uploaded'
+      });
+    }
+
+    // Upload image to storage and get URL
+    const imageUrl = await uploadFile(imageFile);
+    
+    // Get ML diagnosis
+    const mlDiagnosis = await analyzeEczemaImage(imageFile.buffer);
+
+    // Create diagnosis record
+    const diagnosis = new Diagnosis({
+      diagnosisId: require('crypto').randomUUID(), // Generate a unique ID
+      patientId: req.user.user_id,
+      imageId: imageFile.filename,
+      imageUrl,
+      imageMetadata: {
+        originalFileName: imageFile.originalname,
+        uploadDate: new Date(),
+        fileSize: imageFile.size,
+        format: imageFile.mimetype.includes('png') ? 'PNG' : 'JPEG'
+      },
+      mlResults: {
+        prediction: mlDiagnosis.prediction,
+        confidence: mlDiagnosis.confidence,
+        severity: mlDiagnosis.severity,
+        affectedAreas: mlDiagnosis.areas_affected,
+        bodyPartConfidence: mlDiagnosis.bodyPartConfidence,
+        modelVersion: process.env.ML_MODEL_VERSION
+      },
+      recommendations: [],
+      // Add pre-diagnosis survey data if provided
+      ...(preDiagnosisData && {
+        preDiagnosisSurvey: JSON.parse(preDiagnosisData)
+      })
+    });
+
+    await diagnosis.save();
+
+    res.json({
+      success: true,
+      data: {
+        diagnosisId: diagnosis.diagnosisId,
+        isEczema: mlDiagnosis.prediction,
+        severity: mlDiagnosis.severity,
+        confidence: mlDiagnosis.confidence,
+        bodyPart: mlDiagnosis.areas_affected[0],
+        recommendations: diagnosis.recommendations,
+        needsDoctorReview: diagnosis.mlResults.requiresDoctorReview,
+        imageUrl
+      }
+    });
+  } catch (error) {
+    console.error('Diagnosis error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error processing diagnosis'
+    });
+  }
+};
+
+exports.submitFeedback = async (req, res) => {
+  try {
+    const { diagnosisId } = req.params;
+    const feedbackData = req.body;
+
+    const diagnosis = await Diagnosis.findOne({ diagnosisId });
+    if (!diagnosis) {
+      return res.status(404).json({
+        success: false,
+        message: 'Diagnosis not found'
+      });
+    }
+
+    // Update diagnosis with feedback
+    diagnosis.postDiagnosisSurvey = {
+      ...feedbackData,
+      submittedAt: new Date()
+    };
+    await diagnosis.save();
+
+    // Update analytics
+    await Analytics.updateOne(
+      { analysisId: 'user_feedback' },
+      {
+        $inc: {
+          'data.totalFeedbacks': 1,
+          'data.accuracySum': feedbackData.diagnosisAccuracy,
+          'data.helpfulnessSum': feedbackData.diagnosisHelpfulness,
+          'data.claritySum': feedbackData.treatmentClarity,
+          'data.confidenceSum': feedbackData.userConfidence,
+          [`data.recommendCount.${feedbackData.wouldRecommend ? 'yes' : 'no'}`]: 1
+        }
+      },
+      { upsert: true }
+    );
+
+    res.json({
+      success: true,
+      data: { success: true }
+    });
+  } catch (error) {
+    console.error('Feedback submission error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error submitting feedback'
+    });
+  }
+};

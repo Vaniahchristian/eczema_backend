@@ -1,74 +1,39 @@
-const { MySQL, Mongo } = require('../models');
-const { User } = MySQL;
-const { Diagnosis, Analytics } = Mongo;
+const { MySQL: { User, Patient, Treatment, Appointment }, sequelize } = require('../models/index');
+const Message = require('../models/mongodb/Message');
+const Diagnosis = require('../models/mongodb/Diagnosis');
 const analyticsService = require('../services/analyticsService');
 
-// Get age distribution of eczema cases
+const { logOperation, logger } = require('../middleware/logger');
+
+const moment = require('moment');
+const { Op } = require('sequelize');
+
+// Get age distribution
 exports.getAgeDistribution = async (req, res) => {
     try {
-        const pipeline = [
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: 'patientId',  
-                    foreignField: 'id',       
-                    as: 'patient'
-                }
-            },
-            {
-                $unwind: '$patient'
-            },
-            {
-                $addFields: {
-                    age: {
-                        $floor: {
-                            $divide: [
-                                { $subtract: [new Date(), { $toDate: '$patient.dateOfBirth' }] },
-                                31536000000 
-                            ]
-                        }
-                    }
-                }
-            },
-            {
-                $group: {
-                    _id: {
-                        $floor: {
-                            $divide: ['$age', 10]
-                        }
-                    },
-                    count: { $sum: 1 }
-                }
-            },
-            {
-                $sort: { '_id': 1 }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    ageRange: {
-                        $concat: [
-                            { $toString: { $multiply: ['$_id', 10] } },
-                            '-',
-                            { $toString: { $add: [{ $multiply: ['$_id', 10] }, 9] } }
-                        ]
-                    },
-                    count: 1
-                }
-            }
-        ];
-
-        const ageDistribution = await Diagnosis.aggregate(pipeline);
-        console.log('Age Distribution Results:', ageDistribution); 
+        const result = await User.findAll({
+            attributes: [
+                [sequelize.literal(`
+                    CASE 
+                        WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) < 18 THEN 'Under 18'
+                        WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) BETWEEN 18 AND 30 THEN '18-30'
+                        WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) BETWEEN 31 AND 50 THEN '31-50'
+                        ELSE 'Over 50'
+                    END
+                `), 'age_group'],
+                [sequelize.fn('COUNT', '*'), 'count']
+            ],
+            group: ['age_group']
+        });
 
         res.json({
             success: true,
             data: {
-                ageGroups: ageDistribution
+                ageGroups: result
             }
         });
     } catch (error) {
-        console.error('Age distribution error:', error);
+        logger.error('Error in getAgeDistribution:', error);
         res.status(500).json({
             success: false,
             message: 'Error fetching age distribution',
@@ -77,50 +42,30 @@ exports.getAgeDistribution = async (req, res) => {
     }
 };
 
-// Get geographical distribution of cases
+// Get geographical distribution
 exports.getGeographicalDistribution = async (req, res) => {
     try {
-        const pipeline = [
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: 'patientId',  
-                    foreignField: 'id',       
-                    as: 'patient'
+        const result = await Patient.findAll({
+            attributes: [
+                'region',
+                [sequelize.fn('COUNT', '*'), 'count']
+            ],
+            where: {
+                region: {
+                    [Op.not]: null
                 }
             },
-            {
-                $unwind: '$patient'
-            },
-            {
-                $group: {
-                    _id: '$patient.location',
-                    count: { $sum: 1 }
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    location: '$_id',
-                    count: 1
-                }
-            },
-            {
-                $sort: { count: -1 }
-            }
-        ];
-
-        const geoDistribution = await Diagnosis.aggregate(pipeline);
-        console.log('Geographical Distribution Results:', geoDistribution); 
+            group: ['region']
+        });
 
         res.json({
             success: true,
             data: {
-                regions: geoDistribution
+                regions: result
             }
         });
     } catch (error) {
-        console.error('Geographical distribution error:', error);
+        logger.error('Error in getGeographicalDistribution:', error);
         res.status(500).json({
             success: false,
             message: 'Error fetching geographical distribution',
@@ -129,54 +74,55 @@ exports.getGeographicalDistribution = async (req, res) => {
     }
 };
 
-// Get treatment effectiveness statistics
-exports.getTreatmentEffectiveness = async (req, res) => {
+// Get severity distribution
+exports.getSeverityDistribution = async (req, res) => {
     try {
-        const pipeline = [
-            {
-                $unwind: '$recommendations.treatments'
-            },
+        const result = await Diagnosis.aggregate([
             {
                 $group: {
-                    _id: '$recommendations.treatments.type',
-                    totalCases: { $sum: 1 },
-                    improvedCases: {
-                        $sum: {
-                            $cond: [
-                                { $eq: ['$mlResults.severity', 'mild'] },
-                                1,
-                                0
-                            ]
-                        }
-                    }
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    type: '$_id',
-                    effectiveness: {
-                        $multiply: [
-                            { $divide: ['$improvedCases', '$totalCases'] },
-                            100
-                        ]
-                    },
-                    totalCases: 1
+                    _id: '$severity',
+                    count: { $sum: 1 }
                 }
             }
-        ];
-
-        const treatmentStats = await Diagnosis.aggregate(pipeline);
-        console.log('Treatment Effectiveness Results:', treatmentStats); 
+        ]);
 
         res.json({
             success: true,
             data: {
-                treatments: treatmentStats
+                severityLevels: result
             }
         });
     } catch (error) {
-        console.error('Treatment effectiveness error:', error);
+        logger.error('Error in getSeverityDistribution:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching severity distribution',
+            error: error.message
+        });
+    }
+};
+
+// Get treatment effectiveness
+exports.getTreatmentEffectiveness = async (req, res) => {
+    try {
+        const result = await Treatment.findAll({
+            attributes: [
+                'treatment_type',
+                [sequelize.fn('COUNT', '*'), 'total_count'],
+                [sequelize.literal('COUNT(CASE WHEN outcome = "improved" THEN 1 END)'), 'success_count'],
+                [sequelize.literal('(COUNT(CASE WHEN outcome = "improved" THEN 1 END) * 100.0 / COUNT(*))'), 'success_rate']
+            ],
+            group: ['treatment_type']
+        });
+
+        res.json({
+            success: true,
+            data: {
+                treatments: result
+            }
+        });
+    } catch (error) {
+        logger.error('Error in getTreatmentEffectiveness:', error);
         res.status(500).json({
             success: false,
             message: 'Error fetching treatment effectiveness',
@@ -185,46 +131,294 @@ exports.getTreatmentEffectiveness = async (req, res) => {
     }
 };
 
-// Get ML model confidence distribution
-exports.getModelConfidence = async (req, res) => {
+// Get diagnosis trends
+exports.getDiagnosisTrends = async (req, res) => {
     try {
-        const pipeline = [
+        const result = await Diagnosis.aggregate([
             {
                 $group: {
-                    _id: {
-                        $switch: {
-                            branches: [
-                                { case: { $gte: ['$mlResults.confidence', 0.9] }, then: 'High' },
-                                { case: { $gte: ['$mlResults.confidence', 0.7] }, then: 'Medium' }
-                            ],
-                            default: 'Low'
-                        }
-                    },
+                    _id: { $dateToString: { format: "%Y-%m", date: "$created_at" } },
                     count: { $sum: 1 },
-                    avgConfidence: { $avg: '$mlResults.confidence' }
+                    avg_severity: { $avg: "$severity" }
                 }
             },
             {
-                $project: {
-                    _id: 0,
-                    level: '$_id',
-                    count: 1,
-                    averageConfidence: { $round: ['$avgConfidence', 2] }
-                }
+                $sort: { _id: 1 }
             }
-        ];
-
-        const confidenceStats = await Diagnosis.aggregate(pipeline);
-        console.log('Model Confidence Results:', confidenceStats); 
+        ]);
 
         res.json({
             success: true,
             data: {
-                confidenceLevels: confidenceStats
+                trends: result
             }
         });
     } catch (error) {
-        console.error('Model confidence error:', error);
+        logger.error('Error in getDiagnosisTrends:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching diagnosis trends',
+            error: error.message
+        });
+    }
+};
+
+// Get survey analytics
+exports.getSurveyAnalytics = async (req, res) => {
+    try {
+        const result = await Survey.findAll({
+            attributes: [
+                'question_id',
+                [sequelize.fn('COUNT', '*'), 'total_responses'],
+                [sequelize.fn('AVG', sequelize.col('response_value')), 'avg_response']
+            ],
+            group: ['question_id']
+        });
+
+        res.json({
+            success: true,
+            data: {
+                surveyResults: result
+            }
+        });
+    } catch (error) {
+        logger.error('Error in getSurveyAnalytics:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching survey analytics',
+            error: error.message
+        });
+    }
+};
+
+// Get correlation analytics
+exports.getCorrelationAnalytics = async (req, res) => {
+    try {
+        const result = await Diagnosis.aggregate([
+            {
+                $group: {
+                    _id: { severity: "$severity", weather_condition: "$weather_condition" },
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+
+        res.json({
+            success: true,
+            data: {
+                correlations: result
+            }
+        });
+    } catch (error) {
+        logger.error('Error in getCorrelationAnalytics:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching correlation analytics',
+            error: error.message
+        });
+    }
+};
+
+// Get daily active users
+exports.getDailyActiveUsers = async (req, res) => {
+    try {
+        const { start, end } = req.query;
+        const result = await User.findAll({
+            attributes: [
+                [sequelize.fn('DATE', sequelize.col('last_login_at')), 'date'],
+                [sequelize.fn('COUNT', '*'), 'count']
+            ],
+            where: {
+                last_login_at: {
+                    [Op.between]: [new Date(start), new Date(end)]
+                }
+            },
+            group: [sequelize.fn('DATE', sequelize.col('last_login_at'))],
+            order: [[sequelize.fn('DATE', sequelize.col('last_login_at')), 'ASC']]
+        });
+
+        res.json(result);
+    } catch (error) {
+        logger.error('Error in getDailyActiveUsers:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching daily active users',
+            error: error.message
+        });
+    }
+};
+
+// Get hourly diagnosis distribution
+exports.getHourlyDiagnosisDistribution = async (req, res) => {
+    try {
+        const { start, end } = req.query;
+        const result = await Diagnosis.aggregate([
+            {
+                $match: {
+                    created_at: { $gte: new Date(start), $lte: new Date(end) }
+                }
+            },
+            {
+                $group: {
+                    _id: { $hour: "$created_at" },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            }
+        ]);
+
+        res.json(result);
+    } catch (error) {
+        logger.error('Error in getHourlyDiagnosisDistribution:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching hourly diagnosis distribution',
+            error: error.message
+        });
+    }
+};
+
+// Get user retention
+exports.getUserRetention = async (req, res) => {
+    try {
+        const { start, end } = req.query;
+        const startDate = moment(start);
+        const endDate = moment(end);
+        const weeks = [];
+
+        while (startDate.isBefore(endDate)) {
+            const weekStart = startDate.clone().startOf('week');
+            const weekEnd = startDate.clone().endOf('week');
+
+            const [totalUsers, retainedUsers] = await Promise.all([
+                User.count({
+                    where: {
+                        created_at: {
+                            [Op.lte]: weekEnd.toDate()
+                        }
+                    }
+                }),
+                User.count({
+                    where: {
+                        created_at: {
+                            [Op.lte]: weekEnd.toDate()
+                        },
+                        last_login_at: {
+                            [Op.between]: [weekStart.toDate(), weekEnd.toDate()]
+                        }
+                    }
+                })
+            ]);
+
+            weeks.push({
+                week: weekStart.format('YYYY-MM-DD'),
+                total: totalUsers,
+                retained: retainedUsers
+            });
+
+            startDate.add(1, 'week');
+        }
+
+        res.json(weeks);
+    } catch (error) {
+        logger.error('Error in getUserRetention:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching user retention',
+            error: error.message
+        });
+    }
+};
+
+// Get user activity
+exports.getUserActivity = async (req, res) => {
+    try {
+        const { start, end } = req.query;
+        const startDate = moment(start);
+        const endDate = moment(end);
+        const days = [];
+
+        while (startDate.isBefore(endDate)) {
+            const dayStart = startDate.clone().startOf('day');
+            const dayEnd = startDate.clone().endOf('day');
+
+            const [diagnoses, messages, appointments] = await Promise.all([
+                Diagnosis.countDocuments({
+                    created_at: { $gte: dayStart.toDate(), $lte: dayEnd.toDate() }
+                }),
+                Message.countDocuments({
+                    createdAt: { $gte: dayStart.toDate(), $lte: dayEnd.toDate() }
+                }),
+                Appointment.count({
+                    where: {
+                        appointment_date: {
+                            [Op.between]: [dayStart.toDate(), dayEnd.toDate()]
+                        }
+                    }
+                })
+            ]);
+
+            days.push({
+                date: dayStart.format('YYYY-MM-DD'),
+                diagnoses,
+                messages,
+                appointments
+            });
+
+            startDate.add(1, 'day');
+        }
+
+        res.json(days);
+    } catch (error) {
+        logger.error('Error in getUserActivity:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching user activity',
+            error: error.message
+        });
+    }
+};
+
+// Get model confidence distribution
+exports.getModelConfidence = async (req, res) => {
+    try {
+        const result = await Diagnosis.aggregate([
+            {
+                $group: {
+                    _id: {
+                        $cond: {
+                            if: { $gte: ["$confidence", 0.9] },
+                            then: "Very High",
+                            else: {
+                                $cond: {
+                                    if: { $gte: ["$confidence", 0.7] },
+                                    then: "High",
+                                    else: {
+                                        $cond: {
+                                            if: { $gte: ["$confidence", 0.5] },
+                                            then: "Moderate",
+                                            else: "Low"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+
+        res.json({
+            success: true,
+            data: {
+                confidenceLevels: result
+            }
+        });
+    } catch (error) {
+        logger.error('Error in getModelConfidence:', error);
         res.status(500).json({
             success: false,
             message: 'Error fetching model confidence distribution',
@@ -233,122 +427,30 @@ exports.getModelConfidence = async (req, res) => {
     }
 };
 
-// Get diagnosis history with trends
+// Get diagnosis history
 exports.getDiagnosisHistory = async (req, res) => {
     try {
         const { startDate, endDate } = req.query;
-        const pipeline = [
-            {
-                $match: {
-                    created_at: {
-                        $gte: new Date(startDate || new Date().setMonth(new Date().getMonth() - 1)),
-                        $lte: new Date(endDate || new Date())
-                    }
-                }
-            },
-            {
-                $group: {
-                    _id: {
-                        $dateToString: {
-                            format: '%Y-%m-%d',
-                            date: '$created_at'
-                        }
-                    },
-                    totalCases: { $sum: 1 },
-                    severeCases: {
-                        $sum: {
-                            $cond: [{ $eq: ['$severity', 'severe'] }, 1, 0]
-                        }
-                    }
-                }
-            },
-            {
-                $sort: { '_id': 1 }
-            }
-        ];
+        const userId = req.user.id;
 
-        const diagnosisHistory = await Diagnosis.aggregate(pipeline);
+        const diagnoses = await Diagnosis.find({
+            user_id: userId,
+            ...(startDate && endDate ? {
+                created_at: { $gte: new Date(startDate), $lte: new Date(endDate) }
+            } : {})
+        }).sort({ created_at: -1 });
 
         res.json({
             success: true,
             data: {
-                history: diagnosisHistory.map(day => ({
-                    date: day._id,
-                    totalCases: day.totalCases,
-                    severeCases: day.severeCases
-                }))
+                history: diagnoses
             }
         });
     } catch (error) {
-        console.error('Diagnosis history error:', error);
+        logger.error('Error in getDiagnosisHistory:', error);
         res.status(500).json({
             success: false,
             message: 'Error fetching diagnosis history',
-            error: error.message
-        });
-    }
-};
-
-// Get doctor performance metrics
-exports.getDoctorPerformance = async (req, res) => {
-    try {
-        const { doctorId } = req.params;
-        const timeRange = {
-            start: new Date(req.query.startDate || new Date().setMonth(new Date().getMonth() - 1)),
-            end: new Date(req.query.endDate || new Date())
-        };
-
-        const performance = await analyticsService.getDoctorPerformance(doctorId, timeRange);
-        
-        res.json({
-            success: true,
-            data: performance
-        });
-    } catch (error) {
-        console.error('Doctor performance error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error fetching doctor performance metrics',
-            error: error.message
-        });
-    }
-};
-
-// Get doctor appointment analytics
-exports.getDoctorAppointments = async (req, res) => {
-    try {
-        const { doctorId } = req.params;
-        const analytics = await analyticsService.getAppointmentAnalytics(doctorId);
-        
-        res.json({
-            success: true,
-            data: analytics
-        });
-    } catch (error) {
-        console.error('Doctor appointments error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error fetching doctor appointment analytics',
-            error: error.message
-        });
-    }
-};
-
-// Get doctor clinical insights
-exports.getDoctorClinicalInsights = async (req, res) => {
-    try {
-        const { doctorId } = req.params;
-        const insights = await analyticsService.getClinicalInsights(doctorId);
-        
-        res.json({
-            success: true,
-            data: insights
-        });
-    } catch (error) {
-        console.error('Clinical insights error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error fetching doctor clinical insights',
             error: error.message
         });
     }

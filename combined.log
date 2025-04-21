@@ -1,0 +1,1455 @@
+2025-04-21T14:03:44.993Z [32minfo[39m: GET /api/eczema/diagnoses 304 2339.873 ms - - "{\"success\":true,\"data\":[{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T14:03:45.539Z [32minfo[39m: GET /api/eczema/diagnoses 304 526.595 ms - - "{\"success\":true,\"data\":[{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T14:03:46.096Z [32minfo[39m: GET /api/eczema/diagnoses 304 528.249 ms - - "{\"success\":true,\"data\":[{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T14:03:46.889Z [32minfo[39m: GET /api/eczema/diagnoses 304 774.238 ms - - "{\"success\":true,\"data\":[{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T14:03:48.037Z [32minfo[39m: GET /api/doctors 304 2018.961 ms - - "{\"success\":true,\"data\":[{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"name\":\"John Doe\",\"email\":\"doctor2@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"name\":\"John Doe\",\"email\":\"doctor1@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0}]}"
+2025-04-21T14:03:48.824Z [32minfo[39m: GET /api/doctors 304 724.094 ms - - "{\"success\":true,\"data\":[{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"name\":\"John Doe\",\"email\":\"doctor2@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"name\":\"John Doe\",\"email\":\"doctor1@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0}]}"
+2025-04-21T14:05:02.318Z [32minfo[39m: POST /api/eczema/diagnose 201 38709.055 ms - 712 "{\"success\":true,\"data\":{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\"}}"
+2025-04-21T14:05:05.436Z [32minfo[39m: GET /api/doctors 304 2841.388 ms - - "{\"success\":true,\"data\":[{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"name\":\"John Doe\",\"email\":\"doctor2@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"name\":\"John Doe\",\"email\":\"doctor1@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0}]}"
+2025-04-21T14:05:06.243Z [32minfo[39m: GET /api/doctors 304 768.922 ms - - "{\"success\":true,\"data\":[{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"name\":\"John Doe\",\"email\":\"doctor2@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"name\":\"John Doe\",\"email\":\"doctor1@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0}]}"
+2025-04-21T14:14:55.885Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/treatment-effectiveness",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T14:14:56.210Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/age-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T14:14:56.324Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/geographical-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T14:14:56.402Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/diagnosis-history",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T14:14:56.434Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/model-confidence",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T14:15:05.147Z [32minfo[39m: GET /api/analytics/geographical-distribution 304 8784.590 ms - 
+Response Body: "{\"success\":true,\"data\":{\"regions\":[{\"region\":null,\"count\":12}]}}"
+2025-04-21T14:15:05.163Z [32minfo[39m: GET /api/analytics/age-distribution 304 8937.007 ms - 
+Response Body: "{\"success\":true,\"data\":{\"ageGroups\":[{\"age_group\":\"Under 18\",\"count\":7},{\"age_group\":\"31-50\",\"count\":4},{\"age_group\":\"18-30\",\"count\":1}]}}"
+2025-04-21T14:15:05.172Z [32minfo[39m: GET /api/analytics/treatment-effectiveness 304 9272.060 ms - 
+Response Body: "{\"success\":true,\"data\":{\"treatments\":[]}}"
+2025-04-21T14:15:05.188Z [32minfo[39m: GET /api/analytics/diagnosis-history? 304 8779.227 ms - 
+Response Body: "{\"success\":true,\"data\":{\"history\":[]}}"
+2025-04-21T14:15:05.205Z [32minfo[39m: GET /api/analytics/model-confidence 304 8768.105 ms - 
+Response Body: "{\"success\":true,\"data\":{\"confidenceLevels\":[]}}"
+2025-04-21T14:15:05.220Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/geographical-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T14:15:05.251Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/age-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T14:15:05.274Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/treatment-effectiveness",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T14:15:05.300Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/diagnosis-history",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T14:15:05.320Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/model-confidence",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T14:15:10.047Z [32minfo[39m: GET /api/analytics/age-distribution 304 4789.780 ms - 
+Response Body: "{\"success\":true,\"data\":{\"ageGroups\":[{\"age_group\":\"Under 18\",\"count\":7},{\"age_group\":\"31-50\",\"count\":4},{\"age_group\":\"18-30\",\"count\":1}]}}"
+2025-04-21T14:15:10.063Z [32minfo[39m: GET /api/analytics/geographical-distribution 304 4839.342 ms - 
+Response Body: "{\"success\":true,\"data\":{\"regions\":[{\"region\":null,\"count\":12}]}}"
+2025-04-21T14:15:10.148Z [32minfo[39m: GET /api/analytics/treatment-effectiveness 304 4869.786 ms - 
+Response Body: "{\"success\":true,\"data\":{\"treatments\":[]}}"
+2025-04-21T14:15:10.166Z [32minfo[39m: GET /api/analytics/model-confidence 304 4840.699 ms - 
+Response Body: "{\"success\":true,\"data\":{\"confidenceLevels\":[]}}"
+2025-04-21T14:15:11.585Z [32minfo[39m: GET /api/analytics/diagnosis-history? 304 6280.333 ms - 
+Response Body: "{\"success\":true,\"data\":{\"history\":[]}}"
+2025-04-21T14:23:12.067Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/age-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T14:23:12.097Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/geographical-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T14:23:12.125Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/treatment-effectiveness",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T14:23:12.147Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/model-confidence",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T14:23:12.166Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/diagnosis-history",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T14:23:14.717Z [32minfo[39m: GET /api/analytics/age-distribution 304 2645.754 ms - 
+Response Body: "{\"success\":true,\"data\":{\"ageGroups\":[{\"age_group\":\"Under 18\",\"count\":7},{\"age_group\":\"31-50\",\"count\":4},{\"age_group\":\"18-30\",\"count\":1}]}}"
+2025-04-21T14:23:14.837Z [32minfo[39m: GET /api/analytics/treatment-effectiveness 304 2706.120 ms - 
+Response Body: "{\"success\":true,\"data\":{\"treatments\":[]}}"
+2025-04-21T14:23:15.018Z [32minfo[39m: GET /api/analytics/geographical-distribution 304 2918.477 ms - 
+Response Body: "{\"success\":true,\"data\":{\"regions\":[{\"region\":null,\"count\":12}]}}"
+2025-04-21T14:23:15.151Z [32minfo[39m: GET /api/analytics/model-confidence 304 2999.956 ms - 
+Response Body: "{\"success\":true,\"data\":{\"confidenceLevels\":[]}}"
+2025-04-21T14:23:15.211Z [32minfo[39m: GET /api/analytics/diagnosis-history? 304 3040.657 ms - 
+Response Body: "{\"success\":true,\"data\":{\"history\":[]}}"
+2025-04-21T15:11:04.602Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/age-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:11:04.710Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/model-confidence",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:11:04.735Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/treatment-effectiveness",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:11:04.763Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/geographical-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:11:04.817Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/diagnosis-history",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:11:07.373Z [31merror[39m: Error in getModelConfidence: Cannot read properties of undefined (reading 'query')
+Metadata: {
+  "stack": "TypeError: Cannot read properties of undefined (reading 'query')\n    at exports.getModelConfidence (C:\\Users\\vc\\Desktop\\backend\\controllers\\analyticsController.js:385:49)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\vc\\Desktop\\backend\\middleware\\auth.js:115:5\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at exports.protect (C:\\Users\\vc\\Desktop\\backend\\middleware\\auth.js:80:7)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+}
+2025-04-21T15:11:07.381Z [32minfo[39m: GET /api/analytics/model-confidence 500 2664.602 ms - 
+Response Body: "{\"success\":false,\"message\":\"Error fetching model confidence distribution\",\"error\":\"Cannot read properties of undefined (reading 'query')\"}"
+2025-04-21T15:11:07.439Z [31merror[39m: Error in getTreatmentEffectiveness: Cannot read properties of undefined (reading 'fn')
+Metadata: {
+  "stack": "TypeError: Cannot read properties of undefined (reading 'fn')\n    at exports.getTreatmentEffectiveness (C:\\Users\\vc\\Desktop\\backend\\controllers\\analyticsController.js:108:34)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\vc\\Desktop\\backend\\middleware\\auth.js:115:5\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at exports.protect (C:\\Users\\vc\\Desktop\\backend\\middleware\\auth.js:80:7)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+}
+2025-04-21T15:11:07.445Z [32minfo[39m: GET /api/analytics/treatment-effectiveness 500 2706.047 ms - 
+Response Body: "{\"success\":false,\"message\":\"Error fetching treatment effectiveness\",\"error\":\"Cannot read properties of undefined (reading 'fn')\"}"
+2025-04-21T15:11:07.469Z [31merror[39m: Error in getGeographicalDistribution: Cannot read properties of undefined (reading 'fn')
+Metadata: {
+  "stack": "TypeError: Cannot read properties of undefined (reading 'fn')\n    at exports.getGeographicalDistribution (C:\\Users\\vc\\Desktop\\backend\\controllers\\analyticsController.js:49:34)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\vc\\Desktop\\backend\\middleware\\auth.js:115:5\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at exports.protect (C:\\Users\\vc\\Desktop\\backend\\middleware\\auth.js:80:7)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+}
+2025-04-21T15:11:07.475Z [32minfo[39m: GET /api/analytics/geographical-distribution 500 2708.802 ms - 
+Response Body: "{\"success\":false,\"message\":\"Error fetching geographical distribution\",\"error\":\"Cannot read properties of undefined (reading 'fn')\"}"
+2025-04-21T15:11:07.492Z [31merror[39m: Error in getAgeDistribution: Cannot read properties of undefined (reading 'literal')
+Metadata: {
+  "stack": "TypeError: Cannot read properties of undefined (reading 'literal')\n    at exports.getAgeDistribution (C:\\Users\\vc\\Desktop\\backend\\controllers\\analyticsController.js:14:34)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\vc\\Desktop\\backend\\middleware\\auth.js:115:5\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at exports.protect (C:\\Users\\vc\\Desktop\\backend\\middleware\\auth.js:80:7)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+}
+2025-04-21T15:11:07.495Z [32minfo[39m: GET /api/analytics/age-distribution 500 2849.667 ms - 
+Response Body: "{\"success\":false,\"message\":\"Error fetching age distribution\",\"error\":\"Cannot read properties of undefined (reading 'literal')\"}"
+2025-04-21T15:11:07.849Z [32minfo[39m: GET /api/analytics/diagnosis-history? 304 2951.551 ms - 
+Response Body: "{\"success\":true,\"data\":{\"history\":[]}}"
+2025-04-21T15:24:10.507Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/age-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:24:10.606Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/geographical-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:24:10.636Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/treatment-effectiveness",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:24:10.661Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/diagnosis-history",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:24:10.737Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/model-confidence",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:24:13.087Z [31merror[39m: Error in getDiagnosisHistory: Diagnosis.findAll is not a function
+Metadata: {
+  "stack": "TypeError: Diagnosis.findAll is not a function\n    at exports.getDiagnosisHistory (C:\\Users\\vc\\Desktop\\backend\\controllers\\analyticsController.js:422:43)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\vc\\Desktop\\backend\\middleware\\auth.js:115:5\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at exports.protect (C:\\Users\\vc\\Desktop\\backend\\middleware\\auth.js:80:7)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+}
+2025-04-21T15:24:13.098Z [32minfo[39m: GET /api/analytics/diagnosis-history? 500 2432.942 ms - 
+Response Body: "{\"success\":false,\"message\":\"Error fetching diagnosis history\",\"error\":\"Diagnosis.findAll is not a function\"}"
+2025-04-21T15:24:13.127Z [32minfo[39m: GET /api/analytics/age-distribution 200 2593.654 ms - 
+Response Body: "{\"success\":true,\"data\":{\"ageGroups\":[{\"age_group\":\"Under 18\",\"count\":7},{\"age_group\":\"31-50\",\"count\":6},{\"age_group\":\"18-30\",\"count\":1}]}}"
+2025-04-21T15:24:13.340Z [32minfo[39m: GET /api/analytics/geographical-distribution 200 2728.527 ms - 
+Response Body: "{\"success\":true,\"data\":{\"regions\":[]}}"
+2025-04-21T15:24:13.459Z [32minfo[39m: GET /api/analytics/treatment-effectiveness 200 2814.161 ms - 
+Response Body: "{\"success\":true,\"data\":{\"treatments\":[]}}"
+2025-04-21T15:24:13.498Z [32minfo[39m: GET /api/analytics/model-confidence 200 2738.287 ms - 
+Response Body: "{\"success\":true,\"data\":{\"confidenceLevels\":[]}}"
+2025-04-21T15:24:58.286Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:25:01.549Z [32minfo[39m: GET /api/eczema/diagnoses 200 3260.370 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:25:01.567Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:25:02.200Z [32minfo[39m: GET /api/eczema/diagnoses 304 627.587 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:25:02.223Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:25:02.294Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:25:02.300Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg 404 1.352 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:25:02.309Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:25:02.315Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg 404 1.782 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:25:02.322Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:25:02.326Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg 404 0.755 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:25:02.329Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:25:02.332Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg 404 0.791 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:25:02.347Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:25:02.375Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:25:02.380Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg 404 0.594 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:25:02.770Z [32minfo[39m: GET /api/eczema/diagnoses 304 542.354 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:25:02.784Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:25:03.187Z [32minfo[39m: GET /api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c 200 837.371 ms - 
+Response Body: "{\"success\":true,\"data\":{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}}}"
+2025-04-21T15:25:03.195Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:25:03.496Z [32minfo[39m: GET /api/eczema/diagnoses 304 705.672 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:25:03.842Z [32minfo[39m: GET /api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c 304 643.532 ms - 
+Response Body: "{\"success\":true,\"data\":{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}}}"
+2025-04-21T15:27:05.958Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/age-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:27:06.155Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/treatment-effectiveness",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:27:06.359Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/geographical-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:27:06.404Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/model-confidence",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:27:06.441Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/diagnosis-history",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:27:08.773Z [32minfo[39m: GET /api/analytics/geographical-distribution 304 2402.344 ms - 
+Response Body: "{\"success\":true,\"data\":{\"regions\":[]}}"
+2025-04-21T15:27:08.785Z [32minfo[39m: GET /api/analytics/age-distribution 304 2812.023 ms - 
+Response Body: "{\"success\":true,\"data\":{\"ageGroups\":[{\"age_group\":\"Under 18\",\"count\":7},{\"age_group\":\"31-50\",\"count\":6},{\"age_group\":\"18-30\",\"count\":1}]}}"
+2025-04-21T15:27:08.792Z [32minfo[39m: GET /api/analytics/treatment-effectiveness 304 2594.956 ms - 
+Response Body: "{\"success\":true,\"data\":{\"treatments\":[]}}"
+2025-04-21T15:27:08.795Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/geographical-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:27:08.808Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/age-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:27:08.822Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/treatment-effectiveness",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:27:09.030Z [32minfo[39m: GET /api/analytics/model-confidence 304 2612.197 ms - 
+Response Body: "{\"success\":true,\"data\":{\"confidenceLevels\":[]}}"
+2025-04-21T15:27:09.034Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/model-confidence",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:27:09.093Z [32minfo[39m: GET /api/analytics/diagnosis-history? 200 2645.182 ms - 
+Response Body: "{\"success\":true,\"data\":{\"history\":[]}}"
+2025-04-21T15:27:09.100Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/diagnosis-history",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:27:09.478Z [32minfo[39m: GET /api/analytics/age-distribution 304 668.101 ms - 
+Response Body: "{\"success\":true,\"data\":{\"ageGroups\":[{\"age_group\":\"Under 18\",\"count\":7},{\"age_group\":\"31-50\",\"count\":6},{\"age_group\":\"18-30\",\"count\":1}]}}"
+2025-04-21T15:27:09.530Z [32minfo[39m: GET /api/analytics/treatment-effectiveness 304 706.043 ms - 
+Response Body: "{\"success\":true,\"data\":{\"treatments\":[]}}"
+2025-04-21T15:27:09.603Z [32minfo[39m: GET /api/analytics/geographical-distribution 304 805.070 ms - 
+Response Body: "{\"success\":true,\"data\":{\"regions\":[]}}"
+2025-04-21T15:27:09.742Z [32minfo[39m: GET /api/analytics/model-confidence 304 703.252 ms - 
+Response Body: "{\"success\":true,\"data\":{\"confidenceLevels\":[]}}"
+2025-04-21T15:27:09.807Z [32minfo[39m: GET /api/analytics/diagnosis-history? 304 703.032 ms - 
+Response Body: "{\"success\":true,\"data\":{\"history\":[]}}"
+2025-04-21T15:28:16.472Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:28:18.831Z [32minfo[39m: GET /api/eczema/diagnoses 304 2356.223 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:28:18.844Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:28:19.382Z [32minfo[39m: GET /api/eczema/diagnoses 304 535.464 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:28:19.393Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:28:19.445Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:28:19.451Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg 404 2.370 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:28:19.459Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:28:19.463Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg 404 1.526 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:28:19.467Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:28:19.472Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg 404 0.576 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:28:19.477Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:28:19.480Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg 404 0.543 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:28:19.488Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:28:19.502Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:28:19.511Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg 404 0.614 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:28:19.896Z [32minfo[39m: GET /api/eczema/diagnoses 304 499.149 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:28:19.906Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:28:20.202Z [32minfo[39m: GET /api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c 304 710.851 ms - 
+Response Body: "{\"success\":true,\"data\":{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}}}"
+2025-04-21T15:28:20.205Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:28:20.623Z [32minfo[39m: GET /api/eczema/diagnoses 304 714.980 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:28:20.965Z [32minfo[39m: GET /api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c 304 752.963 ms - 
+Response Body: "{\"success\":true,\"data\":{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}}}"
+2025-04-21T15:29:10.151Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:29:12.631Z [32minfo[39m: GET /api/eczema/diagnoses 304 2475.553 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:29:12.640Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:29:13.139Z [32minfo[39m: GET /api/eczema/diagnoses 304 497.048 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:29:13.155Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:29:13.231Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:29:13.235Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg 404 0.578 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:29:13.241Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:29:13.245Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg 404 0.566 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:29:13.247Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:29:13.250Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg 404 0.611 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:29:13.256Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:29:13.260Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg 404 0.869 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:29:13.266Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:29:13.272Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg 404 0.924 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:29:13.276Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:29:13.946Z [32minfo[39m: GET /api/eczema/diagnoses 304 787.829 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:29:13.966Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:29:14.345Z [32minfo[39m: GET /api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c 304 1065.177 ms - 
+Response Body: "{\"success\":true,\"data\":{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}}}"
+2025-04-21T15:29:14.364Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:29:14.640Z [32minfo[39m: GET /api/eczema/diagnoses 304 670.340 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:29:14.951Z [32minfo[39m: GET /api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c 304 581.410 ms - 
+Response Body: "{\"success\":true,\"data\":{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}}}"
+2025-04-21T15:31:29.669Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/age-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:31:29.758Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/geographical-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:31:29.789Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/treatment-effectiveness",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:31:29.838Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/model-confidence",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:31:30.207Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/diagnosis-history",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:31:32.571Z [32minfo[39m: GET /api/analytics/age-distribution 304 2854.576 ms - 
+Response Body: "{\"success\":true,\"data\":{\"ageGroups\":[{\"age_group\":\"Under 18\",\"count\":7},{\"age_group\":\"31-50\",\"count\":6},{\"age_group\":\"18-30\",\"count\":1}]}}"
+2025-04-21T15:31:32.580Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/age-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:31:32.729Z [32minfo[39m: GET /api/analytics/model-confidence 304 2818.201 ms - 
+Response Body: "{\"success\":true,\"data\":{\"confidenceLevels\":[]}}"
+2025-04-21T15:31:32.744Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/model-confidence",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:31:32.779Z [32minfo[39m: GET /api/analytics/geographical-distribution 304 3016.651 ms - 
+Response Body: "{\"success\":true,\"data\":{\"regions\":[]}}"
+2025-04-21T15:31:32.786Z [32minfo[39m: GET /api/analytics/diagnosis-history? 304 2549.096 ms - 
+Response Body: "{\"success\":true,\"data\":{\"history\":[]}}"
+2025-04-21T15:31:32.798Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/geographical-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:31:32.812Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/diagnosis-history",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:31:32.825Z [32minfo[39m: GET /api/analytics/treatment-effectiveness 304 3033.646 ms - 
+Response Body: "{\"success\":true,\"data\":{\"treatments\":[]}}"
+2025-04-21T15:31:32.831Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/treatment-effectiveness",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:31:33.325Z [32minfo[39m: GET /api/analytics/age-distribution 304 737.892 ms - 
+Response Body: "{\"success\":true,\"data\":{\"ageGroups\":[{\"age_group\":\"Under 18\",\"count\":7},{\"age_group\":\"31-50\",\"count\":6},{\"age_group\":\"18-30\",\"count\":1}]}}"
+2025-04-21T15:31:33.460Z [32minfo[39m: GET /api/analytics/model-confidence 304 710.369 ms - 
+Response Body: "{\"success\":true,\"data\":{\"confidenceLevels\":[]}}"
+2025-04-21T15:31:33.481Z [32minfo[39m: GET /api/analytics/geographical-distribution 304 677.727 ms - 
+Response Body: "{\"success\":true,\"data\":{\"regions\":[]}}"
+2025-04-21T15:31:33.491Z [32minfo[39m: GET /api/analytics/diagnosis-history? 304 677.960 ms - 
+Response Body: "{\"success\":true,\"data\":{\"history\":[]}}"
+2025-04-21T15:31:33.623Z [32minfo[39m: GET /api/analytics/treatment-effectiveness 304 784.522 ms - 
+Response Body: "{\"success\":true,\"data\":{\"treatments\":[]}}"
+2025-04-21T15:32:52.592Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/age-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:32:52.642Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/geographical-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:32:52.658Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/treatment-effectiveness",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:32:52.674Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/model-confidence",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:32:52.687Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/diagnosis-history",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:32:54.981Z [32minfo[39m: GET /api/analytics/model-confidence 200 2298.174 ms - 
+Response Body: "{\"success\":true,\"data\":{\"confidenceLevels\":[{\"_id\":\"Low\",\"count\":37}]}}"
+2025-04-21T15:32:55.000Z [32minfo[39m: GET /api/analytics/diagnosis-history? 304 2310.162 ms - 
+Response Body: "{\"success\":true,\"data\":{\"history\":[]}}"
+2025-04-21T15:32:55.083Z [32minfo[39m: GET /api/analytics/age-distribution 304 2476.136 ms - 
+Response Body: "{\"success\":true,\"data\":{\"ageGroups\":[{\"age_group\":\"Under 18\",\"count\":7},{\"age_group\":\"31-50\",\"count\":6},{\"age_group\":\"18-30\",\"count\":1}]}}"
+2025-04-21T15:32:55.109Z [32minfo[39m: GET /api/analytics/geographical-distribution 304 2463.312 ms - 
+Response Body: "{\"success\":true,\"data\":{\"regions\":[]}}"
+2025-04-21T15:32:55.135Z [32minfo[39m: GET /api/analytics/treatment-effectiveness 304 2475.449 ms - 
+Response Body: "{\"success\":true,\"data\":{\"treatments\":[]}}"
+2025-04-21T15:34:11.075Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/age-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:11.096Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/geographical-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:11.131Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/treatment-effectiveness",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:11.153Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/model-confidence",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:11.180Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/diagnosis-history",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:13.829Z [32minfo[39m: GET /api/analytics/age-distribution 304 2750.034 ms - 
+Response Body: "{\"success\":true,\"data\":{\"ageGroups\":[{\"age_group\":\"Under 18\",\"count\":7},{\"age_group\":\"31-50\",\"count\":6},{\"age_group\":\"18-30\",\"count\":1}]}}"
+2025-04-21T15:34:13.979Z [32minfo[39m: GET /api/analytics/treatment-effectiveness 304 2845.122 ms - 
+Response Body: "{\"success\":true,\"data\":{\"treatments\":[]}}"
+2025-04-21T15:34:14.054Z [32minfo[39m: GET /api/analytics/geographical-distribution 304 2952.325 ms - 
+Response Body: "{\"success\":true,\"data\":{\"regions\":[]}}"
+2025-04-21T15:34:14.262Z [32minfo[39m: GET /api/analytics/model-confidence 304 3106.732 ms - 
+Response Body: "{\"success\":true,\"data\":{\"confidenceLevels\":[{\"_id\":\"Low\",\"count\":37}]}}"
+2025-04-21T15:34:14.272Z [32minfo[39m: GET /api/analytics/diagnosis-history? 304 3089.379 ms - 
+Response Body: "{\"success\":true,\"data\":{\"history\":[]}}"
+2025-04-21T15:34:33.387Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:35.739Z [32minfo[39m: GET /api/eczema/diagnoses 304 2348.793 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:34:35.751Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:36.274Z [32minfo[39m: GET /api/eczema/diagnoses 304 519.837 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:34:36.300Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:36.366Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:36.372Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg 404 1.828 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:34:36.378Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:36.381Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg 404 1.165 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:34:36.384Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:36.387Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg 404 0.569 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:34:36.392Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:36.401Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg 404 0.762 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:34:36.404Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:36.421Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:36.428Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg 404 0.493 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:34:36.842Z [32minfo[39m: GET /api/eczema/diagnoses 304 537.076 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:34:36.853Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:37.163Z [32minfo[39m: GET /api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c 304 756.989 ms - 
+Response Body: "{\"success\":true,\"data\":{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}}}"
+2025-04-21T15:34:37.168Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:37.518Z [32minfo[39m: GET /api/eczema/diagnoses 304 661.820 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:34:37.864Z [32minfo[39m: GET /api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c 304 691.967 ms - 
+Response Body: "{\"success\":true,\"data\":{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}}}"
+2025-04-21T15:34:39.793Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/age-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:39.833Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/geographical-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:39.852Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/treatment-effectiveness",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:39.879Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/model-confidence",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:39.909Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/diagnosis-history",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:40.448Z [32minfo[39m: GET /api/analytics/model-confidence 304 562.399 ms - 
+Response Body: "{\"success\":true,\"data\":{\"confidenceLevels\":[{\"_id\":\"Low\",\"count\":37}]}}"
+2025-04-21T15:34:40.461Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/model-confidence",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:40.550Z [32minfo[39m: GET /api/analytics/geographical-distribution 304 713.700 ms - 
+Response Body: "{\"success\":true,\"data\":{\"regions\":[]}}"
+2025-04-21T15:34:40.559Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/geographical-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:40.594Z [32minfo[39m: GET /api/analytics/age-distribution 304 783.925 ms - 
+Response Body: "{\"success\":true,\"data\":{\"ageGroups\":[{\"age_group\":\"Under 18\",\"count\":7},{\"age_group\":\"31-50\",\"count\":6},{\"age_group\":\"18-30\",\"count\":1}]}}"
+2025-04-21T15:34:40.597Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/age-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:40.645Z [32minfo[39m: GET /api/analytics/treatment-effectiveness 304 790.525 ms - 
+Response Body: "{\"success\":true,\"data\":{\"treatments\":[]}}"
+2025-04-21T15:34:40.650Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/treatment-effectiveness",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:40.687Z [32minfo[39m: GET /api/analytics/diagnosis-history? 304 773.440 ms - 
+Response Body: "{\"success\":true,\"data\":{\"history\":[]}}"
+2025-04-21T15:34:40.693Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/diagnosis-history",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:34:41.021Z [32minfo[39m: GET /api/analytics/model-confidence 304 554.545 ms - 
+Response Body: "{\"success\":true,\"data\":{\"confidenceLevels\":[{\"_id\":\"Low\",\"count\":37}]}}"
+2025-04-21T15:34:41.255Z [32minfo[39m: GET /api/analytics/geographical-distribution 304 694.249 ms - 
+Response Body: "{\"success\":true,\"data\":{\"regions\":[]}}"
+2025-04-21T15:34:41.308Z [32minfo[39m: GET /api/analytics/age-distribution 304 705.823 ms - 
+Response Body: "{\"success\":true,\"data\":{\"ageGroups\":[{\"age_group\":\"Under 18\",\"count\":7},{\"age_group\":\"31-50\",\"count\":6},{\"age_group\":\"18-30\",\"count\":1}]}}"
+2025-04-21T15:34:41.322Z [32minfo[39m: GET /api/analytics/treatment-effectiveness 304 667.622 ms - 
+Response Body: "{\"success\":true,\"data\":{\"treatments\":[]}}"
+2025-04-21T15:34:41.375Z [32minfo[39m: GET /api/analytics/diagnosis-history? 304 678.771 ms - 
+Response Body: "{\"success\":true,\"data\":{\"history\":[]}}"
+2025-04-21T15:41:12.391Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:41:19.915Z [32minfo[39m: GET /api/eczema/diagnoses 304 7520.946 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:41:19.935Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:41:21.215Z [32minfo[39m: GET /api/eczema/diagnoses - - ms - -
+2025-04-21T15:41:23.299Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:41:24.576Z [32minfo[39m: GET /api/eczema/diagnoses 200 1274.171 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:41:24.607Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:41:25.339Z [32minfo[39m: GET /api/eczema/diagnoses 304 728.370 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:41:25.349Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:41:25.416Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:41:25.421Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg 404 0.671 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:41:25.430Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:41:25.438Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg 404 0.818 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:41:25.444Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:41:25.447Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg 404 0.652 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:41:25.451Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:41:25.459Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg 404 0.598 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:41:25.465Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:41:25.479Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/apihttps://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:41:25.483Z [32minfo[39m: GET /apihttps://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg 404 0.768 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-21T15:41:26.248Z [32minfo[39m: GET /api/eczema/diagnoses 304 895.478 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:41:26.257Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:41:28.171Z [32minfo[39m: GET /api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c 304 2702.849 ms - 
+Response Body: "{\"success\":true,\"data\":{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}}}"
+2025-04-21T15:41:28.187Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:41:29.537Z [32minfo[39m: GET /api/eczema/diagnoses 304 3277.335 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}},{\"diagnosisId\":\"aa0a892c-2e53-409f-b679-b769c3c1482a\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745242947519-356249977.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T13:43:06.756Z\",\"doctorReview\":{}},{\"diagnosisId\":\"374394e2-3291-402d-841a-adcc864bf8de\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745237430287-247718571.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T12:11:17.924Z\",\"doctorReview\":{}},{\"diagnosisId\":\"330deed2-04ad-4d50-b550-4832357acb6c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745234569664-288090603.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T11:23:26.299Z\",\"doctorReview\":{}},{\"diagnosisId\":\"4276938e-e5eb-403b-86df-a28988ed5bdd\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745229231567-824573515.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T09:54:31.691Z\",\"doctorReview\":{}}]}"
+2025-04-21T15:41:29.846Z [32minfo[39m: GET /api/eczema/diagnoses/4b743390-d631-4558-a68a-b9d8910eb89c 304 1652.419 ms - 
+Response Body: "{\"success\":true,\"data\":{\"diagnosisId\":\"4b743390-d631-4558-a68a-b9d8910eb89c\",\"isEczema\":\"No Eczema\",\"severity\":\"severe\",\"confidence\":1,\"bodyPart\":\"Neck\",\"bodyPartConfidence\":0.25,\"recommendations\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"],\"needsDoctorReview\":true,\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745244266124-970293161.jpg\",\"status\":\"pending_review\",\"createdAt\":\"2025-04-21T14:05:02.136Z\",\"doctorReview\":{}}}"
+2025-04-21T15:43:27.322Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/age-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:43:27.349Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/geographical-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:43:27.380Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/treatment-effectiveness",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:43:27.422Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/model-confidence",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:43:27.465Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/diagnosis-history",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:43:29.870Z [32minfo[39m: GET /api/analytics/model-confidence 304 2433.850 ms - 
+Response Body: "{\"success\":true,\"data\":{\"confidenceLevels\":[{\"_id\":\"Low\",\"count\":37}]}}"
+2025-04-21T15:43:29.886Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/model-confidence",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:43:30.011Z [32minfo[39m: GET /api/analytics/age-distribution 304 2676.249 ms - 
+Response Body: "{\"success\":true,\"data\":{\"ageGroups\":[{\"age_group\":\"Under 18\",\"count\":7},{\"age_group\":\"31-50\",\"count\":6},{\"age_group\":\"18-30\",\"count\":1}]}}"
+2025-04-21T15:43:30.017Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/age-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:43:30.095Z [32minfo[39m: GET /api/analytics/diagnosis-history? 304 2589.224 ms - 
+Response Body: "{\"success\":true,\"data\":{\"history\":[]}}"
+2025-04-21T15:43:30.103Z [32minfo[39m: GET /api/analytics/treatment-effectiveness 304 2719.900 ms - 
+Response Body: "{\"success\":true,\"data\":{\"treatments\":[]}}"
+2025-04-21T15:43:30.108Z [32minfo[39m: GET /api/analytics/geographical-distribution 304 2756.068 ms - 
+Response Body: "{\"success\":true,\"data\":{\"regions\":[]}}"
+2025-04-21T15:43:30.113Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/diagnosis-history",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:43:30.143Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/treatment-effectiveness",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:43:30.154Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/analytics/geographical-distribution",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-21T15:43:30.639Z [32minfo[39m: GET /api/analytics/model-confidence 304 747.087 ms - 
+Response Body: "{\"success\":true,\"data\":{\"confidenceLevels\":[{\"_id\":\"Low\",\"count\":37}]}}"
+2025-04-21T15:43:30.727Z [32minfo[39m: GET /api/analytics/diagnosis-history? 304 605.041 ms - 
+Response Body: "{\"success\":true,\"data\":{\"history\":[]}}"
+2025-04-21T15:43:30.786Z [32minfo[39m: GET /api/analytics/age-distribution 304 763.592 ms - 
+Response Body: "{\"success\":true,\"data\":{\"ageGroups\":[{\"age_group\":\"Under 18\",\"count\":7},{\"age_group\":\"31-50\",\"count\":6},{\"age_group\":\"18-30\",\"count\":1}]}}"
+2025-04-21T15:43:30.868Z [32minfo[39m: GET /api/analytics/treatment-effectiveness 304 722.833 ms - 
+Response Body: "{\"success\":true,\"data\":{\"treatments\":[]}}"
+2025-04-21T15:43:30.964Z [32minfo[39m: GET /api/analytics/geographical-distribution 304 808.108 ms - 
+Response Body: "{\"success\":true,\"data\":{\"regions\":[]}}"
