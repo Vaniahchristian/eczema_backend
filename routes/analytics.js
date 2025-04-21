@@ -10,6 +10,11 @@ const analyticsController = require('../controllers/analyticsController');
 // All routes require authentication
 router.use(protect);
 
+
+const { listAllDiagnoses } = require('../controllers/analyticsController');
+router.get('/all-diagnoses', listAllDiagnoses);
+
+
 // Export routes - accessible to all authenticated users
 router.get('/export/diagnoses', authorize('doctor', 'admin', 'researcher', 'patient'), exportDiagnosisData);
 router.get('/export/analytics', authorize('doctor', 'admin', 'researcher', 'patient'), exportAnalyticsReport);

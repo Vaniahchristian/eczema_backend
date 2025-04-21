@@ -455,3 +455,21 @@ exports.getDiagnosisHistory = async (req, res) => {
         });
     }
 };
+// List all diagnoses
+exports.listAllDiagnoses = async (req, res) => {
+    try {
+        const diagnoses = await Diagnosis.find({});
+        res.json({
+            success: true,
+            count: diagnoses.length,
+            data: diagnoses
+        });
+    } catch (error) {
+        logger.error('Error in listAllDiagnoses:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching diagnoses',
+            error: error.message
+        });
+    }
+};

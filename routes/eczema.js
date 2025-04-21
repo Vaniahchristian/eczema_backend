@@ -232,6 +232,8 @@ router.get('/diagnoses/:diagnosisId', async (req, res) => {
         });
     }
 });
+  //get all diagnoses
+  
 
 // Add doctor's review to diagnosis
 router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, res) => {
