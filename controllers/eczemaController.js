@@ -1,5 +1,4 @@
-const { Mongo } = require('../models');
-const { Diagnosis, Analytics, Advisory } = Mongo;
+const { Diagnosis, Analytics, Advisory } = require('../models');
 const axios = require('axios');
 const FormData = require('form-data');
 const { uploadFile } = require('../config/storage');
@@ -324,12 +323,11 @@ exports.diagnose = async (req, res) => {
   }
 };
 
-exports.submitFeedback = async (req, res) => {
+exports.getFeedback = async (req, res) => {
   try {
     const { diagnosisId } = req.params;
-    const feedbackData = req.body;
-
     const diagnosis = await Diagnosis.findOne({ diagnosisId });
+
     if (!diagnosis) {
       return res.status(404).json({
         success: false,
@@ -337,26 +335,70 @@ exports.submitFeedback = async (req, res) => {
       });
     }
 
-    // Update diagnosis with feedback
-    diagnosis.postDiagnosisSurvey = {
-      ...feedbackData,
-      submittedAt: new Date()
-    };
-    await diagnosis.save();
+    res.json({
+      success: true,
+      data: {
+        preDiagnosisSurvey: diagnosis.preDiagnosisSurvey || null,
+        postDiagnosisSurvey: diagnosis.postDiagnosisSurvey || null
+      }
+    });
+  } catch (error) {
+    console.error('Error retrieving feedback:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error retrieving feedback'
+    });
+  }
+};
 
-    // Update analytics
-    await Analytics.updateOne(
-      { analysisId: 'user_feedback' },
-      {
-        $inc: {
-          'data.totalFeedbacks': 1,
-          'data.accuracySum': feedbackData.diagnosisAccuracy,
-          'data.helpfulnessSum': feedbackData.diagnosisHelpfulness,
-          'data.claritySum': feedbackData.treatmentClarity,
-          'data.confidenceSum': feedbackData.userConfidence,
-          [`data.recommendCount.${feedbackData.wouldRecommend ? 'yes' : 'no'}`]: 1
-        }
-      },
+exports.submitFeedback = async (req, res) => {
+  try {
+    const { diagnosisId } = req.params;
+    const update = {};
+
+    // Handle pre-diagnosis survey
+    if (req.body.preDiagnosisSurvey) {
+      update.preDiagnosisSurvey = req.body.preDiagnosisSurvey;
+    }
+    // For legacy support if frontend sends preDiagnosisData instead
+    if (req.body.preDiagnosisData) {
+      update.preDiagnosisSurvey = req.body.preDiagnosisData;
+    }
+
+    // Handle post-diagnosis survey (feedback)
+    if (req.body.postDiagnosisSurvey) {
+      update.postDiagnosisSurvey = req.body.postDiagnosisSurvey;
+    }
+    // For legacy support if frontend sends feedback fields directly
+    if (
+      req.body.diagnosisAccuracy !== undefined ||
+      req.body.diagnosisHelpfulness !== undefined ||
+      req.body.treatmentClarity !== undefined ||
+      req.body.userConfidence !== undefined ||
+      req.body.feedback !== undefined ||
+      req.body.wouldRecommend !== undefined
+    ) {
+      update.postDiagnosisSurvey = {
+        diagnosisAccuracy: req.body.diagnosisAccuracy,
+        diagnosisHelpfulness: req.body.diagnosisHelpfulness,
+        treatmentClarity: req.body.treatmentClarity,
+        userConfidence: req.body.userConfidence,
+        feedback: req.body.feedback,
+        wouldRecommend: req.body.wouldRecommend,
+        submittedAt: new Date(),
+      };
+    }
+
+    if (Object.keys(update).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No valid feedback or survey data provided.",
+      });
+    }
+
+    await Diagnosis.findOneAndUpdate(
+      { diagnosisId },
+      { $set: update },
       { upsert: true }
     );
 

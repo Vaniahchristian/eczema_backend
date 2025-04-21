@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const { protect, authorize } = require('../middleware/auth');
+const eczemaController = require('../controllers/eczemaController');
 const Diagnosis = require('../models/mongodb/Diagnosis');
 const axios = require('axios');
 const FormData = require('form-data');
@@ -232,8 +233,11 @@ router.get('/diagnoses/:diagnosisId', async (req, res) => {
         });
     }
 });
-  //get all diagnoses
+    
+   // Example: eczema.js
+   router.post('/diagnoses/:diagnosisId/feedback', protect, eczemaController.submitFeedback);
   
+   router.get('/diagnoses/:diagnosisId/feedback', protect, eczemaController.getFeedback);
 
 // Add doctor's review to diagnosis
 router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, res) => {
@@ -284,6 +288,12 @@ router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, r
             message: 'Failed to add review'
         });
     }
-});
+}
+
+
+
+
+
+);
 
 module.exports = router;

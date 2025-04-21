@@ -1,6 +1,9 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const mongoose = require('mongoose');
 const { sequelize } = require('../config/database');
+const Diagnosis = require('./mongodb/Diagnosis');
+const Analytics = require('./mongodb/Analytics');
+const Advisory = require('./mongodb/Advisory');
 
 // MongoDB Schemas
 const userSchema = new mongoose.Schema({
@@ -352,5 +355,8 @@ MySQL.Appointment.belongsTo(MySQL.User, {
 module.exports = {
   MySQL,
   User,
-  sequelize
+  sequelize,
+  Diagnosis,
+  Analytics,
+  Advisory
 };
