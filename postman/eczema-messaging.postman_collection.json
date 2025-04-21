@@ -1,0 +1,251 @@
+{
+    "info": {
+        "name": "Eczema Messaging API",
+        "description": "Collection for the Eczema Dashboard Messaging API endpoints",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Conversations",
+            "item": [
+                {
+                    "name": "Get All Conversations",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/messages/conversations",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "messages", "conversations"]
+                        },
+                        "description": "Get all conversations for the authenticated user"
+                    }
+                },
+                {
+                    "name": "Create New Conversation",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"doctorId\": \"doctor_id_here\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/messages/conversations",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "messages", "conversations"]
+                        },
+                        "description": "Create a new conversation with a doctor"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Messages",
+            "item": [
+                {
+                    "name": "Get Conversation Messages",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/messages/conversations/:conversationId/messages",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "messages", "conversations", ":conversationId", "messages"],
+                            "variable": [
+                                {
+                                    "key": "conversationId",
+                                    "value": "conversation_id_here",
+                                    "description": "ID of the conversation"
+                                }
+                            ]
+                        },
+                        "description": "Get all messages in a conversation"
+                    }
+                },
+                {
+                    "name": "Send Message",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"content\": \"Hello, how are you?\",\n    \"type\": \"text\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/messages/conversations/:conversationId/messages",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "messages", "conversations", ":conversationId", "messages"],
+                            "variable": [
+                                {
+                                    "key": "conversationId",
+                                    "value": "conversation_id_here",
+                                    "description": "ID of the conversation"
+                                }
+                            ]
+                        },
+                        "description": "Send a new message in a conversation"
+                    }
+                },
+                {
+                    "name": "Update Message Status",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"read\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/messages/messages/:messageId/status",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "messages", "messages", ":messageId", "status"],
+                            "variable": [
+                                {
+                                    "key": "messageId",
+                                    "value": "message_id_here",
+                                    "description": "ID of the message"
+                                }
+                            ]
+                        },
+                        "description": "Update the status of a message (e.g., mark as read)"
+                    }
+                },
+                {
+                    "name": "React to Message",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"reaction\": \"thumbs_up\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/messages/messages/:messageId/reaction",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "messages", "messages", ":messageId", "reaction"],
+                            "variable": [
+                                {
+                                    "key": "messageId",
+                                    "value": "message_id_here",
+                                    "description": "ID of the message"
+                                }
+                            ]
+                        },
+                        "description": "Add a reaction to a message"
+                    }
+                },
+                {
+                    "name": "Delete Message",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/messages/messages/:messageId",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "messages", "messages", ":messageId"],
+                            "variable": [
+                                {
+                                    "key": "messageId",
+                                    "value": "message_id_here",
+                                    "description": "ID of the message"
+                                }
+                            ]
+                        },
+                        "description": "Delete a message"
+                    }
+                }
+            ]
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [""]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [""]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:5000",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "your_jwt_token_here",
+            "type": "string"
+        }
+    ]
+}

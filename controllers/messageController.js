@@ -195,12 +195,11 @@ const messageController = {
                 return res.status(400).json({ success: false, message: 'No other participant found' });
             }
 
-            const fromDoctor = userRole === 'doctor';
+            // Create message with new schema format
             const messageData = {
                 conversationId,
-                patientId: fromDoctor ? otherParticipant.userId : userId,
-                doctorId: fromDoctor ? userId : otherParticipant.userId,
-                fromDoctor,
+                senderId: userId,
+                senderRole: userRole,
                 content,
                 type,
                 attachments,
@@ -209,26 +208,27 @@ const messageController = {
 
             const message = await Message.create(messageData);
 
+            // Update conversation
             conversation.lastMessage = message._id;
             const otherIdx = conversation.participants.findIndex(p => p.userId !== userId);
             conversation.participants[otherIdx].unreadCount = (conversation.participants[otherIdx].unreadCount || 0) + 1;
             await conversation.save();
 
+            // Get sender details
             const [rows] = await mysqlPool.query(
                 'SELECT id, first_name as firstName, last_name as lastName, role, image_url as profileImage FROM users WHERE id = ?',
                 [userId]
             );
             const sender = rows[0] || { firstName: 'Unknown', lastName: 'User' };
 
+            // Format response
             const formattedMessage = {
                 id: message._id,
                 conversationId: message.conversationId,
                 content,
-                patientId: message.patientId,
-                doctorId: message.doctorId,
-                fromDoctor: message.fromDoctor,
+                senderId: message.senderId,
+                senderRole: message.senderRole,
                 senderName: `${sender.firstName} ${sender.lastName}`,
-                senderRole: sender.role,
                 senderImage: sender.profileImage,
                 timestamp: message.createdAt,
                 status: message.status,
@@ -492,9 +492,106 @@ const messageController = {
         }
     },
 
-    reactToMessage: function(req, res) {
-        return this.addReaction(req, res);
-    }
+    reactToMessage: async (req, res) => {
+        try {
+            const { messageId } = req.params;
+            const { type } = req.body;
+            const userId = req.user.id;
+
+            // Validate reaction type
+            if (!type || typeof type !== 'string') {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid reaction type'
+                });
+            }
+
+            const message = await Message.findById(messageId);
+            if (!message) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Message not found'
+                });
+            }
+
+            const conversation = await Conversation.findById(message.conversationId);
+            if (!conversation) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Conversation not found'
+                });
+            }
+
+            // Verify user is participant
+            const isParticipant = conversation.participants.some(p => p.userId === userId);
+            if (!isParticipant) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Not authorized to react to this message'
+                });
+            }
+
+            // Check if user has already reacted
+            const existingReactionIndex = message.reactions.findIndex(r => r.userId === userId);
+
+            if (existingReactionIndex !== -1) {
+                // If same reaction type, remove it (toggle off)
+                if (message.reactions[existingReactionIndex].type === type) {
+                    message.reactions.splice(existingReactionIndex, 1);
+                } else {
+                    // Update existing reaction type
+                    message.reactions.set(existingReactionIndex, {
+                        userId,
+                        type,
+                        timestamp: new Date()
+                    });
+                }
+            } else {
+                // Add new reaction
+                message.reactions.push({
+                    userId,
+                    type,
+                    timestamp: new Date()
+                });
+            }
+
+            const updatedMessage = await message.save();
+
+            // Get user details for the reaction
+            const [userRows] = await mysqlPool.query(
+                'SELECT first_name, last_name, image_url FROM users WHERE id = ?',
+                [userId]
+            );
+            const user = userRows[0];
+
+            // Emit WebSocket event for real-time updates
+            req.app.get('io').to(`conversation:${message.conversationId}`).emit('message:reaction', {
+                messageId: updatedMessage._id,
+                reactions: updatedMessage.reactions,
+                latestReaction: {
+                    userId,
+                    userName: `${user.first_name} ${user.last_name}`,
+                    userImage: user.image_url,
+                    type,
+                    timestamp: new Date()
+                }
+            });
+
+            res.json({
+                success: true,
+                data: {
+                    messageId: updatedMessage._id,
+                    reactions: updatedMessage.reactions
+                }
+            });
+        } catch (error) {
+            console.error('Error in reactToMessage:', error);
+            res.status(500).json({
+                success: false,
+                message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to add reaction'
+            });
+        }
+    },
 };
 
 module.exports = messageController;

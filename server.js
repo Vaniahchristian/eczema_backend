@@ -30,14 +30,42 @@ const server = http.createServer(app);
 const io = new Server(server, {
   path: '/socket.io',
   cors: {
-    origin: process.env.FRONTEND_URL || 'https://eczema-dashboard-final.vercel.app',
+    origin: [
+      "http://127.0.0.1:56776",
+      "http://localhost:3000",
+      "https://eczema-dashboard-final.vercel.app"
+    ],
     methods: ['GET', 'POST'],
     credentials: true
   },
-  transports: ['websocket', 'polling']
+  transports: ['websocket', 'polling'],
+  debug: true // Enable debug mode
 });
 
+// Log all socket events in development
+if (process.env.NODE_ENV !== 'production') {
+  io.engine.on('connection', (socket) => {
+    console.log('🔄 Socket.IO Engine Connection:', {
+      id: socket.id,
+      protocol: socket.protocol,
+      transport: socket.transport.name,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  io.engine.on('packet', (packet, socket) => {
+    if (packet.type === 'ping' || packet.type === 'pong') return; // Skip heartbeat packets
+    console.log('📦 Socket.IO Packet:', {
+      type: packet.type,
+      data: packet.data,
+      socketId: socket?.id,
+      timestamp: new Date().toISOString()
+    });
+  });
+}
+
 const socketService = new SocketService(io);
+console.log('🚀 Socket.IO server initialized');
 
 // Trust proxy - required for rate limiting behind reverse proxies
 app.set('trust proxy', 1);
@@ -101,7 +129,11 @@ connectMongoDBWithRetry();
 
 // Initialize WebSocket server for real-time updates
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "https://eczema-dashboard-final.vercel.app",
+  origin: [
+    "http://127.0.0.1:56776",
+    "http://localhost:3000",
+    "https://eczema-dashboard-final.vercel.app"
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -144,7 +176,12 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", process.env.FRONTEND_URL || "https://eczema-dashboard-final.vercel.app"]
+      connectSrc: [
+        "'self'",
+        "http://localhost:3000",
+        "http://127.0.0.1:56776",
+        "https://eczema-dashboard-final.vercel.app"
+      ]
     }
   },
   crossOriginResourcePolicy: { policy: "same-site" }

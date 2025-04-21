@@ -8,21 +8,12 @@ const isDev = process.env.NODE_ENV === 'development';
 
 // MySQL Configuration
 const mysqlConfig = {
-  host: process.env.MYSQL_HOST || 'localhost',
-  port: parseInt(process.env.MYSQL_PORT || '3306', 10),
+  host: process.env.MYSQL_HOST || 'centerbeam.proxy.rlwy.net',
+  port: 17053,  // Fixed port number without parsing
   user: process.env.MYSQL_USER || 'root',
-  password: process.env.MYSQL_PASSWORD || '',
-  database: process.env.MYSQL_DATABASE || 'eczema_dev'
+  password: process.env.MYSQL_PASSWORD || 'xmFjYAcsjbnLaJXMdiuYhEnZDkpNerWy',
+  database: process.env.MYSQL_DATABASE || 'railway'
 };
-
-// Override port for production environment if connecting to Railway.app
-if (!isDev && !isTest) {
-  mysqlConfig.host = 'centerbeam.proxy.rlwy.net';
-  mysqlConfig.port = 17053;
-  mysqlConfig.user = 'root';
-  mysqlConfig.password = 'xmFjYAcsjbnLaJXMdiuYhEnZDkpNerWy';
-  mysqlConfig.database = 'railway';
-}
 
 // Create MySQL connection pool
 const mysqlPool = mysql.createPool(mysqlConfig);
@@ -70,7 +61,7 @@ const sequelize = new Sequelize(
 
 // MongoDB Configuration
 const mongoConfig = {
-  url: process.env.MONGODB_URI || 'mongodb://localhost:27017/eczema_dev'
+  url: process.env.MONGODB_URI || 'mongodb+srv://admin:0754092850@todoapp.aqby3.mongodb.net/TRY?retryWrites=true&w=majority&ssl=true'
 };
 
 // Connect to MongoDB
