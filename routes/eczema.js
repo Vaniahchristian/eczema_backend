@@ -267,7 +267,20 @@ router.post('/diagnoses/:diagnosisId/claim', authorize('doctor'), async (req, re
 });
 
 
-
+router.get('/doctor-reviews', authorize('doctor'), async (req, res) => {
+  try {
+    const diagnoses = await Diagnosis.find({
+      needsDoctorReview: true,
+      $or: [
+        { 'doctorReview.doctorId': { $exists: false } },
+        { 'doctorReview.doctorId': null }
+      ]
+    }).sort('-createdAt');
+    res.json({ success: true, data: diagnoses });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch doctor review requests' });
+  }
+});
 
 
    

@@ -1,7 +1,8 @@
 const { v4: uuidv4 } = require('uuid');
 const { MySQL } = require('../models');
-const { sequelize } = require('../config/database');
 
+const Sequelize = require('sequelize');
+const { sequelize } = require('../config/database');
 // Create a new appointment
 const createAppointment = async (req, res) => {
   const { doctor_id, patient_id, appointment_date, reason, appointment_type, mode, duration } = req.body;
@@ -86,16 +87,26 @@ const getDoctorAppointments = async (req, res) => {
       where.status = status;
     }
 
-    if (startDate) {
+    if (startDate && endDate) {
+      // Cover the whole day: 00:00:00 to 23:59:59.999
+      const start = new Date(startDate);
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999);
       where.appointment_date = {
-        [sequelize.Op.gte]: new Date(startDate)
+        [Sequelize.Op.between]: [start, end]
       };
-    }
-
-    if (endDate) {
+    } else if (startDate) {
+      const start = new Date(startDate);
+      start.setHours(0, 0, 0, 0);
       where.appointment_date = {
-        ...where.appointment_date,
-        [sequelize.Op.lte]: new Date(endDate)
+        [Sequelize.Op.gte]: start
+      };
+    } else if (endDate) {
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999);
+      where.appointment_date = {
+        [Sequelize.Op.lte]: end
       };
     }
 
@@ -230,13 +241,13 @@ const checkAvailability = async (req, res) => {
       where: {
         doctor_id: doctorId,
         appointment_date: {
-          [sequelize.Op.between]: [
+          [Sequelize.Op.between]: [
             new Date(date.setHours(0, 0, 0, 0)),
             new Date(date.setHours(23, 59, 59, 999))
           ]
         },
         status: {
-          [sequelize.Op.notIn]: ['cancelled', 'completed']
+          [Sequelize.Op.notIn]: ['cancelled', 'completed']
         }
       }
     });
