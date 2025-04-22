@@ -57,7 +57,7 @@ const diagnosisSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending_review', 'completed', 'reviewed'],
+    enum: ['pending_review', 'in_review', 'reviewed'],
     default: 'pending_review'
   },
   doctorReview: {
@@ -69,6 +69,11 @@ const diagnosisSchema = new mongoose.Schema({
       enum: ['mild', 'moderate', 'severe']
     },
     treatmentPlan: String
+  },
+
+  needsDoctorReview: {
+    type: Boolean,
+    default: false
   },
   // Pre-diagnosis survey data
   preDiagnosisSurvey: {

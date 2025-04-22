@@ -388,6 +388,10 @@ exports.submitFeedback = async (req, res) => {
         submittedAt: new Date(),
       };
     }
+    // Handle doctor review request
+    if (req.body.needsDoctorReview === true) {
+      update.needsDoctorReview = true;
+    }
 
     if (Object.keys(update).length === 0) {
       return res.status(400).json({

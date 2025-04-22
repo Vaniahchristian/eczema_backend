@@ -131,7 +131,7 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
                 bodyPart: diagnosis.mlResults.affectedAreas[0],
                 bodyPartConfidence: diagnosis.mlResults.bodyPartConfidence,
                 recommendations: diagnosis.recommendations.precautions,
-                needsDoctorReview: diagnosis.status === 'pending_review',
+                needsDoctorReview: false,
                 imageUrl: diagnosis.imageUrl,
                 status: diagnosis.status,
                 createdAt: diagnosis.createdAt
@@ -173,7 +173,7 @@ router.get('/diagnoses', async (req, res) => {
             bodyPart: diagnosis.mlResults.affectedAreas[0],
             bodyPartConfidence: diagnosis.mlResults.bodyPartConfidence,
             recommendations: diagnosis.recommendations.precautions,
-            needsDoctorReview: diagnosis.status === 'pending_review',
+            needsDoctorReview: diagnosis.needsDoctorReview,
             imageUrl: diagnosis.imageUrl,
             status: diagnosis.status,
             createdAt: diagnosis.createdAt,
@@ -215,7 +215,7 @@ router.get('/diagnoses/:diagnosisId', async (req, res) => {
             bodyPart: diagnosis.mlResults.affectedAreas[0],
             bodyPartConfidence: diagnosis.mlResults.bodyPartConfidence,
             recommendations: diagnosis.recommendations.precautions,
-            needsDoctorReview: diagnosis.status === 'pending_review',
+            needsDoctorReview: diagnosis.needsDoctorReview,
             imageUrl: diagnosis.imageUrl,
             status: diagnosis.status,
             createdAt: diagnosis.createdAt,
@@ -238,7 +238,39 @@ router.get('/diagnoses/:diagnosisId', async (req, res) => {
    router.post('/diagnoses/:diagnosisId/feedback', protect, eczemaController.submitFeedback);
   
    router.get('/diagnoses/:diagnosisId/feedback', protect, eczemaController.getFeedback);
+  
+// Claim a diagnosis for review
+router.post('/diagnoses/:diagnosisId/claim', authorize('doctor'), async (req, res) => {
+  try {
+    const diagnosis = await Diagnosis.findOneAndUpdate(
+      {
+        diagnosisId: req.params.diagnosisId,
+        'doctorReview.doctorId': { $in: [null, undefined] },
+        status: 'pending_review',
+        needsDoctorReview: true
+      },
+      {
+        $set: {
+          'doctorReview.doctorId': req.user.id,
+          status: 'in_review'
+        }
+      },
+      { new: true }
+    );
+    if (!diagnosis) {
+      return res.status(400).json({ success: false, message: 'Case already claimed or not available.' });
+    }
+    res.json({ success: true, data: diagnosis });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to claim case' });
+  }
+});
 
+
+
+
+
+   
 // Add doctor's review to diagnosis
 router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, res) => {
     try {
@@ -261,6 +293,14 @@ router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, r
             treatmentPlan
         };
         diagnosis.status = 'reviewed';
+        if (!diagnosis.mlResults?.prediction || !diagnosis.imageUrl) {
+            return res.status(400).json({
+              success: false,
+              message: 'Diagnosis is missing required fields (mlResults.prediction or imageUrl)'
+            });
+          }
+          diagnosis.needsDoctorReview = false;
+
         await diagnosis.save();
 
         const formattedDiagnosis = {
@@ -271,7 +311,7 @@ router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, r
             bodyPart: diagnosis.mlResults.affectedAreas[0],
             bodyPartConfidence: diagnosis.mlResults.bodyPartConfidence,
             recommendations: diagnosis.recommendations.precautions,
-            needsDoctorReview: false,
+            needsDoctorReview: diagnosis.needsDoctorReview,
             imageUrl: diagnosis.imageUrl,
             status: diagnosis.status,
             createdAt: diagnosis.createdAt,
@@ -283,17 +323,13 @@ router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, r
             data: formattedDiagnosis
         });
     } catch (error) {
+        console.error('Error adding doctor review:', error);
         res.status(500).json({
             success: false,
             message: 'Failed to add review'
         });
     }
-}
+});
 
-
-
-
-
-);
 
 module.exports = router;
