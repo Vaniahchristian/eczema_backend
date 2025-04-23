@@ -287,6 +287,20 @@ const checkAvailability = async (req, res) => {
   }
 };
 
+// Delete appointment
+const deleteAppointment = async (req, res) => {
+  try {
+    const deleted = await MySQL.Appointment.destroy({ where: { id: req.params.id } });
+    if (!deleted) {
+      return res.status(404).json({ success: false, error: 'Appointment not found' });
+    }
+    res.json({ success: true, message: 'Appointment deleted successfully' });
+  } catch (error) {
+    console.error('Delete appointment error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 module.exports = {
   createAppointment,
   getAppointmentById,
@@ -294,5 +308,6 @@ module.exports = {
   getPatientAppointments,
   updateAppointmentStatus,
   updateAppointment,
-  checkAvailability
+  checkAvailability,
+  deleteAppointment
 };

@@ -8,7 +8,8 @@ const {
   getPatientAppointments,
   updateAppointmentStatus,
   updateAppointment,
-  checkAvailability
+  checkAvailability,
+  deleteAppointment
 } = require('../controllers/appointments');
 
 // Create a new appointment
@@ -28,6 +29,9 @@ router.patch('/:id/status', protect, updateAppointmentStatus);
 
 // Update appointment details
 router.put('/:id', protect, updateAppointment);
+
+// Delete appointment
+router.delete('/:id', protect, deleteAppointment);
 
 // Check doctor's availability
 router.get('/availability', protect, checkAvailability);
