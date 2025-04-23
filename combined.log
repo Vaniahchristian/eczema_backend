@@ -19420,3 +19420,358 @@ Metadata: {
 2025-04-23T20:23:15.675Z [32minfo[39m: GET messages completed in 168ms
 2025-04-23T20:23:15.680Z [32minfo[39m: GET /api/messages/conversations/68092f415d47d5f144fe3a91/messages 200 601.582 ms - 
 Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f795d47d5f144fe3a9f\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"hello namanya\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:20:41.965Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933a15d47d5f144fe3aa9\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:25.179Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933c15d47d5f144fe3ab0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:57.636Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094c275d47d5f144fe3ad0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"wasgood brosski\",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:23:03.461Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]}]}"
+2025-04-23T20:38:37.529Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "POST",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T20:38:40.279Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "POST",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T20:38:42.750Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "POST",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T20:38:43.189Z [32minfo[39m: POST message completed in 536ms
+2025-04-23T20:38:43.191Z [32minfo[39m: POST /api/messages/conversations/68092f415d47d5f144fe3a91/messages 200 5657.825 ms 
+Request Body: {
+  "content": "nah man "
+} 
+Response Body: "{\"success\":true,\"data\":{\"id\":\"68094fd35d47d5f144fe3ad4\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.034Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]}}"
+2025-04-23T20:38:43.563Z [32minfo[39m: POST message completed in 783ms
+2025-04-23T20:38:43.567Z [32minfo[39m: POST /api/messages/conversations/68092f415d47d5f144fe3a91/messages 200 3285.363 ms 
+Request Body: {
+  "content": "nah man "
+} 
+Response Body: "{\"success\":true,\"data\":{\"id\":\"68094fd35d47d5f144fe3ad8\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.411Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]}}"
+2025-04-23T20:38:44.183Z [32minfo[39m: POST message completed in 1021ms
+2025-04-23T20:38:44.188Z [32minfo[39m: POST /api/messages/conversations/68092f415d47d5f144fe3a91/messages 200 1434.365 ms 
+Request Body: {
+  "content": "nah man "
+} 
+Response Body: "{\"success\":true,\"data\":{\"id\":\"68094fd35d47d5f144fe3ad6\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.166Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]}}"
+2025-04-23T20:38:55.718Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/680924cea73ed225be415cf0/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T20:38:57.102Z [32minfo[39m: GET messages completed in 959ms
+2025-04-23T20:38:57.106Z [32minfo[39m: GET /api/messages/conversations/680924cea73ed225be415cf0/messages 304 1384.755 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092819a73ed225be415d06\",\"conversationId\":\"680924cea73ed225be415cf0\",\"content\":\"haa john sir\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T17:49:13.713Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680930e3a73ed225be415d4c\",\"conversationId\":\"680924cea73ed225be415cf0\",\"content\":\"yes how are we\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:26:43.522Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]}]}"
+2025-04-23T20:38:58.382Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T20:38:59.049Z [32minfo[39m: GET messages completed in 145ms
+2025-04-23T20:38:59.052Z [32minfo[39m: GET /api/messages/conversations/68092f415d47d5f144fe3a91/messages 200 666.522 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f795d47d5f144fe3a9f\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"hello namanya\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:20:41.965Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933a15d47d5f144fe3aa9\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:25.179Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933c15d47d5f144fe3ab0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:57.636Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094c275d47d5f144fe3ad0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"wasgood brosski\",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:23:03.461Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad4\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.034Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad6\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.166Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad8\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.411Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]}]}"
+2025-04-23T21:03:06.067Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:03:08.836Z [32minfo[39m: GET /api/messages/conversations 304 2756.528 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f415d47d5f144fe3a91\",\"participantId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"participantName\":\"Namanya Kalim\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T18:19:45.971Z\"},{\"id\":\"680924cea73ed225be415cf0\",\"participantId\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T17:35:10.297Z\"},{\"id\":\"6805045a072c63fffce4688a\",\"participantId\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"lastMessage\":{\"_id\":\"68090b67de923e4639981cc5\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"where are you\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"isDeleted\":false,\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-23T15:46:47.939Z\",\"updatedAt\":\"2025-04-23T15:46:47.939Z\",\"__v\":0},\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T15:46:48.097Z\"}]}"
+2025-04-23T21:03:44.031Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:03:48.453Z [32minfo[39m: GET messages completed in 2367ms
+2025-04-23T21:03:48.459Z [32minfo[39m: GET /api/messages/conversations/68092f415d47d5f144fe3a91/messages 304 4412.235 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f795d47d5f144fe3a9f\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"hello namanya\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:20:41.965Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933a15d47d5f144fe3aa9\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:25.179Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933c15d47d5f144fe3ab0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:57.636Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094c275d47d5f144fe3ad0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"wasgood brosski\",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:23:03.461Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad4\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.034Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad6\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.166Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad8\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.411Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]}]}"
+2025-04-23T21:11:38.887Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:11:43.220Z [32minfo[39m: GET /api/messages/conversations 304 4329.140 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f415d47d5f144fe3a91\",\"participantId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"participantName\":\"Namanya Kalim\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T18:19:45.971Z\"},{\"id\":\"680924cea73ed225be415cf0\",\"participantId\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T17:35:10.297Z\"},{\"id\":\"6805045a072c63fffce4688a\",\"participantId\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"lastMessage\":{\"_id\":\"68090b67de923e4639981cc5\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"where are you\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"isDeleted\":false,\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-23T15:46:47.939Z\",\"updatedAt\":\"2025-04-23T15:46:47.939Z\",\"__v\":0},\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T15:46:48.097Z\"}]}"
+2025-04-23T21:11:45.225Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:11:45.262Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "POST",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/read",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:11:46.633Z [32minfo[39m: POST /api/messages/conversations/68092f415d47d5f144fe3a91/read 200 1364.818 ms - 
+Response Body: "{\"success\":true,\"updated\":7}"
+2025-04-23T21:11:47.919Z [32minfo[39m: GET messages completed in 2150ms
+2025-04-23T21:11:47.923Z [32minfo[39m: GET /api/messages/conversations/68092f415d47d5f144fe3a91/messages 304 2694.903 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f795d47d5f144fe3a9f\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"hello namanya\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:20:41.965Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933a15d47d5f144fe3aa9\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:25.179Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933c15d47d5f144fe3ab0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:57.636Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094c275d47d5f144fe3ad0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"wasgood brosski\",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:23:03.461Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad4\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.034Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad6\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.166Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad8\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.411Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]}]}"
+2025-04-23T21:11:52.747Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:11:53.592Z [32minfo[39m: GET /api/messages/conversations 304 840.752 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f415d47d5f144fe3a91\",\"participantId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"participantName\":\"John Doe\",\"participantRole\":\"patient\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T18:19:45.971Z\"}]}"
+2025-04-23T21:12:02.438Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "POST",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/read",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:12:02.459Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:12:03.291Z [32minfo[39m: POST /api/messages/conversations/68092f415d47d5f144fe3a91/read 200 845.361 ms - 
+Response Body: "{\"success\":true,\"updated\":7}"
+2025-04-23T21:12:03.321Z [32minfo[39m: GET messages completed in 166ms
+2025-04-23T21:12:03.326Z [32minfo[39m: GET /api/messages/conversations/68092f415d47d5f144fe3a91/messages 200 863.998 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f795d47d5f144fe3a9f\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"hello namanya\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:20:41.965Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933a15d47d5f144fe3aa9\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:25.179Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933c15d47d5f144fe3ab0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:57.636Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094c275d47d5f144fe3ad0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"wasgood brosski\",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:23:03.461Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad4\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.034Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad6\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.166Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad8\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.411Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]}]}"
+2025-04-23T21:24:22.238Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:24:28.971Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:24:30.855Z [32minfo[39m: GET /api/messages/conversations 304 8613.457 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f415d47d5f144fe3a91\",\"participantId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"participantName\":\"John Doe\",\"participantRole\":\"patient\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T18:19:45.971Z\"}]}"
+2025-04-23T21:24:31.522Z [32minfo[39m: GET /api/messages/conversations 304 2548.768 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f415d47d5f144fe3a91\",\"participantId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"participantName\":\"Namanya Kalim\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T18:19:45.971Z\"},{\"id\":\"680924cea73ed225be415cf0\",\"participantId\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T17:35:10.297Z\"},{\"id\":\"6805045a072c63fffce4688a\",\"participantId\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"lastMessage\":{\"_id\":\"68090b67de923e4639981cc5\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"where are you\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"isDeleted\":false,\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-23T15:46:47.939Z\",\"updatedAt\":\"2025-04-23T15:46:47.939Z\",\"__v\":0},\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T15:46:48.097Z\"}]}"
+2025-04-23T21:24:31.527Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:24:32.554Z [32minfo[39m: GET /api/messages/conversations 304 1024.087 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f415d47d5f144fe3a91\",\"participantId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"participantName\":\"Namanya Kalim\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T18:19:45.971Z\"},{\"id\":\"680924cea73ed225be415cf0\",\"participantId\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T17:35:10.297Z\"},{\"id\":\"6805045a072c63fffce4688a\",\"participantId\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"lastMessage\":{\"_id\":\"68090b67de923e4639981cc5\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"where are you\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"isDeleted\":false,\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-23T15:46:47.939Z\",\"updatedAt\":\"2025-04-23T15:46:47.939Z\",\"__v\":0},\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T15:46:48.097Z\"}]}"
+2025-04-23T21:24:33.030Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "POST",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/read",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:24:33.065Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:24:33.897Z [32minfo[39m: POST /api/messages/conversations/68092f415d47d5f144fe3a91/read 200 841.753 ms - 
+Response Body: "{\"success\":true,\"updated\":0}"
+2025-04-23T21:24:35.020Z [32minfo[39m: GET messages completed in 1582ms
+2025-04-23T21:24:35.032Z [32minfo[39m: GET /api/messages/conversations/68092f415d47d5f144fe3a91/messages 304 1962.342 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f795d47d5f144fe3a9f\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"hello namanya\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:20:41.965Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933a15d47d5f144fe3aa9\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:25.179Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933c15d47d5f144fe3ab0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:57.636Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094c275d47d5f144fe3ad0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"wasgood brosski\",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:23:03.461Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad4\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.034Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad6\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.166Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad8\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.411Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]}]}"
+2025-04-23T21:24:43.085Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "POST",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/read",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:24:43.103Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:24:43.651Z [32minfo[39m: GET messages completed in 150ms
+2025-04-23T21:24:43.654Z [32minfo[39m: GET /api/messages/conversations/68092f415d47d5f144fe3a91/messages 200 546.394 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f795d47d5f144fe3a9f\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"hello namanya\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:20:41.965Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933a15d47d5f144fe3aa9\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:25.179Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933c15d47d5f144fe3ab0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:57.636Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094c275d47d5f144fe3ad0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"wasgood brosski\",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:23:03.461Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad4\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.034Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad6\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.166Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad8\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.411Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]}]}"
+2025-04-23T21:24:43.932Z [32minfo[39m: POST /api/messages/conversations/68092f415d47d5f144fe3a91/read 200 842.647 ms - 
+Response Body: "{\"success\":true,\"updated\":0}"
+2025-04-23T21:25:43.961Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:25:46.928Z [32minfo[39m: GET /api/messages/conversations 304 2963.666 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f415d47d5f144fe3a91\",\"participantId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"participantName\":\"Namanya Kalim\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T18:19:45.971Z\"},{\"id\":\"680924cea73ed225be415cf0\",\"participantId\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T17:35:10.297Z\"},{\"id\":\"6805045a072c63fffce4688a\",\"participantId\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"lastMessage\":{\"_id\":\"68090b67de923e4639981cc5\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"where are you\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"isDeleted\":false,\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-23T15:46:47.939Z\",\"updatedAt\":\"2025-04-23T15:46:47.939Z\",\"__v\":0},\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T15:46:48.097Z\"}]}"
+2025-04-23T21:26:55.589Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:26:59.087Z [32minfo[39m: GET /api/messages/conversations 304 3495.625 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f415d47d5f144fe3a91\",\"participantId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"participantName\":\"Namanya Kalim\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T18:19:45.971Z\"},{\"id\":\"680924cea73ed225be415cf0\",\"participantId\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T17:35:10.297Z\"},{\"id\":\"6805045a072c63fffce4688a\",\"participantId\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"lastMessage\":{\"_id\":\"68090b67de923e4639981cc5\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"where are you\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"isDeleted\":false,\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-23T15:46:47.939Z\",\"updatedAt\":\"2025-04-23T15:46:47.939Z\",\"__v\":0},\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T15:46:48.097Z\"}]}"
+2025-04-23T21:27:17.009Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:27:19.835Z [32minfo[39m: GET /api/messages/conversations 304 2821.713 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f415d47d5f144fe3a91\",\"participantId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"participantName\":\"Namanya Kalim\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T18:19:45.971Z\"},{\"id\":\"680924cea73ed225be415cf0\",\"participantId\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T17:35:10.297Z\"},{\"id\":\"6805045a072c63fffce4688a\",\"participantId\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"lastMessage\":{\"_id\":\"68090b67de923e4639981cc5\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"where are you\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"isDeleted\":false,\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-23T15:46:47.939Z\",\"updatedAt\":\"2025-04-23T15:46:47.939Z\",\"__v\":0},\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T15:46:48.097Z\"}]}"
+2025-04-23T21:30:07.265Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:30:07.275Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "POST",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/read",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:30:14.338Z [32minfo[39m: GET /api/messages/conversations/68092f415d47d5f144fe3a91/messages - - ms - -
+2025-04-23T21:30:14.357Z [32minfo[39m: POST /api/messages/conversations/68092f415d47d5f144fe3a91/read - - ms - -
+2025-04-23T21:30:17.282Z [32minfo[39m: GET messages completed in 1758ms
+2025-04-23T21:30:18.242Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:30:19.291Z [32minfo[39m: GET /api/messages/conversations 304 1045.130 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f415d47d5f144fe3a91\",\"participantId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"participantName\":\"Namanya Kalim\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T18:19:45.971Z\"},{\"id\":\"680924cea73ed225be415cf0\",\"participantId\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T17:35:10.297Z\"},{\"id\":\"6805045a072c63fffce4688a\",\"participantId\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"lastMessage\":{\"_id\":\"68090b67de923e4639981cc5\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"where are you\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"isDeleted\":false,\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-23T15:46:47.939Z\",\"updatedAt\":\"2025-04-23T15:46:47.939Z\",\"__v\":0},\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T15:46:48.097Z\"}]}"
+2025-04-23T21:30:22.758Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "POST",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/read",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:30:22.797Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T21:30:23.360Z [32minfo[39m: GET messages completed in 157ms
+2025-04-23T21:30:23.364Z [32minfo[39m: GET /api/messages/conversations/68092f415d47d5f144fe3a91/messages 200 563.174 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f795d47d5f144fe3a9f\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"hello namanya\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:20:41.965Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933a15d47d5f144fe3aa9\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:25.179Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933c15d47d5f144fe3ab0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:57.636Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094c275d47d5f144fe3ad0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"wasgood brosski\",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:23:03.461Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad4\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.034Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad6\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.166Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094fd35d47d5f144fe3ad8\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"nah man \",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:38:43.411Z\",\"status\":\"read\",\"type\":\"text\",\"attachments\":[]}]}"
+2025-04-23T21:30:23.718Z [32minfo[39m: POST /api/messages/conversations/68092f415d47d5f144fe3a91/read 200 930.311 ms - 
+Response Body: "{\"success\":true,\"updated\":0}"

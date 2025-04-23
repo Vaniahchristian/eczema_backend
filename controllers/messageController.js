@@ -453,7 +453,16 @@ const messageController = {
                 return res.status(404).json({ success: false, message: 'Conversation not found' });
             }
 
-            // This will be handled by WebSocket, just return success
+            // For REST fallback, emit a WebSocket event for typing status
+            if (req.app && req.app.get('io')) {
+                req.app.get('io').to(`conversation:${conversationId}`).emit('conversation:typing', {
+                    conversationId,
+                    userId,
+                    isTyping: !!isTyping,
+                    timestamp: new Date()
+                });
+            }
+
             res.json({ success: true });
         } catch (error) {
             console.error('Error in setTypingStatus:', error);
@@ -559,6 +568,59 @@ const messageController = {
                 success: false,
                 message: 'Failed to add reaction'
             });
+        }
+    },
+
+    markConversationAsRead: async (req, res) => {
+        try {
+            const userId = req.user.id;
+            const { conversationId } = req.params;
+
+            // Ensure user is a participant
+            const conversation = await Conversation.findOne({
+                _id: conversationId,
+                'participants.userId': userId
+            });
+            if (!conversation) {
+                return res.status(404).json({ success: false, message: 'Conversation not found' });
+            }
+
+            // Update all messages in this conversation where user hasn't read yet
+            const now = new Date();
+            const updateResult = await Message.updateMany(
+                {
+                    conversationId,
+                    'readBy.userId': { $ne: userId }
+                },
+                {
+                    $push: { readBy: { userId, timestamp: now } },
+                    $set: { status: 'read' }
+                }
+            );
+
+            // Optionally, update conversation unreadCounts map for this user
+            if (conversation.unreadCounts && conversation.unreadCounts instanceof Map) {
+                conversation.unreadCounts.set(userId, 0);
+                await conversation.save();
+            } else if (conversation.unreadCounts) {
+                // If it's a plain object
+                conversation.unreadCounts[userId] = 0;
+                await conversation.save();
+            }
+
+            // Emit WebSocket event for real-time update (if needed)
+            if (req.app && req.app.get('io')) {
+                req.app.get('io').to(`conversation:${conversationId}`).emit('conversation:read', {
+                    conversationId,
+                    userId,
+                    timestamp: now
+                });
+            }
+
+            res.json({ success: true, updated: updateResult.modifiedCount });
+        } catch (error) {
+            console.error('Error in markConversationAsRead:', error);
+            res.status(500).json({ success: false, message: 'Failed to mark conversation as read' });
         }
     },
 };
