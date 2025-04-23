@@ -134,14 +134,14 @@ connectMongoDBWithRetry();
 // Initialize WebSocket server for real-time updates
 const corsOptions = {
   origin: [
-    "http://127.0.0.1:56776",
     "http://localhost:3000",
-    "https://eczema-dashboard-final.vercel.app"
+    "https://eczema-dashboard-final.vercel.app",
+    "http://127.0.0.1:56776"
   ],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['set-cookie']
+  exposedHeaders: ["set-cookie"]
 };
 
 app.use(cors(corsOptions));

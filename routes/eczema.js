@@ -10,6 +10,7 @@ const FormData = require('form-data');
 const path = require('path');
 const fs = require('fs').promises;
 const { uploadFile } = require('../config/storage');
+const { MySQL } = require('../models'); // Import MySQL models from index.js
 
 // Configure multer for memory storage
 const upload = multer({
@@ -275,8 +276,38 @@ router.get('/doctor-reviews', authorize('doctor'), async (req, res) => {
         { 'doctorReview.doctorId': { $exists: false } },
         { 'doctorReview.doctorId': null }
       ]
-    }).sort('-createdAt');
-    res.json({ success: true, data: diagnoses });
+    }).sort('-createdAt').lean();
+
+    // For each diagnosis, fetch patient info from MySQL using Sequelize
+    const diagnosesWithPatients = await Promise.all(diagnoses.map(async (diagnosis) => {
+      try {
+        const patient = await MySQL.User.findOne({
+          where: { id: diagnosis.patientId },
+          attributes: ['id', 'first_name', 'last_name', 'email', 'date_of_birth', 'gender'],
+          raw: true
+        });
+        // Include postDiagnosisSurvey in the response
+        return {
+          ...diagnosis,
+          patient: patient
+            ? {
+                id: patient.id,
+                firstName: patient.first_name,
+                lastName: patient.last_name,
+                email: patient.email,
+                dateOfBirth: patient.date_of_birth,
+                gender: patient.gender,
+              }
+            : null,
+          preDiagnosisSurvey: diagnosis.preDiagnosisSurvey || null,
+          postDiagnosisSurvey: diagnosis.postDiagnosisSurvey || null
+        };
+      } catch (error) {
+        return { ...diagnosis, patient: null, preDiagnosisSurvey: diagnosis.preDiagnosisSurvey || null, postDiagnosisSurvey: diagnosis.postDiagnosisSurvey || null };
+      }
+    }));
+
+    res.json({ success: true, data: diagnosesWithPatients });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Failed to fetch doctor review requests' });
   }

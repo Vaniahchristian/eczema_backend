@@ -3,6 +3,7 @@ const { MySQL } = require('../models');
 
 const Sequelize = require('sequelize');
 const { sequelize } = require('../config/database');
+
 // Create a new appointment
 const createAppointment = async (req, res) => {
   const { doctor_id, patient_id, appointment_date, reason, appointment_type, mode, duration } = req.body;
@@ -177,6 +178,9 @@ const getPatientAppointments = async (req, res) => {
 
 // Update appointment status
 const updateAppointmentStatus = async (req, res) => {
+  console.log('--- Update Appointment Status ---');
+  console.log('Appointment ID:', req.params.id);
+  console.log('Requested Status:', req.body.status);
   try {
     const [updated] = await MySQL.Appointment.update({
       status: req.body.status
@@ -184,16 +188,32 @@ const updateAppointmentStatus = async (req, res) => {
       where: { id: req.params.id }
     });
 
-    if (!updated) {
+    console.log('Update Result:', updated);
+
+    // Check if appointment exists
+    const appointment = await MySQL.Appointment.findByPk(req.params.id);
+
+    if (!appointment) {
+      console.error('Appointment not found for update:', req.params.id);
       return res.status(404).json({
         success: false,
         error: 'Appointment not found'
       });
     }
 
+    if (updated === 0) {
+      // No rows updated: status was already set
+      return res.json({
+        success: true,
+        message: 'No update needed. Status was already set.',
+        data: appointment
+      });
+    }
+
     res.json({
       success: true,
-      message: 'Appointment status updated successfully'
+      message: 'Appointment status updated successfully',
+      data: appointment
     });
   } catch (error) {
     console.error('Update appointment status error:', error);
