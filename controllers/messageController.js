@@ -63,7 +63,8 @@ const messageController = {
 
     createConversation: async (req, res) => {
         try {
-            const { doctorId } = req.body;
+            // Accept both doctorId and participantId for compatibility
+            const doctorId = req.body.doctorId || req.body.participantId;
             const patientId = req.user.id;
 
             // Validate doctor exists

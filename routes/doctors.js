@@ -3,11 +3,11 @@ const router = express.Router();
 const { protect } = require('../middleware/auth');
 const { mysqlPool } = require('../config/database');
 
-// Get all available doctors
+// Get all available doctors (with optional search)
 router.get('/', protect, async (req, res) => {
     try {
-        console.log('Fetching doctors...');
-        const query = `
+        const { search } = req.query;
+        let query = `
             SELECT 
                 u.id, 
                 u.first_name, 
@@ -24,19 +24,21 @@ router.get('/', protect, async (req, res) => {
             INNER JOIN doctor_profiles dp ON u.id = dp.user_id
             WHERE u.role = 'doctor'
         `;
-        console.log('Query:', query);
+        const params = [];
+        if (search) {
+            query += ` AND (u.first_name LIKE ? OR u.last_name LIKE ? OR u.email LIKE ?)`;
+            const like = `%${search}%`;
+            params.push(like, like, like);
+        }
+        query += ' ORDER BY u.first_name ASC LIMIT 20';
 
-        const [rows] = await mysqlPool.query(query); // Now promise-based
-        console.log('Query result rows:', JSON.stringify(rows, null, 2));
-
+        const [rows] = await mysqlPool.query(query, params);
         const doctors = Array.isArray(rows) ? rows : [];
-        console.log('Doctors array:', JSON.stringify(doctors, null, 2));
-
         const formattedDoctors = doctors.map(doctor => ({
             id: doctor.id,
-            name: `${doctor.first_name} ${doctor.last_name}`,
+            name: `${doctor.first_name} ${doctor.last_name}`.trim(),
             email: doctor.email,
-            imageUrl: '/placeholder.svg?height=40&width=40',
+            imageUrl: doctor.image_url || '/placeholder.svg?height=40&width=40',
             specialty: doctor.specialty || 'General Practice',
             bio: doctor.bio || '',
             rating: parseFloat(doctor.rating) || 5.0,
@@ -45,9 +47,6 @@ router.get('/', protect, async (req, res) => {
             clinicAddress: doctor.clinic_address || '',
             consultationFee: parseFloat(doctor.consultation_fee) || 0
         }));
-
-        console.log('Formatted doctors:', JSON.stringify(formattedDoctors, null, 2));
-
         res.json({
             success: true,
             data: formattedDoctors
