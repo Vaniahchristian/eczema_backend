@@ -2,6 +2,7 @@ const { Diagnosis, Analytics, Advisory } = require('../models');
 const axios = require('axios');
 const FormData = require('form-data');
 const { uploadFile } = require('../config/storage');
+const { sequelize } = require('../models/index');
 
 // Analyze eczema image using ML model
 const analyzeEczemaImage = async (fileBuffer) => {
@@ -442,14 +443,10 @@ exports.getReviewedDiagnosesByDoctor = async (req, res) => {
     // For each diagnosis, fetch the patient details from MySQL
     const diagnosesWithPatients = await Promise.all(diagnoses.map(async (diagnosis) => {
       try {
-        // Get patient details from MySQL
-        const [patientRows] = await MySQL.query(
-          'SELECT u.id, u.first_name, u.last_name, u.email, u.date_of_birth, u.gender, ' +
-          'p.medical_history, p.allergies ' +
-          'FROM users u ' +
-          'JOIN patient_profiles p ON u.id = p.user_id ' +
-          'WHERE u.id = ?',
-          [diagnosis.patientId]
+        // Get patient details from MySQL (only from users table, using sequelize)
+        const patientRows = await sequelize.query(
+          'SELECT id, first_name, last_name, email, date_of_birth, gender FROM users WHERE id = ?',
+          { replacements: [diagnosis.patientId], type: sequelize.QueryTypes.SELECT }
         );
 
         const patientDetails = patientRows[0] || null;
@@ -468,9 +465,7 @@ exports.getReviewedDiagnosesByDoctor = async (req, res) => {
             lastName: patientDetails.last_name,
             email: patientDetails.email,
             dateOfBirth: patientDetails.date_of_birth,
-            gender: patientDetails.gender,
-            medicalHistory: patientDetails.medical_history,
-            allergies: patientDetails.allergies
+            gender: patientDetails.gender
           } : null
         };
       } catch (error) {
