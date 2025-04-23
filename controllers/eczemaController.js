@@ -418,3 +418,79 @@ exports.submitFeedback = async (req, res) => {
     });
   }
 };
+
+// Get all diagnoses reviewed by a doctor
+exports.getReviewedDiagnosesByDoctor = async (req, res) => {
+  try {
+    const doctorId = req.user.id; // Get the logged-in doctor's ID
+ 
+   if (!doctorId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Unauthorized'
+      });
+    }
+
+    console.log('Looking for diagnoses reviewed by doctor:', doctorId);
+
+    // Find all diagnoses reviewed by this doctor
+    const diagnoses = await Diagnosis.find({
+      'doctorReview.doctorId': doctorId,
+      'status': 'reviewed'
+    }).sort({ 'doctorReview.reviewedAt': -1 }); // Sort by review date, newest first
+
+    // For each diagnosis, fetch the patient details from MySQL
+    const diagnosesWithPatients = await Promise.all(diagnoses.map(async (diagnosis) => {
+      try {
+        // Get patient details from MySQL
+        const [patientRows] = await MySQL.query(
+          'SELECT u.id, u.first_name, u.last_name, u.email, u.date_of_birth, u.gender, ' +
+          'p.medical_history, p.allergies ' +
+          'FROM users u ' +
+          'JOIN patient_profiles p ON u.id = p.user_id ' +
+          'WHERE u.id = ?',
+          [diagnosis.patientId]
+        );
+
+        const patientDetails = patientRows[0] || null;
+
+        // Return diagnosis with patient details
+        return {
+          diagnosisId: diagnosis.diagnosisId,
+          imageUrl: diagnosis.imageUrl,
+          mlResults: diagnosis.mlResults,
+          doctorReview: diagnosis.doctorReview,
+          status: diagnosis.status,
+          reviewedAt: diagnosis.doctorReview.reviewedAt,
+          patient: patientDetails ? {
+            id: patientDetails.id,
+            firstName: patientDetails.first_name,
+            lastName: patientDetails.last_name,
+            email: patientDetails.email,
+            dateOfBirth: patientDetails.date_of_birth,
+            gender: patientDetails.gender,
+            medicalHistory: patientDetails.medical_history,
+            allergies: patientDetails.allergies
+          } : null
+        };
+      } catch (error) {
+        console.error('Error fetching patient details:', error);
+        return {
+          ...diagnosis.toObject(),
+          patient: null
+        };
+      }
+    }));
+
+    res.json({
+      success: true,
+      data: diagnosesWithPatients
+    });
+  } catch (error) {
+    console.error('Error fetching reviewed diagnoses:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching reviewed diagnoses'
+    });
+  }
+};

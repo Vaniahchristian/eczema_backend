@@ -345,4 +345,7 @@ router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, r
 });
 
 
+// Get all reviewed diagnoses for a doctor
+router.get('/doctor/reviewed-diagnoses', authorize('doctor'), eczemaController.getReviewedDiagnosesByDoctor);
+
 module.exports = router;
