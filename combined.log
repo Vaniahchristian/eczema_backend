@@ -16438,3 +16438,574 @@ Metadata: {
 Response Body: "{\"success\":true,\"data\":[{\"id\":\"cc144c96-796a-4555-9beb-1d108ae8da54\",\"doctor_id\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-30 10:00:00\",\"reason\":null,\"status\":\"pending\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:45:45\",\"updated_at\":\"2025-04-22 22:45:45\",\"doctor\":{\"id\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"95eda5ac-b65a-41c0-8a72-eaa2b81b54dc\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-25 10:00:00\",\"reason\":\"Routine checkup\",\"status\":\"completed\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 23:03:56\",\"updated_at\":\"2025-04-23 10:22:07\",\"doctor\":{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"15378e80-aa3c-4b35-bc7c-22ac91d15399\",\"doctor_id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-24 12:00:00\",\"reason\":\"Regular checkup\",\"status\":\"pending\",\"appointment_type\":\"first_visit\",\"mode\":\"video\",\"duration\":30,\"created_at\":\"2025-04-19 12:24:18\",\"updated_at\":\"2025-04-19 12:24:18\",\"doctor\":{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"56059ea1-4759-4fcf-9b9a-6cdf30d32bbf\",\"doctor_id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-15 09:00:00\",\"reason\":null,\"status\":\"pending\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:44:59\",\"updated_at\":\"2025-04-22 22:44:59\",\"doctor\":{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"7846e0db-4f5e-47c7-92d5-276da252e891\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-09 11:00:00\",\"reason\":null,\"status\":\"pending\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:46:57\",\"updated_at\":\"2025-04-22 22:46:57\",\"doctor\":{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}}]}"
 2025-04-23T10:46:52.836Z [32minfo[39m: GET /api/doctors 304 1048.195 ms - 
 Response Body: "{\"success\":true,\"data\":[{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"name\":\"John Doe\",\"email\":\"doctor2@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"name\":\"John Doe\",\"email\":\"doctor1@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"name\":\"John Doe\",\"email\":\"doc@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0}]}"
+2025-04-23T14:39:55.086Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/patient/d0ff386c-0e40-4c89-927a-07da07cbe76d",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T14:39:55.182Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/doctors",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T14:39:58.431Z [32minfo[39m: GET /api/appointments/patient/d0ff386c-0e40-4c89-927a-07da07cbe76d? 304 3311.826 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"95eda5ac-b65a-41c0-8a72-eaa2b81b54dc\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-25 10:00:00\",\"reason\":\"Routine checkup\",\"status\":\"completed\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 23:03:56\",\"updated_at\":\"2025-04-23 10:22:07\",\"doctor\":{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"15378e80-aa3c-4b35-bc7c-22ac91d15399\",\"doctor_id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-24 12:00:00\",\"reason\":\"Regular checkup\",\"status\":\"pending\",\"appointment_type\":\"first_visit\",\"mode\":\"video\",\"duration\":30,\"created_at\":\"2025-04-19 12:24:18\",\"updated_at\":\"2025-04-19 12:24:18\",\"doctor\":{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"56059ea1-4759-4fcf-9b9a-6cdf30d32bbf\",\"doctor_id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-15 09:00:00\",\"reason\":null,\"status\":\"pending\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:44:59\",\"updated_at\":\"2025-04-22 22:44:59\",\"doctor\":{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"7846e0db-4f5e-47c7-92d5-276da252e891\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-09 11:00:00\",\"reason\":null,\"status\":\"cancelled\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:46:57\",\"updated_at\":\"2025-04-23 10:50:23\",\"doctor\":{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}}]}"
+2025-04-23T14:39:58.442Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/patient/d0ff386c-0e40-4c89-927a-07da07cbe76d",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T14:39:59.415Z [32minfo[39m: GET /api/appointments/patient/d0ff386c-0e40-4c89-927a-07da07cbe76d? 304 969.729 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"95eda5ac-b65a-41c0-8a72-eaa2b81b54dc\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-25 10:00:00\",\"reason\":\"Routine checkup\",\"status\":\"completed\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 23:03:56\",\"updated_at\":\"2025-04-23 10:22:07\",\"doctor\":{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"15378e80-aa3c-4b35-bc7c-22ac91d15399\",\"doctor_id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-24 12:00:00\",\"reason\":\"Regular checkup\",\"status\":\"pending\",\"appointment_type\":\"first_visit\",\"mode\":\"video\",\"duration\":30,\"created_at\":\"2025-04-19 12:24:18\",\"updated_at\":\"2025-04-19 12:24:18\",\"doctor\":{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"56059ea1-4759-4fcf-9b9a-6cdf30d32bbf\",\"doctor_id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-15 09:00:00\",\"reason\":null,\"status\":\"pending\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:44:59\",\"updated_at\":\"2025-04-22 22:44:59\",\"doctor\":{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"7846e0db-4f5e-47c7-92d5-276da252e891\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-09 11:00:00\",\"reason\":null,\"status\":\"cancelled\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:46:57\",\"updated_at\":\"2025-04-23 10:50:23\",\"doctor\":{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}}]}"
+2025-04-23T14:40:00.285Z [32minfo[39m: GET /api/doctors 304 5002.383 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"name\":\"John Doe\",\"email\":\"doctor2@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"name\":\"John Doe\",\"email\":\"doctor1@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"name\":\"John Doe\",\"email\":\"doc@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0}]}"
+2025-04-23T14:40:00.290Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/doctors",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T14:40:00.395Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T14:40:00.408Z [32minfo[39m: GET /api/api/messages/conversations 404 3.830 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-23T14:40:00.444Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Not present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T14:40:00.449Z [32minfo[39m: GET /api/api/messages/conversations 404 1.993 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-23T14:40:01.266Z [32minfo[39m: GET /api/doctors 304 973.059 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"name\":\"John Doe\",\"email\":\"doctor2@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"name\":\"John Doe\",\"email\":\"doctor1@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"name\":\"John Doe\",\"email\":\"doc@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0}]}"
+2025-04-23T15:23:17.707Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/patient/d0ff386c-0e40-4c89-927a-07da07cbe76d",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:23:18.443Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/doctors",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:23:22.271Z [32minfo[39m: GET /api/appointments/patient/d0ff386c-0e40-4c89-927a-07da07cbe76d? 304 4475.151 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"95eda5ac-b65a-41c0-8a72-eaa2b81b54dc\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-25 10:00:00\",\"reason\":\"Routine checkup\",\"status\":\"completed\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 23:03:56\",\"updated_at\":\"2025-04-23 10:22:07\",\"doctor\":{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"15378e80-aa3c-4b35-bc7c-22ac91d15399\",\"doctor_id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-24 12:00:00\",\"reason\":\"Regular checkup\",\"status\":\"pending\",\"appointment_type\":\"first_visit\",\"mode\":\"video\",\"duration\":30,\"created_at\":\"2025-04-19 12:24:18\",\"updated_at\":\"2025-04-19 12:24:18\",\"doctor\":{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"56059ea1-4759-4fcf-9b9a-6cdf30d32bbf\",\"doctor_id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-15 09:00:00\",\"reason\":null,\"status\":\"pending\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:44:59\",\"updated_at\":\"2025-04-22 22:44:59\",\"doctor\":{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"7846e0db-4f5e-47c7-92d5-276da252e891\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-09 11:00:00\",\"reason\":null,\"status\":\"cancelled\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:46:57\",\"updated_at\":\"2025-04-23 10:50:23\",\"doctor\":{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}}]}"
+2025-04-23T15:23:24.212Z [32minfo[39m: GET /api/doctors 304 5637.272 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"name\":\"John Doe\",\"email\":\"doctor2@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"name\":\"John Doe\",\"email\":\"doctor1@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"name\":\"John Doe\",\"email\":\"doc@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0}]}"
+2025-04-23T15:24:15.772Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884",
+  "origin": "http://localhost:3000",
+  "query": {
+    "startDate": "2025-04-23",
+    "endDate": "2025-04-23"
+  },
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:24:15.802Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884",
+  "origin": "http://localhost:3000",
+  "query": {
+    "startDate": "2025-03-31T21:00:00.000Z",
+    "endDate": "2025-04-30T20:59:59.999Z"
+  },
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:24:16.034Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/doctor-reviews",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:24:19.715Z [32minfo[39m: GET /api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884?startDate=2025-04-23&endDate=2025-04-23 304 3936.511 ms - 
+Response Body: "{\"success\":true,\"data\":[]}"
+2025-04-23T15:24:19.719Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884",
+  "origin": "http://localhost:3000",
+  "query": {
+    "startDate": "2025-04-23",
+    "endDate": "2025-04-23"
+  },
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:24:20.320Z [32minfo[39m: GET /api/eczema/doctor-reviews 304 4281.279 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"_id\":\"6807cb72d3156bfac9568274\",\"diagnosisId\":\"801c07c4-1c12-4b04-90a5-429a22ca7c11\",\"patientId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"imageId\":\"8243fdf4-53c9-41eb-933f-e7d8f12d01a8\",\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745341267319-590589194.jpg\",\"imageMetadata\":{\"originalFileName\":\"03EczemaExcoriated.jpg\",\"uploadDate\":\"2025-04-22T17:01:38.193Z\",\"fileSize\":77808,\"format\":\"JPEG\"},\"mlResults\":{\"prediction\":\"Eczema\",\"confidence\":1,\"severity\":\"severe\",\"affectedAreas\":[\"Elbow\"],\"bodyPartConfidence\":0.49609375,\"modelVersion\":\"1.0\"},\"recommendations\":{\"treatments\":[],\"lifestyle\":[],\"triggers\":[],\"precautions\":[\"Consult a dermatologist immediately\",\"Consider prescription topical corticosteroids\",\"Use wet wrap therapy\",\"Monitor for signs of infection\",\"Apply extra moisturizer to elbow area\",\"Avoid leaning on elbows\",\"Keep the affected area clean and moisturized\",\"Avoid scratching the affected area\",\"Wear loose, breathable clothing\",\"Use fragrance-free products\"]},\"status\":\"pending_review\",\"preDiagnosisSurvey\":{\"flareupTriggers\":[]},\"createdAt\":\"2025-04-22T17:01:38.276Z\",\"updatedAt\":\"2025-04-22T21:33:14.720Z\",\"__v\":0,\"needsDoctorReview\":true,\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"test@example.com\",\"dateOfBirth\":\"1990-01-01 00:00:00\",\"gender\":\"male\"},\"postDiagnosisSurvey\":null},{\"_id\":\"68073dee8e3099c6d7e20ed5\",\"diagnosisId\":\"ed6a9562-4f89-40eb-b942-75bec1c7b5b9\",\"patientId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"imageId\":\"b44c817b-c7b3-4e54-b454-89bc0e5b87ce\",\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745305024318-362542178.jpg\",\"imageMetadata\":{\"originalFileName\":\"crazy.jpg\",\"uploadDate\":\"2025-04-22T06:57:50.358Z\",\"fileSize\":507439,\"format\":\"JPEG\"},\"mlResults\":{\"prediction\":\"No Eczema\",\"confidence\":1,\"severity\":\"severe\",\"affectedAreas\":[\"Neck\"],\"bodyPartConfidence\":0.25,\"modelVersion\":\"1.0\"},\"recommendations\":{\"treatments\":[],\"lifestyle\":[],\"triggers\":[],\"precautions\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"]},\"status\":\"pending_review\",\"needsDoctorReview\":true,\"preDiagnosisSurvey\":{\"eczemaHistory\":\"1-5\",\"lastFlareup\":\"<1w\",\"flareupTriggers\":[\"Stress\"],\"currentSymptoms\":\"red\",\"previousTreatments\":\"none\",\"severity\":\"mild\"},\"createdAt\":\"2025-04-22T06:57:50.401Z\",\"updatedAt\":\"2025-04-22T08:59:15.283Z\",\"__v\":0,\"postDiagnosisSurvey\":{\"diagnosisAccuracy\":5,\"diagnosisHelpfulness\":5,\"treatmentClarity\":5,\"userConfidence\":5,\"feedback\":\"none\",\"wouldRecommend\":true,\"submittedAt\":\"2025-04-22T06:58:26.579Z\"},\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"test@example.com\",\"dateOfBirth\":\"1990-01-01 00:00:00\",\"gender\":\"male\"}}]}"
+2025-04-23T15:24:20.366Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/doctor-reviews",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:24:20.512Z [32minfo[39m: GET /api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884?startDate=2025-03-31T21%3A00%3A00.000Z&endDate=2025-04-30T20%3A59%3A59.999Z 304 4706.226 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"7846e0db-4f5e-47c7-92d5-276da252e891\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-09 11:00:00\",\"reason\":null,\"status\":\"cancelled\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:46:57\",\"updated_at\":\"2025-04-23 10:50:23\",\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null}},{\"id\":\"95eda5ac-b65a-41c0-8a72-eaa2b81b54dc\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-25 10:00:00\",\"reason\":\"Routine checkup\",\"status\":\"completed\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 23:03:56\",\"updated_at\":\"2025-04-23 10:22:07\",\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null}}]}"
+2025-04-23T15:24:20.646Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884",
+  "origin": "http://localhost:3000",
+  "query": {
+    "startDate": "2025-03-31T21:00:00.000Z",
+    "endDate": "2025-04-30T20:59:59.999Z"
+  },
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:24:20.945Z [32minfo[39m: GET /api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884?startDate=2025-04-23&endDate=2025-04-23 304 1222.480 ms - 
+Response Body: "{\"success\":true,\"data\":[]}"
+2025-04-23T15:24:21.347Z [32minfo[39m: GET /api/eczema/doctor-reviews 304 977.108 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"_id\":\"6807cb72d3156bfac9568274\",\"diagnosisId\":\"801c07c4-1c12-4b04-90a5-429a22ca7c11\",\"patientId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"imageId\":\"8243fdf4-53c9-41eb-933f-e7d8f12d01a8\",\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745341267319-590589194.jpg\",\"imageMetadata\":{\"originalFileName\":\"03EczemaExcoriated.jpg\",\"uploadDate\":\"2025-04-22T17:01:38.193Z\",\"fileSize\":77808,\"format\":\"JPEG\"},\"mlResults\":{\"prediction\":\"Eczema\",\"confidence\":1,\"severity\":\"severe\",\"affectedAreas\":[\"Elbow\"],\"bodyPartConfidence\":0.49609375,\"modelVersion\":\"1.0\"},\"recommendations\":{\"treatments\":[],\"lifestyle\":[],\"triggers\":[],\"precautions\":[\"Consult a dermatologist immediately\",\"Consider prescription topical corticosteroids\",\"Use wet wrap therapy\",\"Monitor for signs of infection\",\"Apply extra moisturizer to elbow area\",\"Avoid leaning on elbows\",\"Keep the affected area clean and moisturized\",\"Avoid scratching the affected area\",\"Wear loose, breathable clothing\",\"Use fragrance-free products\"]},\"status\":\"pending_review\",\"preDiagnosisSurvey\":{\"flareupTriggers\":[]},\"createdAt\":\"2025-04-22T17:01:38.276Z\",\"updatedAt\":\"2025-04-22T21:33:14.720Z\",\"__v\":0,\"needsDoctorReview\":true,\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"test@example.com\",\"dateOfBirth\":\"1990-01-01 00:00:00\",\"gender\":\"male\"},\"postDiagnosisSurvey\":null},{\"_id\":\"68073dee8e3099c6d7e20ed5\",\"diagnosisId\":\"ed6a9562-4f89-40eb-b942-75bec1c7b5b9\",\"patientId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"imageId\":\"b44c817b-c7b3-4e54-b454-89bc0e5b87ce\",\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745305024318-362542178.jpg\",\"imageMetadata\":{\"originalFileName\":\"crazy.jpg\",\"uploadDate\":\"2025-04-22T06:57:50.358Z\",\"fileSize\":507439,\"format\":\"JPEG\"},\"mlResults\":{\"prediction\":\"No Eczema\",\"confidence\":1,\"severity\":\"severe\",\"affectedAreas\":[\"Neck\"],\"bodyPartConfidence\":0.25,\"modelVersion\":\"1.0\"},\"recommendations\":{\"treatments\":[],\"lifestyle\":[],\"triggers\":[],\"precautions\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"]},\"status\":\"pending_review\",\"needsDoctorReview\":true,\"preDiagnosisSurvey\":{\"eczemaHistory\":\"1-5\",\"lastFlareup\":\"<1w\",\"flareupTriggers\":[\"Stress\"],\"currentSymptoms\":\"red\",\"previousTreatments\":\"none\",\"severity\":\"mild\"},\"createdAt\":\"2025-04-22T06:57:50.401Z\",\"updatedAt\":\"2025-04-22T08:59:15.283Z\",\"__v\":0,\"postDiagnosisSurvey\":{\"diagnosisAccuracy\":5,\"diagnosisHelpfulness\":5,\"treatmentClarity\":5,\"userConfidence\":5,\"feedback\":\"none\",\"wouldRecommend\":true,\"submittedAt\":\"2025-04-22T06:58:26.579Z\"},\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"test@example.com\",\"dateOfBirth\":\"1990-01-01 00:00:00\",\"gender\":\"male\"}}]}"
+2025-04-23T15:24:21.448Z [32minfo[39m: GET /api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884?startDate=2025-03-31T21%3A00%3A00.000Z&endDate=2025-04-30T20%3A59%3A59.999Z 304 788.263 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"7846e0db-4f5e-47c7-92d5-276da252e891\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-09 11:00:00\",\"reason\":null,\"status\":\"cancelled\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:46:57\",\"updated_at\":\"2025-04-23 10:50:23\",\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null}},{\"id\":\"95eda5ac-b65a-41c0-8a72-eaa2b81b54dc\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-25 10:00:00\",\"reason\":\"Routine checkup\",\"status\":\"completed\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 23:03:56\",\"updated_at\":\"2025-04-23 10:22:07\",\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null}}]}"
+2025-04-23T15:24:24.303Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/patient/d0ff386c-0e40-4c89-927a-07da07cbe76d",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:24:24.330Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/doctors",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:24:25.004Z [32minfo[39m: GET /api/appointments/patient/d0ff386c-0e40-4c89-927a-07da07cbe76d? 304 696.249 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"95eda5ac-b65a-41c0-8a72-eaa2b81b54dc\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-25 10:00:00\",\"reason\":\"Routine checkup\",\"status\":\"completed\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 23:03:56\",\"updated_at\":\"2025-04-23 10:22:07\",\"doctor\":{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"15378e80-aa3c-4b35-bc7c-22ac91d15399\",\"doctor_id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-24 12:00:00\",\"reason\":\"Regular checkup\",\"status\":\"pending\",\"appointment_type\":\"first_visit\",\"mode\":\"video\",\"duration\":30,\"created_at\":\"2025-04-19 12:24:18\",\"updated_at\":\"2025-04-19 12:24:18\",\"doctor\":{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"56059ea1-4759-4fcf-9b9a-6cdf30d32bbf\",\"doctor_id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-15 09:00:00\",\"reason\":null,\"status\":\"pending\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:44:59\",\"updated_at\":\"2025-04-22 22:44:59\",\"doctor\":{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"7846e0db-4f5e-47c7-92d5-276da252e891\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-09 11:00:00\",\"reason\":null,\"status\":\"cancelled\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:46:57\",\"updated_at\":\"2025-04-23 10:50:23\",\"doctor\":{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}}]}"
+2025-04-23T15:24:25.095Z [32minfo[39m: GET /api/doctors 304 761.366 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"name\":\"John Doe\",\"email\":\"doctor2@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"name\":\"John Doe\",\"email\":\"doctor1@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"name\":\"John Doe\",\"email\":\"doc@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0}]}"
+2025-04-23T15:25:04.119Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/patient/d0ff386c-0e40-4c89-927a-07da07cbe76d",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:25:04.180Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/doctors",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:25:05.361Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884",
+  "origin": "http://localhost:3000",
+  "query": {
+    "startDate": "2025-04-23",
+    "endDate": "2025-04-23"
+  },
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:25:05.393Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884",
+  "origin": "http://localhost:3000",
+  "query": {
+    "startDate": "2025-03-31T21:00:00.000Z",
+    "endDate": "2025-04-30T20:59:59.999Z"
+  },
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:25:05.893Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/doctor-reviews",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:25:07.095Z [32minfo[39m: GET /api/doctors 304 2905.880 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"name\":\"John Doe\",\"email\":\"doctor2@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"9362c14e-0cc8-4af9-9929-33cefd73db5b\",\"name\":\"John Doe\",\"email\":\"doctor1@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0},{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"name\":\"John Doe\",\"email\":\"doc@example.com\",\"imageUrl\":\"/placeholder.svg?height=40&width=40\",\"specialty\":\"Dermatologist\",\"bio\":\"\",\"rating\":5,\"experienceYears\":0,\"clinicName\":\"\",\"clinicAddress\":\"\",\"consultationFee\":0}]}"
+2025-04-23T15:25:07.406Z [32minfo[39m: GET /api/appointments/patient/d0ff386c-0e40-4c89-927a-07da07cbe76d? 304 3268.656 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"95eda5ac-b65a-41c0-8a72-eaa2b81b54dc\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-25 10:00:00\",\"reason\":\"Routine checkup\",\"status\":\"completed\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 23:03:56\",\"updated_at\":\"2025-04-23 10:22:07\",\"doctor\":{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"15378e80-aa3c-4b35-bc7c-22ac91d15399\",\"doctor_id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-24 12:00:00\",\"reason\":\"Regular checkup\",\"status\":\"pending\",\"appointment_type\":\"first_visit\",\"mode\":\"video\",\"duration\":30,\"created_at\":\"2025-04-19 12:24:18\",\"updated_at\":\"2025-04-19 12:24:18\",\"doctor\":{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"56059ea1-4759-4fcf-9b9a-6cdf30d32bbf\",\"doctor_id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-15 09:00:00\",\"reason\":null,\"status\":\"pending\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:44:59\",\"updated_at\":\"2025-04-22 22:44:59\",\"doctor\":{\"id\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}},{\"id\":\"7846e0db-4f5e-47c7-92d5-276da252e891\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-09 11:00:00\",\"reason\":null,\"status\":\"cancelled\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:46:57\",\"updated_at\":\"2025-04-23 10:50:23\",\"doctor\":{\"id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null,\"doctor_profile\":{\"specialty\":\"Dermatologist\",\"rating\":5}}}]}"
+2025-04-23T15:25:07.593Z [32minfo[39m: GET /api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884?startDate=2025-03-31T21%3A00%3A00.000Z&endDate=2025-04-30T20%3A59%3A59.999Z 304 2196.832 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"7846e0db-4f5e-47c7-92d5-276da252e891\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-09 11:00:00\",\"reason\":null,\"status\":\"cancelled\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:46:57\",\"updated_at\":\"2025-04-23 10:50:23\",\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null}},{\"id\":\"95eda5ac-b65a-41c0-8a72-eaa2b81b54dc\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-25 10:00:00\",\"reason\":\"Routine checkup\",\"status\":\"completed\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 23:03:56\",\"updated_at\":\"2025-04-23 10:22:07\",\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null}}]}"
+2025-04-23T15:25:07.599Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884",
+  "origin": "http://localhost:3000",
+  "query": {
+    "startDate": "2025-03-31T21:00:00.000Z",
+    "endDate": "2025-04-30T20:59:59.999Z"
+  },
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:25:07.633Z [32minfo[39m: GET /api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884?startDate=2025-04-23&endDate=2025-04-23 304 2259.771 ms - 
+Response Body: "{\"success\":true,\"data\":[]}"
+2025-04-23T15:25:07.638Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884",
+  "origin": "http://localhost:3000",
+  "query": {
+    "startDate": "2025-04-23",
+    "endDate": "2025-04-23"
+  },
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:25:07.821Z [32minfo[39m: GET /api/eczema/doctor-reviews 304 1842.966 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"_id\":\"6807cb72d3156bfac9568274\",\"diagnosisId\":\"801c07c4-1c12-4b04-90a5-429a22ca7c11\",\"patientId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"imageId\":\"8243fdf4-53c9-41eb-933f-e7d8f12d01a8\",\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745341267319-590589194.jpg\",\"imageMetadata\":{\"originalFileName\":\"03EczemaExcoriated.jpg\",\"uploadDate\":\"2025-04-22T17:01:38.193Z\",\"fileSize\":77808,\"format\":\"JPEG\"},\"mlResults\":{\"prediction\":\"Eczema\",\"confidence\":1,\"severity\":\"severe\",\"affectedAreas\":[\"Elbow\"],\"bodyPartConfidence\":0.49609375,\"modelVersion\":\"1.0\"},\"recommendations\":{\"treatments\":[],\"lifestyle\":[],\"triggers\":[],\"precautions\":[\"Consult a dermatologist immediately\",\"Consider prescription topical corticosteroids\",\"Use wet wrap therapy\",\"Monitor for signs of infection\",\"Apply extra moisturizer to elbow area\",\"Avoid leaning on elbows\",\"Keep the affected area clean and moisturized\",\"Avoid scratching the affected area\",\"Wear loose, breathable clothing\",\"Use fragrance-free products\"]},\"status\":\"pending_review\",\"preDiagnosisSurvey\":{\"flareupTriggers\":[]},\"createdAt\":\"2025-04-22T17:01:38.276Z\",\"updatedAt\":\"2025-04-22T21:33:14.720Z\",\"__v\":0,\"needsDoctorReview\":true,\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"test@example.com\",\"dateOfBirth\":\"1990-01-01 00:00:00\",\"gender\":\"male\"},\"postDiagnosisSurvey\":null},{\"_id\":\"68073dee8e3099c6d7e20ed5\",\"diagnosisId\":\"ed6a9562-4f89-40eb-b942-75bec1c7b5b9\",\"patientId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"imageId\":\"b44c817b-c7b3-4e54-b454-89bc0e5b87ce\",\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745305024318-362542178.jpg\",\"imageMetadata\":{\"originalFileName\":\"crazy.jpg\",\"uploadDate\":\"2025-04-22T06:57:50.358Z\",\"fileSize\":507439,\"format\":\"JPEG\"},\"mlResults\":{\"prediction\":\"No Eczema\",\"confidence\":1,\"severity\":\"severe\",\"affectedAreas\":[\"Neck\"],\"bodyPartConfidence\":0.25,\"modelVersion\":\"1.0\"},\"recommendations\":{\"treatments\":[],\"lifestyle\":[],\"triggers\":[],\"precautions\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"]},\"status\":\"pending_review\",\"needsDoctorReview\":true,\"preDiagnosisSurvey\":{\"eczemaHistory\":\"1-5\",\"lastFlareup\":\"<1w\",\"flareupTriggers\":[\"Stress\"],\"currentSymptoms\":\"red\",\"previousTreatments\":\"none\",\"severity\":\"mild\"},\"createdAt\":\"2025-04-22T06:57:50.401Z\",\"updatedAt\":\"2025-04-22T08:59:15.283Z\",\"__v\":0,\"postDiagnosisSurvey\":{\"diagnosisAccuracy\":5,\"diagnosisHelpfulness\":5,\"treatmentClarity\":5,\"userConfidence\":5,\"feedback\":\"none\",\"wouldRecommend\":true,\"submittedAt\":\"2025-04-22T06:58:26.579Z\"},\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"test@example.com\",\"dateOfBirth\":\"1990-01-01 00:00:00\",\"gender\":\"male\"}}]}"
+2025-04-23T15:25:07.832Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/doctor-reviews",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:25:08.279Z [32minfo[39m: GET /api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884?startDate=2025-03-31T21%3A00%3A00.000Z&endDate=2025-04-30T20%3A59%3A59.999Z 304 673.868 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"7846e0db-4f5e-47c7-92d5-276da252e891\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-09 11:00:00\",\"reason\":null,\"status\":\"cancelled\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 22:46:57\",\"updated_at\":\"2025-04-23 10:50:23\",\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null}},{\"id\":\"95eda5ac-b65a-41c0-8a72-eaa2b81b54dc\",\"doctor_id\":\"c5080ddf-82bb-4bda-bf30-266e848ee884\",\"patient_id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"appointment_date\":\"2025-04-25 10:00:00\",\"reason\":\"Routine checkup\",\"status\":\"completed\",\"appointment_type\":\"first_visit\",\"mode\":\"in_person\",\"duration\":30,\"created_at\":\"2025-04-22 23:03:56\",\"updated_at\":\"2025-04-23 10:22:07\",\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"image_url\":null}}]}"
+2025-04-23T15:25:08.296Z [32minfo[39m: GET /api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884?startDate=2025-04-23&endDate=2025-04-23 304 654.517 ms - 
+Response Body: "{\"success\":true,\"data\":[]}"
+2025-04-23T15:25:08.690Z [32minfo[39m: GET /api/eczema/doctor-reviews 304 850.181 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"_id\":\"6807cb72d3156bfac9568274\",\"diagnosisId\":\"801c07c4-1c12-4b04-90a5-429a22ca7c11\",\"patientId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"imageId\":\"8243fdf4-53c9-41eb-933f-e7d8f12d01a8\",\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745341267319-590589194.jpg\",\"imageMetadata\":{\"originalFileName\":\"03EczemaExcoriated.jpg\",\"uploadDate\":\"2025-04-22T17:01:38.193Z\",\"fileSize\":77808,\"format\":\"JPEG\"},\"mlResults\":{\"prediction\":\"Eczema\",\"confidence\":1,\"severity\":\"severe\",\"affectedAreas\":[\"Elbow\"],\"bodyPartConfidence\":0.49609375,\"modelVersion\":\"1.0\"},\"recommendations\":{\"treatments\":[],\"lifestyle\":[],\"triggers\":[],\"precautions\":[\"Consult a dermatologist immediately\",\"Consider prescription topical corticosteroids\",\"Use wet wrap therapy\",\"Monitor for signs of infection\",\"Apply extra moisturizer to elbow area\",\"Avoid leaning on elbows\",\"Keep the affected area clean and moisturized\",\"Avoid scratching the affected area\",\"Wear loose, breathable clothing\",\"Use fragrance-free products\"]},\"status\":\"pending_review\",\"preDiagnosisSurvey\":{\"flareupTriggers\":[]},\"createdAt\":\"2025-04-22T17:01:38.276Z\",\"updatedAt\":\"2025-04-22T21:33:14.720Z\",\"__v\":0,\"needsDoctorReview\":true,\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"test@example.com\",\"dateOfBirth\":\"1990-01-01 00:00:00\",\"gender\":\"male\"},\"postDiagnosisSurvey\":null},{\"_id\":\"68073dee8e3099c6d7e20ed5\",\"diagnosisId\":\"ed6a9562-4f89-40eb-b942-75bec1c7b5b9\",\"patientId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"imageId\":\"b44c817b-c7b3-4e54-b454-89bc0e5b87ce\",\"imageUrl\":\"https://storage.googleapis.com/myapp-images-2025/1745305024318-362542178.jpg\",\"imageMetadata\":{\"originalFileName\":\"crazy.jpg\",\"uploadDate\":\"2025-04-22T06:57:50.358Z\",\"fileSize\":507439,\"format\":\"JPEG\"},\"mlResults\":{\"prediction\":\"No Eczema\",\"confidence\":1,\"severity\":\"severe\",\"affectedAreas\":[\"Neck\"],\"bodyPartConfidence\":0.25,\"modelVersion\":\"1.0\"},\"recommendations\":{\"treatments\":[],\"lifestyle\":[],\"triggers\":[],\"precautions\":[\"Maintain a consistent skincare routine\",\"Use gentle, fragrance-free cleansers\",\"Apply sunscreen daily\",\"Stay hydrated and maintain a balanced diet\",\"Get adequate sleep and manage stress\",\"Avoid hot showers and pat dry skin gently\",\"Use a humidifier in dry environments\",\"Consider using products with ceramides and hyaluronic acid\"]},\"status\":\"pending_review\",\"needsDoctorReview\":true,\"preDiagnosisSurvey\":{\"eczemaHistory\":\"1-5\",\"lastFlareup\":\"<1w\",\"flareupTriggers\":[\"Stress\"],\"currentSymptoms\":\"red\",\"previousTreatments\":\"none\",\"severity\":\"mild\"},\"createdAt\":\"2025-04-22T06:57:50.401Z\",\"updatedAt\":\"2025-04-22T08:59:15.283Z\",\"__v\":0,\"postDiagnosisSurvey\":{\"diagnosisAccuracy\":5,\"diagnosisHelpfulness\":5,\"treatmentClarity\":5,\"userConfidence\":5,\"feedback\":\"none\",\"wouldRecommend\":true,\"submittedAt\":\"2025-04-22T06:58:26.579Z\"},\"patient\":{\"id\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"test@example.com\",\"dateOfBirth\":\"1990-01-01 00:00:00\",\"gender\":\"male\"}}]}"
+2025-04-23T15:28:43.500Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T15:28:43.509Z [32minfo[39m: GET /api/conversations 404 2.199 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-23T15:28:43.532Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T15:28:43.543Z [32minfo[39m: GET /api/conversations 404 2.561 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-23T15:33:47.788Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1",
+  "contentType": "application/json"
+}
+2025-04-23T15:33:47.796Z [32minfo[39m: GET /api/conversations 404 1.330 ms - 
+Response Body: "{\"success\":false,\"message\":\"Route not found\"}"
+2025-04-23T15:40:59.759Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1",
+  "contentType": "application/json"
+}
+2025-04-23T15:41:10.803Z [32minfo[39m: GET /api/messages/conversations - - ms - -
+2025-04-23T15:41:21.706Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1",
+  "contentType": "application/json"
+}
+2025-04-23T15:41:22.820Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884",
+  "origin": "http://localhost:3000",
+  "query": {
+    "startDate": "2025-04-23",
+    "endDate": "2025-04-23"
+  },
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:41:22.840Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884",
+  "origin": "http://localhost:3000",
+  "query": {
+    "startDate": "2025-03-31T21:00:00.000Z",
+    "endDate": "2025-04-30T20:59:59.999Z"
+  },
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:41:23.102Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/doctor-reviews",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:41:45.603Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1",
+  "contentType": "application/json"
+}
+2025-04-23T15:41:45.618Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884",
+  "origin": "http://localhost:3000",
+  "query": {
+    "startDate": "2025-04-23",
+    "endDate": "2025-04-23"
+  },
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:41:45.628Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884",
+  "origin": "http://localhost:3000",
+  "query": {
+    "startDate": "2025-03-31T21:00:00.000Z",
+    "endDate": "2025-04-30T20:59:59.999Z"
+  },
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:41:45.760Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/eczema/doctor-reviews",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
+2025-04-23T15:41:52.878Z [32minfo[39m: GET /api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884?startDate=2025-03-31T21%3A00%3A00.000Z&endDate=2025-04-30T20%3A59%3A59.999Z 401 30031.463 ms - 
+Response Body: "{\"success\":false,\"message\":\"Token is invalid or expired\"}"
+2025-04-23T15:41:53.144Z [32minfo[39m: GET /api/eczema/doctor-reviews 401 30036.878 ms - 
+Response Body: "{\"success\":false,\"message\":\"Token is invalid or expired\"}"
+2025-04-23T15:41:53.720Z [32minfo[39m: GET /api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884?startDate=2025-04-23&endDate=2025-04-23 - - ms - -
+2025-04-23T15:41:53.725Z [32minfo[39m: GET /api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884?startDate=2025-04-23&endDate=2025-04-23 - - ms - -
+2025-04-23T15:41:53.728Z [32minfo[39m: GET /api/appointments/doctor/c5080ddf-82bb-4bda-bf30-266e848ee884?startDate=2025-03-31T21%3A00%3A00.000Z&endDate=2025-04-30T20%3A59%3A59.999Z - - ms - -
+2025-04-23T15:41:53.737Z [32minfo[39m: GET /api/eczema/doctor-reviews - - ms - -
+2025-04-23T15:42:16.231Z [32minfo[39m: GET /api/messages/conversations 200 54520.407 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"6805045a072c63fffce4688a\",\"participantId\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"lastMessage\":{\"isDeleted\":false,\"_id\":\"6805110d4d7f5521fe417ba4\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"Hello, how ?\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-20T15:21:50.013Z\",\"updatedAt\":\"2025-04-20T15:21:50.013Z\",\"__v\":0},\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-20T15:21:50.209Z\"}]}"
+2025-04-23T15:42:29.224Z [32minfo[39m: GET /api/messages/conversations 200 43616.701 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"6805045a072c63fffce4688a\",\"participantId\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"lastMessage\":{\"isDeleted\":false,\"_id\":\"6805110d4d7f5521fe417ba4\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"Hello, how ?\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-20T15:21:50.013Z\",\"updatedAt\":\"2025-04-20T15:21:50.013Z\",\"__v\":0},\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-20T15:21:50.209Z\"}]}"
+2025-04-23T15:42:59.698Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/6805045a072c63fffce4688a/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T15:43:30.976Z [32minfo[39m: GET /api/messages/conversations/6805045a072c63fffce4688a/messages 200 31273.714 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"isDeleted\":false,\"_id\":\"6805110d4d7f5521fe417ba4\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"Hello, how ?\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-20T15:21:50.013Z\",\"updatedAt\":\"2025-04-20T15:21:50.013Z\",\"__v\":0},{\"isDeleted\":false,\"_id\":\"6805105bf563cdbdbe3120f1\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"Hello, how ?\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-20T15:18:51.064Z\",\"updatedAt\":\"2025-04-20T15:18:51.064Z\",\"__v\":0},{\"isDeleted\":false,\"_id\":\"68050be850b20395916c20be\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"Hello, how are you?\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-20T14:59:52.343Z\",\"updatedAt\":\"2025-04-20T14:59:52.343Z\",\"__v\":0}]}"
+2025-04-23T15:44:33.066Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "POST",
+  "path": "/api/messages/conversations/6805045a072c63fffce4688a/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T15:44:36.298Z [32minfo[39m: POST /api/messages/conversations/6805045a072c63fffce4688a/messages 200 3223.489 ms 
+Request Body: {
+  "content": "am okay"
+} 
+Response Body: "{\"success\":true,\"data\":{\"id\":\"68090ae3de923e4639981cbf\",\"conversationId\":\"6805045a072c63fffce4688a\",\"content\":\"am okay\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T15:44:35.590Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]}}"
+2025-04-23T15:46:44.911Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "POST",
+  "path": "/api/messages/conversations/6805045a072c63fffce4688a/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T15:46:48.588Z [32minfo[39m: POST /api/messages/conversations/6805045a072c63fffce4688a/messages 200 3672.725 ms 
+Request Body: {
+  "content": "where are you"
+} 
+Response Body: "{\"success\":true,\"data\":{\"id\":\"68090b67de923e4639981cc5\",\"conversationId\":\"6805045a072c63fffce4688a\",\"content\":\"where are you\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T15:46:47.939Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]}}"
+2025-04-23T16:12:14.385Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T16:12:23.798Z [32minfo[39m: GET /api/messages/conversations 500 9384.321 ms - 
+Response Body: "{\"success\":false,\"message\":\"Failed to fetch conversations\"}"
+2025-04-23T16:16:54.840Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T16:16:56.977Z [32minfo[39m: GET /api/messages/conversations 200 2116.158 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"6805045a072c63fffce4688a\",\"participantId\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"lastMessage\":{\"_id\":\"68090b67de923e4639981cc5\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"where are you\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"isDeleted\":false,\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-23T15:46:47.939Z\",\"updatedAt\":\"2025-04-23T15:46:47.939Z\",\"__v\":0},\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T15:46:48.097Z\"}]}"
+2025-04-23T16:17:01.804Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/6805045a072c63fffce4688a/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T16:21:28.970Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T16:32:06.774Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T16:32:10.020Z [32minfo[39m: GET /api/messages/conversations 304 3165.901 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"6805045a072c63fffce4688a\",\"participantId\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"lastMessage\":{\"_id\":\"68090b67de923e4639981cc5\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"where are you\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"isDeleted\":false,\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-23T15:46:47.939Z\",\"updatedAt\":\"2025-04-23T15:46:47.939Z\",\"__v\":0},\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T15:46:48.097Z\"}]}"
+2025-04-23T16:32:24.010Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/6805045a072c63fffce4688a/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T16:34:15.124Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T16:34:16.535Z [32minfo[39m: GET /api/messages/conversations 304 1386.991 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"6805045a072c63fffce4688a\",\"participantId\":\"5b82d6a2-84af-4205-849c-812ebe3e902a\",\"participantName\":\"John Doe\",\"participantRole\":\"doctor\",\"participantImage\":null,\"lastMessage\":{\"_id\":\"68090b67de923e4639981cc5\",\"conversationId\":\"6805045a072c63fffce4688a\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"content\":\"where are you\",\"type\":\"text\",\"attachments\":[],\"status\":\"sent\",\"isDeleted\":false,\"reactions\":[],\"readBy\":[],\"createdAt\":\"2025-04-23T15:46:47.939Z\",\"updatedAt\":\"2025-04-23T15:46:47.939Z\",\"__v\":0},\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T15:46:48.097Z\"}]}"
+2025-04-23T16:34:21.263Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/6805045a072c63fffce4688a/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T16:34:21.955Z [31merror[39m: Error getting messages: User is not defined
+Metadata: {
+  "stack": "ReferenceError: User is not defined\n    at getUserFromCache (C:\\Users\\vc\\Desktop\\backend\\controllers\\messageController.js:18:16)\n    at C:\\Users\\vc\\Desktop\\backend\\controllers\\messageController.js:166:36\n    at Array.map (<anonymous>)\n    at getMessages (C:\\Users\\vc\\Desktop\\backend\\controllers\\messageController.js:165:66)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+}
+2025-04-23T16:34:21.960Z [32minfo[39m: GET /api/messages/conversations/6805045a072c63fffce4688a/messages 500 692.666 ms - 
+Response Body: "{\"success\":false,\"error\":\"Failed to get messages\"}"

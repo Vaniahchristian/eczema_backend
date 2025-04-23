@@ -1,9 +1,35 @@
 const { mysqlPool } = require('../config/database');
 const Message = require('../models/mongodb/Message');
 const Conversation = require('../models/mongodb/Conversation');
+const { MySQL } = require('../models');
+const User = MySQL.User;
 const multer = require('multer');
 const path = require('path');
-const { socketService } = require('../services/socketService');
+const { logger } = require('../middleware/logger');
+
+// Cache for user data to avoid repeated DB queries
+const userCache = new Map();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+const getUserFromCache = async (userId) => {
+  const cached = userCache.get(userId);
+  if (cached && (Date.now() - cached.timestamp) < CACHE_TTL) {
+    return cached.user;
+  }
+  
+  const user = await User.findByPk(userId, {
+    attributes: ['id', 'email', 'role', 'first_name', 'last_name', 'image_url']
+  });
+  
+  if (user) {
+    userCache.set(userId, {
+      user,
+      timestamp: Date.now()
+    });
+  }
+  
+  return user;
+};
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -24,7 +50,7 @@ const uploadFile = [
                 return res.status(400).json({ success: false, message: 'No file uploaded' });
             }
             const url = `/uploads/${req.file.filename}`; // Adjust based on your server setup
-            res.json({ success: true, url });
+            res.json({ success: true, data: { url } });
         } catch (error) {
             console.error('Error in uploadFile:', error);
             res.status(500).json({ success: false, message: 'Failed to upload file' });
@@ -47,7 +73,7 @@ const messageController = {
             );
 
             if (!doctorRows || doctorRows.length === 0) {
-                return res.status(404).json({ error: 'Doctor not found' });
+                return res.status(404).json({ success: false, message: 'Doctor not found' });
             }
 
             // Check if conversation already exists
@@ -61,7 +87,7 @@ const messageController = {
             });
 
             if (existingConversation) {
-                return res.json(existingConversation);
+                return res.json({ success: true, data: existingConversation });
             }
 
             // Create new conversation
@@ -74,10 +100,10 @@ const messageController = {
                 unreadCounts: new Map([[patientId, 0], [doctorId, 0]])
             });
 
-            res.json(conversation);
+            res.json({ success: true, data: conversation });
         } catch (error) {
             console.error('Create conversation error:', error);
-            res.status(500).json({ error: 'Failed to create conversation' });
+            res.status(500).json({ success: false, message: 'Failed to create conversation' });
         }
     },
 
@@ -97,18 +123,15 @@ const messageController = {
             // Get other participants' details from MySQL
             const conversationData = await Promise.all(conversations.map(async (conv) => {
                 const otherParticipant = conv.participants.find(p => p.userId !== userId);
-                
                 const [userRows] = await mysqlPool.query(
                     'SELECT first_name, last_name, role, image_url FROM users WHERE id = ?',
                     [otherParticipant.userId]
                 );
-
-                const user = userRows[0];
-                
+                const user = userRows[0] || { first_name: 'Unknown', last_name: '', role: otherParticipant.role, image_url: null };
                 return {
                     id: conv._id,
                     participantId: otherParticipant.userId,
-                    participantName: `${user.first_name} ${user.last_name}`,
+                    participantName: `${user.first_name} ${user.last_name}`.trim(),
                     participantRole: user.role,
                     participantImage: user.image_url,
                     lastMessage: conv.lastMessage,
@@ -118,131 +141,96 @@ const messageController = {
                 };
             }));
 
-            res.json(conversationData);
+            res.json({ success: true, data: conversationData });
         } catch (error) {
             console.error('Get conversations error:', error);
-            res.status(500).json({ error: 'Failed to fetch conversations' });
+            res.status(500).json({ success: false, message: 'Failed to fetch conversations' });
         }
     },
 
     getMessages: async (req, res) => {
         try {
             const { conversationId } = req.params;
-            const userId = req.user.id;
+            const startTime = Date.now();
 
-            // Verify user is participant
-            const conversation = await Conversation.findOne({
-                _id: conversationId,
-                'participants.userId': userId
-            });
+            // Get messages with lean() for better performance
+            const messages = await Message.find({ 
+              conversationId,
+              isDeleted: false 
+            })
+            .select('-__v')
+            .sort({ createdAt: -1 })
+            .limit(50)
+            .lean();
 
-            if (!conversation) {
-                return res.status(403).json({ error: 'Not authorized to view this conversation' });
-            }
+            // Format messages
+            const formattedMessages = await Promise.all(messages.map(async (msg) => {
+              const sender = await getUserFromCache(msg.senderId);
+              return {
+                id: msg._id,
+                conversationId: msg.conversationId,
+                content: msg.content,
+                senderId: msg.senderId,
+                senderRole: msg.senderRole,
+                senderName: sender ? `${sender.first_name} ${sender.last_name}` : 'Unknown User',
+                senderImage: sender?.image_url || null,
+                timestamp: msg.createdAt,
+                status: msg.status,
+                type: msg.type,
+                attachments: msg.attachments || []
+              };
+            }));
 
-            // Get messages
-            const messages = await Message.find({ conversationId })
-                .sort({ createdAt: -1 })
-                .limit(50);
-
-            // Mark messages as read
-            await Message.updateMany(
-                {
-                    conversationId,
-                    senderId: { $ne: userId },
-                    'readBy.userId': { $ne: userId }
-                },
-                {
-                    $push: {
-                        readBy: {
-                            userId,
-                            timestamp: new Date()
-                        }
-                    }
-                }
-            );
-
-            // Update unread count
-            conversation.unreadCounts.set(userId, 0);
-            await conversation.save();
-
-            res.json(messages);
+            logger.info(`GET messages completed in ${Date.now() - startTime}ms`);
+            res.json({ success: true, data: formattedMessages.reverse() });
         } catch (error) {
-            console.error('Get messages error:', error);
-            res.status(500).json({ error: 'Failed to fetch messages' });
+            logger.error('Error getting messages:', error);
+            res.status(500).json({ success: false, error: 'Failed to get messages' });
         }
     },
 
     sendMessage: async (req, res) => {
         try {
+            const startTime = Date.now();
             const { conversationId } = req.params;
-            const { content, type = 'text', attachments = [] } = req.body;
+            const { content } = req.body;
             const userId = req.user.id;
-            const userRole = req.user.role;
 
-            const conversation = await Conversation.findById(conversationId);
-            if (!conversation) {
-                return res.status(404).json({ success: false, message: 'Conversation not found' });
-            }
-
-            const participant = conversation.participants.find(p => p.userId === userId);
-            if (!participant) {
-                return res.status(403).json({ success: false, message: 'Not authorized to send messages' });
-            }
-
-            const otherParticipant = conversation.participants.find(p => p.userId !== userId);
-            if (!otherParticipant) {
-                return res.status(400).json({ success: false, message: 'No other participant found' });
-            }
-
-            // Create message with new schema format
-            const messageData = {
-                conversationId,
-                senderId: userId,
-                senderRole: userRole,
-                content,
-                type,
-                attachments,
-                status: 'sent'
-            };
-
-            const message = await Message.create(messageData);
-
-            // Update conversation
-            conversation.lastMessage = message._id;
-            const otherIdx = conversation.participants.findIndex(p => p.userId !== userId);
-            conversation.participants[otherIdx].unreadCount = (conversation.participants[otherIdx].unreadCount || 0) + 1;
-            await conversation.save();
-
-            // Get sender details
-            const [rows] = await mysqlPool.query(
-                'SELECT id, first_name as firstName, last_name as lastName, role, image_url as profileImage FROM users WHERE id = ?',
-                [userId]
-            );
-            const sender = rows[0] || { firstName: 'Unknown', lastName: 'User' };
-
-            // Format response
-            const formattedMessage = {
-                id: message._id,
-                conversationId: message.conversationId,
-                content,
-                senderId: message.senderId,
-                senderRole: message.senderRole,
-                senderName: `${sender.firstName} ${sender.lastName}`,
-                senderImage: sender.profileImage,
-                timestamp: message.createdAt,
-                status: message.status,
-                type,
-                attachments
-            };
-
-            res.json({ success: true, data: formattedMessage });
-        } catch (error) {
-            console.error('Error in sendMessage:', error);
-            res.status(500).json({
-                success: false,
-                message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to send message'
+            const sender = await getUserFromCache(userId);
+            
+            const message = await Message.create({
+              conversationId,
+              senderId: userId,
+              senderRole: req.user.role,
+              content,
+              type: 'text',
+              status: 'sent'
             });
+
+            const messageData = {
+              id: message._id,
+              conversationId,
+              content,
+              senderId: userId,
+              senderRole: req.user.role,
+              senderName: sender ? `${sender.first_name} ${sender.last_name}` : 'Unknown User',
+              senderImage: sender?.image_url || null,
+              timestamp: message.createdAt,
+              status: 'sent',
+              type: 'text',
+              attachments: []
+            };
+
+            // Emit to socket if available
+            if (req.io) {
+              req.io.to(conversationId).emit('new_message', messageData);
+            }
+
+            logger.info(`POST message completed in ${Date.now() - startTime}ms`);
+            res.json({ success: true, data: messageData });
+        } catch (error) {
+            logger.error('Error sending message:', error);
+            res.status(500).json({ success: false, error: 'Failed to send message' });
         }
     },
 
@@ -269,10 +257,7 @@ const messageController = {
             res.json({ success: true, data: { status } });
         } catch (error) {
             console.error('Error in updateMessageStatus:', error);
-            res.status(500).json({
-                success: false,
-                message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to update message status'
-            });
+            res.status(500).json({ success: false, message: 'Failed to update message status' });
         }
     },
 
@@ -299,10 +284,7 @@ const messageController = {
             res.json({ success: true, data: { reaction } });
         } catch (error) {
             console.error('Error in addReaction:', error);
-            res.status(500).json({
-                success: false,
-                message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to add reaction'
-            });
+            res.status(500).json({ success: false, message: 'Failed to add reaction' });
         }
     },
 
@@ -408,10 +390,7 @@ const messageController = {
 
             const message = await Message.findOne({
                 _id: messageId,
-                $or: [
-                    { patientId: userId },
-                    { doctorId: userId }
-                ]
+                senderId: userId
             });
 
             if (!message) {
@@ -419,22 +398,11 @@ const messageController = {
             }
 
             // Only allow deletion if user is the sender
-            const isSender = (message.fromDoctor && message.doctorId === userId) ||
-                           (!message.fromDoctor && message.patientId === userId);
-
-            if (!isSender) {
-                return res.status(403).json({ success: false, message: 'Not authorized to delete this message' });
-            }
-
             // Soft delete by marking content as deleted
-            await Message.updateOne(
-                { _id: messageId },
-                { 
-                    content: '[Message deleted]',
-                    isDeleted: true,
-                    deletedAt: new Date()
-                }
-            );
+            message.content = '[Message deleted]';
+            message.isDeleted = true;
+            message.deletedAt = new Date();
+            await message.save();
 
             res.json({ success: true, message: 'Message deleted successfully' });
         } catch (error) {
@@ -588,7 +556,7 @@ const messageController = {
             console.error('Error in reactToMessage:', error);
             res.status(500).json({
                 success: false,
-                message: process.env.NODE_ENV === 'development' ? error.message : 'Failed to add reaction'
+                message: 'Failed to add reaction'
             });
         }
     },

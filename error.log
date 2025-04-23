@@ -26,3 +26,7 @@ Metadata: {
 Metadata: {
   "stack": "ReferenceError: Analytics is not defined\n    at exports.getDiagnosisHistory (C:\\Users\\vc\\Desktop\\backend\\controllers\\analyticsController.js:444:27)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
 }
+2025-04-23T16:34:21.955Z [31merror[39m: Error getting messages: User is not defined
+Metadata: {
+  "stack": "ReferenceError: User is not defined\n    at getUserFromCache (C:\\Users\\vc\\Desktop\\backend\\controllers\\messageController.js:18:16)\n    at C:\\Users\\vc\\Desktop\\backend\\controllers\\messageController.js:166:36\n    at Array.map (<anonymous>)\n    at getMessages (C:\\Users\\vc\\Desktop\\backend\\controllers\\messageController.js:165:66)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+}

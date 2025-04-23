@@ -40,6 +40,13 @@ const messageSchema = new mongoose.Schema({
         default: 'sent',
         index: true
     },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    deletedAt: {
+        type: Date
+    },
     readBy: [{
         userId: String,  // MySQL user ID
         timestamp: Date
