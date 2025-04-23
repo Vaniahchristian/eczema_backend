@@ -19352,3 +19352,71 @@ Metadata: {
 }
 2025-04-23T20:12:25.964Z [32minfo[39m: GET /api/messages/conversations 304 3750.097 ms - 
 Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f415d47d5f144fe3a91\",\"participantId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"participantName\":\"John Doe\",\"participantRole\":\"patient\",\"participantImage\":null,\"unreadCount\":0,\"status\":\"active\",\"updatedAt\":\"2025-04-23T18:19:45.971Z\"}]}"
+2025-04-23T20:22:33.327Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T20:22:37.617Z [32minfo[39m: GET messages completed in 2015ms
+2025-04-23T20:22:37.620Z [32minfo[39m: GET /api/messages/conversations/68092f415d47d5f144fe3a91/messages 200 4289.011 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f795d47d5f144fe3a9f\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"hello namanya\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:20:41.965Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933a15d47d5f144fe3aa9\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:25.179Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933c15d47d5f144fe3ab0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:57.636Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]}]}"
+2025-04-23T20:22:53.086Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T20:22:55.423Z [32minfo[39m: GET messages completed in 155ms
+2025-04-23T20:22:55.426Z [32minfo[39m: GET /api/messages/conversations/68092f415d47d5f144fe3a91/messages 200 2337.810 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f795d47d5f144fe3a9f\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"hello namanya\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:20:41.965Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933a15d47d5f144fe3aa9\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:25.179Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933c15d47d5f144fe3ab0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:57.636Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]}]}"
+2025-04-23T20:23:02.670Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "POST",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T20:23:03.622Z [32minfo[39m: POST message completed in 518ms
+2025-04-23T20:23:03.625Z [32minfo[39m: POST /api/messages/conversations/68092f415d47d5f144fe3a91/messages 200 952.248 ms 
+Request Body: {
+  "content": "wasgood brosski"
+} 
+Response Body: "{\"success\":true,\"data\":{\"id\":\"68094c275d47d5f144fe3ad0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"wasgood brosski\",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:23:03.461Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]}}"
+2025-04-23T20:23:13.225Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/680924cea73ed225be415cf0/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T20:23:13.749Z [32minfo[39m: GET messages completed in 169ms
+2025-04-23T20:23:13.753Z [32minfo[39m: GET /api/messages/conversations/680924cea73ed225be415cf0/messages 304 523.901 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092819a73ed225be415d06\",\"conversationId\":\"680924cea73ed225be415cf0\",\"content\":\"haa john sir\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T17:49:13.713Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680930e3a73ed225be415d4c\",\"conversationId\":\"680924cea73ed225be415cf0\",\"content\":\"yes how are we\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:26:43.522Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]}]}"
+2025-04-23T20:23:15.074Z [32minfo[39m: 📝 Incoming Request
+Metadata: {
+  "method": "GET",
+  "path": "/api/messages/conversations/68092f415d47d5f144fe3a91/messages",
+  "origin": "http://localhost:3000",
+  "query": {},
+  "authorization": "Present",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+  "contentType": "application/json"
+}
+2025-04-23T20:23:15.675Z [32minfo[39m: GET messages completed in 168ms
+2025-04-23T20:23:15.680Z [32minfo[39m: GET /api/messages/conversations/68092f415d47d5f144fe3a91/messages 200 601.582 ms - 
+Response Body: "{\"success\":true,\"data\":[{\"id\":\"68092f795d47d5f144fe3a9f\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"hello namanya\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:20:41.965Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933a15d47d5f144fe3aa9\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:25.179Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"680933c15d47d5f144fe3ab0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"yoo\",\"senderId\":\"d0ff386c-0e40-4c89-927a-07da07cbe76d\",\"senderRole\":\"patient\",\"senderName\":\"John Doe\",\"senderImage\":null,\"timestamp\":\"2025-04-23T18:38:57.636Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]},{\"id\":\"68094c275d47d5f144fe3ad0\",\"conversationId\":\"68092f415d47d5f144fe3a91\",\"content\":\"wasgood brosski\",\"senderId\":\"a00e2df4-2725-45ea-af21-848285d6f607\",\"senderRole\":\"doctor\",\"senderName\":\"Namanya Kalim\",\"senderImage\":null,\"timestamp\":\"2025-04-23T20:23:03.461Z\",\"status\":\"sent\",\"type\":\"text\",\"attachments\":[]}]}"
