@@ -118,10 +118,9 @@ const messageController = {
                 'participants.userId': userId,
                 status: 'active'
             })
-            .sort({ updatedAt: -1 })
-            .populate('lastMessage');
+            .sort({ updatedAt: -1 });
 
-            // Get other participants' details from MySQL
+            // For each conversation, fetch the latest message
             const conversationData = await Promise.all(conversations.map(async (conv) => {
                 const otherParticipant = conv.participants.find(p => p.userId !== userId);
                 const [userRows] = await mysqlPool.query(
@@ -129,14 +128,16 @@ const messageController = {
                     [otherParticipant.userId]
                 );
                 const user = userRows[0] || { first_name: 'Unknown', last_name: '', role: otherParticipant.role, image_url: null };
+                // Fetch the latest message for this conversation
+                const lastMessage = await Message.findOne({ conversationId: conv._id }).sort({ createdAt: -1 });
                 return {
                     id: conv._id,
                     participantId: otherParticipant.userId,
                     participantName: `${user.first_name} ${user.last_name}`.trim(),
                     participantRole: user.role,
                     participantImage: user.image_url,
-                    lastMessage: conv.lastMessage,
-                    unreadCount: conv.unreadCounts.get(userId) || 0,
+                    lastMessage: lastMessage,
+                    unreadCount: conv.unreadCounts.get ? conv.unreadCounts.get(userId) || 0 : (conv.unreadCounts[userId] || 0),
                     status: conv.status,
                     updatedAt: conv.updatedAt
                 };
