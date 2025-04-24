@@ -392,6 +392,35 @@ exports.submitFeedback = async (req, res) => {
     // Handle doctor review request
     if (req.body.needsDoctorReview === true) {
       update.needsDoctorReview = true;
+
+      // Emit real-time notification to doctor if possible
+      // 1. Find the diagnosis to get doctorId and patientId
+      const diagnosis = await Diagnosis.findOne({ diagnosisId });
+      if (diagnosis && diagnosis.doctorId) {
+        // Fetch patient name (example: from MySQL or from diagnosis object)
+        let patientName = 'Patient';
+        try {
+          if (sequelize) {
+            const [patientRows] = await sequelize.query(
+              'SELECT first_name, last_name FROM users WHERE id = ?',
+              { replacements: [diagnosis.patientId], type: sequelize.QueryTypes.SELECT }
+            );
+            if (patientRows && patientRows.first_name) {
+              patientName = `${patientRows.first_name} ${patientRows.last_name || ''}`.trim();
+            }
+          }
+        } catch (err) {
+          console.error('Error fetching patient name for notification:', err);
+        }
+        // Emit the review:requested event to the doctor's socket room
+        if (req.io) {
+          req.io.to(`user:${diagnosis.doctorId}`).emit('review:requested', {
+            diagnosisId: diagnosis.diagnosisId,
+            patientName,
+            message: 'A new review request has been submitted.'
+          });
+        }
+      }
     }
 
     if (Object.keys(update).length === 0) {

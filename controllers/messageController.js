@@ -242,11 +242,12 @@ const messageController = {
             if (req.io) {
                 // For each recipient, emit with their unread count
                 if (conversation) {
+                    const updatedUnreadCounts = conversation.unreadCounts instanceof Map ? Object.fromEntries(conversation.unreadCounts) : conversation.unreadCounts;
                     for (const participant of conversation.participants) {
                         if (participant.userId !== userId) {
-                            const unreadCount = conversation.unreadCounts instanceof Map
-                                ? conversation.unreadCounts.get(participant.userId) || 1
-                                : (conversation.unreadCounts[participant.userId] || 1);
+                            const unreadCount = updatedUnreadCounts[participant.userId] || 0;
+                            // Emit the message:new event
+                            console.log('[Backend] Emitting message:new to user:', participant.userId, 'with unreadCount:', unreadCount, 'and messageData:', messageData);
                             req.io.to(`user:${participant.userId}`).emit('message:new', {
                                 conversationId,
                                 message: messageData,
@@ -254,6 +255,8 @@ const messageController = {
                             });
                         }
                     }
+                } else {
+                    console.warn('[Backend] req.io is undefined, cannot emit message:new');
                 }
                 // Still emit to the conversation room for real-time updates
                 req.io.to(conversationId).emit('new_message', messageData);
