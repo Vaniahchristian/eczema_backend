@@ -223,9 +223,40 @@ const messageController = {
               attachments: []
             };
 
+            // Update unread count for all other participants
+            const conversation = await Conversation.findById(conversationId);
+            if (conversation && conversation.unreadCounts) {
+                for (const participant of conversation.participants) {
+                    if (participant.userId !== userId) {
+                        if (conversation.unreadCounts instanceof Map) {
+                            conversation.unreadCounts.set(participant.userId, (conversation.unreadCounts.get(participant.userId) || 0) + 1);
+                        } else {
+                            conversation.unreadCounts[participant.userId] = (conversation.unreadCounts[participant.userId] || 0) + 1;
+                        }
+                    }
+                }
+                await conversation.save();
+            }
+
             // Emit to socket if available
             if (req.io) {
-              req.io.to(conversationId).emit('new_message', messageData);
+                // For each recipient, emit with their unread count
+                if (conversation) {
+                    for (const participant of conversation.participants) {
+                        if (participant.userId !== userId) {
+                            const unreadCount = conversation.unreadCounts instanceof Map
+                                ? conversation.unreadCounts.get(participant.userId) || 1
+                                : (conversation.unreadCounts[participant.userId] || 1);
+                            req.io.to(`user:${participant.userId}`).emit('message:new', {
+                                conversationId,
+                                message: messageData,
+                                unreadCount
+                            });
+                        }
+                    }
+                }
+                // Still emit to the conversation room for real-time updates
+                req.io.to(conversationId).emit('new_message', messageData);
             }
 
             logger.info(`POST message completed in ${Date.now() - startTime}ms`);
