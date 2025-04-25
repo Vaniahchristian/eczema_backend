@@ -20,6 +20,7 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "eczema-diagnosis-advisory-backend": "file:",
     "exceljs": "^4.4.0",
     "express": "^4.21.2",
     "form-data": "^4.0.2",
