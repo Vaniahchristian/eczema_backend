@@ -3,11 +3,16 @@ const router = express.Router();
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const { protect, authorize } = require('../middleware/auth');
-const imageProcessor = require('../middleware/imageProcessor');
-const mlService = require('../services/mlService');
+const eczemaController = require('../controllers/eczemaController');
 const Diagnosis = require('../models/mongodb/Diagnosis');
+const axios = require('axios');
+const FormData = require('form-data');
+const path = require('path');
+const fs = require('fs').promises;
+const { uploadFile } = require('../config/storage');
+const { MySQL } = require('../models'); // Import MySQL models from index.js
 
-// Configure multer for image upload
+// Configure multer for memory storage
 const upload = multer({
     storage: multer.memoryStorage(),
     limits: {
@@ -28,68 +33,128 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
             });
         }
 
-        // Process and validate image
-        const processedImage = await imageProcessor.processImage(req.file);
+        console.log('File received:', {
+            originalname: req.file.originalname,
+            mimetype: req.file.mimetype,
+            size: req.file.size
+        });
 
-        // Analyze image with ML model
-        const analysisResult = await mlService.analyzeSkin(req.file.buffer);
+        // Upload image to Google Cloud Storage
+        console.log('Starting Google Cloud Storage upload...');
+        let imageUrl;
+        try {
+            console.log('GCS Config:', {
+                projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
+                bucketName: process.env.GOOGLE_CLOUD_BUCKET_NAME,
+                hasCredentials: !!process.env.GOOGLE_CLOUD_CREDENTIALS
+            });
+            
+            imageUrl = await uploadFile(req.file);
+            console.log('Successfully uploaded to GCS, URL:', imageUrl);
+        } catch (error) {
+            console.error('GCS Upload error:', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Failed to upload image to cloud storage'
+            });
+        }
+
+        // Get ML API URL from environment or use local fallback
+        const ML_API_URL = process.env.ML_API_URL || 'http://localhost:5001';
+        console.log('Using ML API URL:', ML_API_URL);
+
+        // Create form data with the image buffer
+        const formData = new FormData();
+        formData.append('image', req.file.buffer, {
+            filename: req.file.originalname,
+            contentType: req.file.mimetype
+        });
+
+        // Send directly to Flask API with increased timeout
+        console.log('Sending request to Flask API');
+        const response = await axios.post(`${ML_API_URL}/predict`, formData, {
+            headers: {
+                ...formData.getHeaders(),
+                'Accept': 'application/json'
+            },
+            maxBodyLength: Infinity,
+            timeout: 60000 // 60 seconds
+        });
+
+        console.log('Received response:', response.data);
 
         // Generate unique IDs
         const diagnosisId = uuidv4();
         const imageId = uuidv4();
+
+        // Combine recommendations and skincare tips
+        const allRecommendations = [
+            ...(response.data.recommendations || []),
+            ...(response.data.skincareTips || [])
+        ];
 
         // Create diagnosis record
         const diagnosis = await Diagnosis.create({
             diagnosisId,
             imageId,
             patientId: req.user.id,
-            imageUrl: processedImage.filename,
+            imageUrl,
             imageMetadata: {
                 originalFileName: req.file.originalname,
                 uploadDate: new Date(),
                 fileSize: req.file.size,
-                dimensions: {
-                    width: processedImage.metadata.width,
-                    height: processedImage.metadata.height
-                },
-                imageQuality: processedImage.metadata.qualityScore,
-                format: req.file.mimetype.split('/')[1].toUpperCase()
+                format: req.file.mimetype === 'image/jpeg' ? 'JPEG' : 'PNG'
             },
             mlResults: {
-                hasEczema: analysisResult.isEczema,
-                confidence: analysisResult.confidence,
-                severity: analysisResult.severity.toLowerCase(),
-                affectedAreas: [analysisResult.bodyPart],
-                differentialDiagnosis: [],
+                prediction: response.data.eczemaPrediction,
+                confidence: response.data.eczemaConfidence,
+                severity: response.data.eczemaSeverity.toLowerCase(),
+                affectedAreas: [response.data.bodyPart],
+                bodyPartConfidence: response.data.bodyPartConfidence,
                 modelVersion: '1.0'
             },
             recommendations: {
                 treatments: [],
                 lifestyle: [],
                 triggers: [],
-                precautions: analysisResult.isEczema ? analysisResult.recommendations : [analysisResult.skincareTips]
+                precautions: allRecommendations
             },
-            status: analysisResult.severity === 'Severe' || analysisResult.confidence < 0.6 ? 'pending_review' : 'completed'
+            status: response.data.eczemaSeverity === 'Severe' || response.data.eczemaConfidence < 0.6 ? 'pending_review' : 'completed'
         });
 
         res.status(201).json({
             success: true,
             data: {
                 diagnosisId: diagnosis.diagnosisId,
-                isEczema: analysisResult.isEczema,
-                severity: analysisResult.severity,
-                confidence: analysisResult.confidence,
-                bodyPart: analysisResult.bodyPart,
+                isEczema: diagnosis.mlResults.prediction,
+                severity: diagnosis.mlResults.severity,
+                confidence: diagnosis.mlResults.confidence,
+                bodyPart: diagnosis.mlResults.affectedAreas[0],
+                bodyPartConfidence: diagnosis.mlResults.bodyPartConfidence,
                 recommendations: diagnosis.recommendations.precautions,
-                needsDoctorReview: diagnosis.status === 'pending_review',
-                imageUrl: `/uploads/${processedImage.filename}`
+                needsDoctorReview: false,
+                imageUrl: diagnosis.imageUrl,
+                status: diagnosis.status,
+                createdAt: diagnosis.createdAt
             }
         });
     } catch (error) {
         console.error('Diagnosis error:', error);
+        if (error.code === 'ECONNABORTED') {
+            return res.status(504).json({
+                success: false,
+                message: 'ML API request timed out. Please ensure the ML API is accessible.'
+            });
+        }
+        if (error.response) {
+            console.error('Flask API error:', {
+                status: error.response.status,
+                data: error.response.data
+            });
+        }
         res.status(500).json({
             success: false,
-            message: error.message || 'Failed to process diagnosis'
+            message: 'Failed to process diagnosis. Please check ML API connectivity.'
         });
     }
 });
@@ -101,9 +166,24 @@ router.get('/diagnoses', async (req, res) => {
             .sort('-createdAt')
             .select('-metadata');
 
+        const formattedDiagnoses = diagnoses.map(diagnosis => ({
+            diagnosisId: diagnosis.diagnosisId,
+            isEczema: diagnosis.mlResults.prediction,
+            severity: diagnosis.mlResults.severity,
+            confidence: diagnosis.mlResults.confidence,
+            bodyPart: diagnosis.mlResults.affectedAreas[0],
+            bodyPartConfidence: diagnosis.mlResults.bodyPartConfidence,
+            recommendations: diagnosis.recommendations.precautions,
+            needsDoctorReview: diagnosis.needsDoctorReview,
+            imageUrl: diagnosis.imageUrl,
+            status: diagnosis.status,
+            createdAt: diagnosis.createdAt,
+            doctorReview: diagnosis.doctorReview
+        }));
+
         res.json({
             success: true,
-            data: diagnoses
+            data: formattedDiagnoses
         });
     } catch (error) {
         res.status(500).json({
@@ -128,9 +208,24 @@ router.get('/diagnoses/:diagnosisId', async (req, res) => {
             });
         }
 
+        const formattedDiagnosis = {
+            diagnosisId: diagnosis.diagnosisId,
+            isEczema: diagnosis.mlResults.prediction,
+            severity: diagnosis.mlResults.severity,
+            confidence: diagnosis.mlResults.confidence,
+            bodyPart: diagnosis.mlResults.affectedAreas[0],
+            bodyPartConfidence: diagnosis.mlResults.bodyPartConfidence,
+            recommendations: diagnosis.recommendations.precautions,
+            needsDoctorReview: diagnosis.needsDoctorReview,
+            imageUrl: diagnosis.imageUrl,
+            status: diagnosis.status,
+            createdAt: diagnosis.createdAt,
+            doctorReview: diagnosis.doctorReview
+        };
+
         res.json({
             success: true,
-            data: diagnosis
+            data: formattedDiagnosis
         });
     } catch (error) {
         res.status(500).json({
@@ -139,7 +234,87 @@ router.get('/diagnoses/:diagnosisId', async (req, res) => {
         });
     }
 });
+    
+   // Example: eczema.js
+   router.post('/diagnoses/:diagnosisId/feedback', protect, eczemaController.submitFeedback);
+  
+   router.get('/diagnoses/:diagnosisId/feedback', protect, eczemaController.getFeedback);
+  
+// Claim a diagnosis for review
+router.post('/diagnoses/:diagnosisId/claim', authorize('doctor'), async (req, res) => {
+  try {
+    const diagnosis = await Diagnosis.findOneAndUpdate(
+      {
+        diagnosisId: req.params.diagnosisId,
+        'doctorReview.doctorId': { $in: [null, undefined] },
+        status: 'pending_review',
+        needsDoctorReview: true
+      },
+      {
+        $set: {
+          'doctorReview.doctorId': req.user.id,
+          status: 'in_review'
+        }
+      },
+      { new: true }
+    );
+    if (!diagnosis) {
+      return res.status(400).json({ success: false, message: 'Case already claimed or not available.' });
+    }
+    res.json({ success: true, data: diagnosis });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to claim case' });
+  }
+});
 
+
+router.get('/doctor-reviews', authorize('doctor'), async (req, res) => {
+  try {
+    const diagnoses = await Diagnosis.find({
+      needsDoctorReview: true,
+      $or: [
+        { 'doctorReview.doctorId': { $exists: false } },
+        { 'doctorReview.doctorId': null }
+      ]
+    }).sort('-createdAt').lean();
+
+    // For each diagnosis, fetch patient info from MySQL using Sequelize
+    const diagnosesWithPatients = await Promise.all(diagnoses.map(async (diagnosis) => {
+      try {
+        const patient = await MySQL.User.findOne({
+          where: { id: diagnosis.patientId },
+          attributes: ['id', 'first_name', 'last_name', 'email', 'date_of_birth', 'gender'],
+          raw: true
+        });
+        // Include postDiagnosisSurvey in the response
+        return {
+          ...diagnosis,
+          patient: patient
+            ? {
+                id: patient.id,
+                firstName: patient.first_name,
+                lastName: patient.last_name,
+                email: patient.email,
+                dateOfBirth: patient.date_of_birth,
+                gender: patient.gender,
+              }
+            : null,
+          preDiagnosisSurvey: diagnosis.preDiagnosisSurvey || null,
+          postDiagnosisSurvey: diagnosis.postDiagnosisSurvey || null
+        };
+      } catch (error) {
+        return { ...diagnosis, patient: null, preDiagnosisSurvey: diagnosis.preDiagnosisSurvey || null, postDiagnosisSurvey: diagnosis.postDiagnosisSurvey || null };
+      }
+    }));
+
+    res.json({ success: true, data: diagnosesWithPatients });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch doctor review requests' });
+  }
+});
+
+
+   
 // Add doctor's review to diagnosis
 router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, res) => {
     try {
@@ -162,18 +337,46 @@ router.post('/diagnoses/:diagnosisId/review', authorize('doctor'), async (req, r
             treatmentPlan
         };
         diagnosis.status = 'reviewed';
+        if (!diagnosis.mlResults?.prediction || !diagnosis.imageUrl) {
+            return res.status(400).json({
+              success: false,
+              message: 'Diagnosis is missing required fields (mlResults.prediction or imageUrl)'
+            });
+          }
+          diagnosis.needsDoctorReview = false;
+
         await diagnosis.save();
+
+        const formattedDiagnosis = {
+            diagnosisId: diagnosis.diagnosisId,
+            isEczema: diagnosis.mlResults.prediction,
+            severity: diagnosis.doctorReview.updatedSeverity || diagnosis.mlResults.severity,
+            confidence: diagnosis.mlResults.confidence,
+            bodyPart: diagnosis.mlResults.affectedAreas[0],
+            bodyPartConfidence: diagnosis.mlResults.bodyPartConfidence,
+            recommendations: diagnosis.recommendations.precautions,
+            needsDoctorReview: diagnosis.needsDoctorReview,
+            imageUrl: diagnosis.imageUrl,
+            status: diagnosis.status,
+            createdAt: diagnosis.createdAt,
+            doctorReview: diagnosis.doctorReview
+        };
 
         res.json({
             success: true,
-            data: diagnosis
+            data: formattedDiagnosis
         });
     } catch (error) {
+        console.error('Error adding doctor review:', error);
         res.status(500).json({
             success: false,
             message: 'Failed to add review'
         });
     }
 });
+
+
+// Get all reviewed diagnoses for a doctor
+router.get('/doctor/reviewed-diagnoses', authorize('doctor'), eczemaController.getReviewedDiagnosesByDoctor);
 
 module.exports = router;

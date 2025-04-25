@@ -1,16 +1,5 @@
 const mongoose = require('mongoose');
 
-const treatmentSchema = new mongoose.Schema({
-  type: String,
-  description: String,
-  priority: Number
-}, { _id: false });
-
-const lifestyleRecommendationSchema = new mongoose.Schema({
-  category: String,
-  recommendations: [String]
-}, { _id: false });
-
 const diagnosisSchema = new mongoose.Schema({
   diagnosisId: {
     type: String,
@@ -26,50 +15,109 @@ const diagnosisSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  imageUrl: {
+    type: String,
+    required: true
+  },
   imageMetadata: {
     originalFileName: String,
     uploadDate: Date,
     fileSize: Number,
-    dimensions: {
-      width: Number,
-      height: Number
-    },
-    imageQuality: Number,
     format: {
       type: String,
       enum: ['JPEG', 'PNG']
     }
   },
   mlResults: {
-    hasEczema: Boolean,
+    prediction: {
+      type: String,
+      required: true
+    },
     confidence: Number,
     severity: {
       type: String,
       enum: ['mild', 'moderate', 'severe']
     },
     affectedAreas: [String],
-    differentialDiagnosis: [{
-      condition: String,
-      probability: Number
-    }],
+    bodyPartConfidence: Number,
     modelVersion: String
   },
   recommendations: {
-    treatments: [treatmentSchema],
-    lifestyle: [lifestyleRecommendationSchema],
+    treatments: [{
+      type: String,
+      description: String,
+      priority: Number
+    }],
+    lifestyle: [{
+      category: String,
+      recommendations: [String]
+    }],
     triggers: [String],
     precautions: [String]
   },
+  status: {
+    type: String,
+    enum: ['pending_review', 'in_review', 'reviewed'],
+    default: 'pending_review'
+  },
   doctorReview: {
-    reviewedBy: String,
-    reviewDate: Date,
-    comments: String,
-    adjustments: [{
-      field: String,
-      oldValue: mongoose.Schema.Types.Mixed,
-      newValue: mongoose.Schema.Types.Mixed,
-      reason: String
-    }]
+    doctorId: String,
+    review: String,
+    reviewedAt: Date,
+    updatedSeverity: {
+      type: String,
+      enum: ['mild', 'moderate', 'severe']
+    },
+    treatmentPlan: String
+  },
+
+  needsDoctorReview: {
+    type: Boolean,
+    default: false
+  },
+  // Pre-diagnosis survey data
+  preDiagnosisSurvey: {
+    eczemaHistory: {
+      type: String,
+      enum: ['new', '<1', '1-5', '5-10', '>10']
+    },
+    lastFlareup: {
+      type: String,
+      enum: ['current', '<1w', '1-4w', '1-6m', '>6m']
+    },
+    flareupTriggers: [String],
+    currentSymptoms: String,
+    previousTreatments: String,
+    severity: {
+      type: String,
+      enum: ['mild', 'moderate', 'severe']
+    }
+  },
+  // Post-diagnosis survey data
+  postDiagnosisSurvey: {
+    diagnosisAccuracy: {
+      type: Number,
+      min: 1,
+      max: 10
+    },
+    diagnosisHelpfulness: {
+      type: Number,
+      min: 1,
+      max: 10
+    },
+    treatmentClarity: {
+      type: Number,
+      min: 1,
+      max: 10
+    },
+    userConfidence: {
+      type: Number,
+      min: 1,
+      max: 10
+    },
+    feedback: String,
+    wouldRecommend: Boolean,
+    submittedAt: Date
   }
 }, {
   timestamps: true

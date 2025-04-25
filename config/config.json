@@ -1,0 +1,38 @@
+{
+  "development": {
+    "username": "root",
+    "password": "",
+    "database": "eczema_dev",
+    "host": "localhost",
+    "port": 3306,
+    "dialect": "mysql",
+    "dialectOptions": {
+      "ssl": null
+    }
+  },
+  "test": {
+    "username": "root",
+    "password": "",
+    "database": "eczema_test",
+    "host": "localhost",
+    "port": 3306,
+    "dialect": "mysql",
+    "dialectOptions": {
+      "ssl": null
+    }
+  },
+  "production": {
+    "username": "root",
+    "password": "xmFjYAcsjbnLaJXMdiuYhEnZDkpNerWy",
+    "database": "railway",
+    "host": "centerbeam.proxy.rlwy.net",
+    "port": 17053,
+    "dialect": "mysql",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
+  }
+}

@@ -1,53 +1,66 @@
-const Appointment = require('../models/mysql/appointment');
+const { v4: uuidv4 } = require('uuid');
+const MySQL = require('../models/mysql');
 
-// Create a new appointment
 exports.createAppointment = async (req, res) => {
     try {
-        const { doctorId, appointmentDate, reason, appointmentType } = req.body;
-        const patientId = req.user.id;
+        console.log('Creating appointment with data:', req.body);
+
+        const {
+            doctor_id,
+            patient_id,
+            appointment_date,
+            reason_for_visit,
+            appointment_type = 'first_visit',
+            mode, // We'll receive this but not save it
+            duration, // We'll receive this but not save it
+            ...otherFields
+        } = req.body;
 
         // Validate required fields
-        if (!doctorId || !appointmentDate || !reason) {
+        if (!doctor_id || !patient_id || !appointment_date || !reason_for_visit) {
+            console.error('Missing required fields:', { doctor_id, patient_id, appointment_date, reason_for_visit });
             return res.status(400).json({
                 success: false,
-                message: 'Please provide all required fields'
+                message: 'Missing required fields'
             });
         }
 
-        // Check if the time slot is available
-        const isAvailable = await Appointment.checkAvailability(doctorId, appointmentDate);
-        if (!isAvailable) {
+        // Validate appointment_type
+        const validTypes = ['first_visit', 'follow_up', 'emergency'];
+        if (!validTypes.includes(appointment_type)) {
+            console.error('Invalid appointment type:', appointment_type);
             return res.status(400).json({
                 success: false,
-                message: 'Selected time slot is not available'
+                message: 'Invalid appointment type. Must be one of: first_visit, follow_up, emergency'
             });
         }
 
-        // Create appointment
-        const appointmentId = await Appointment.create({
-            doctor_id: doctorId,
-            patient_id: patientId,
-            appointment_date: appointmentDate,
-            reason,
-            appointment_type: appointmentType,
-            status: 'pending'
+        // Create appointment using Sequelize - only pass fields that exist in the model
+        const appointment = await MySQL.Appointment.create({
+            appointment_id: uuidv4(),
+            doctor_id,
+            patient_id,
+            appointment_date,
+            reason_for_visit,
+            appointment_type,
+            status: 'pending',
+            notes: ''
         });
+
+        // Log what fields were ignored
+        if (mode || duration) {
+            console.log('Ignored non-schema fields:', { mode, duration });
+        }
+
+        console.log('Appointment created successfully:', appointment);
 
         res.status(201).json({
             success: true,
-            message: 'Appointment created successfully',
-            data: {
-                id: appointmentId,
-                doctorId,
-                patientId,
-                appointmentDate,
-                reason,
-                appointmentType,
-                status: 'pending'
-            }
+            data: appointment,
+            message: 'Appointment created successfully'
         });
     } catch (error) {
-        console.error('Create appointment error:', error);
+        console.error('Error creating appointment:', error);
         res.status(500).json({
             success: false,
             message: 'Error creating appointment',
@@ -56,80 +69,132 @@ exports.createAppointment = async (req, res) => {
     }
 };
 
-// Get appointments (filtered by user role)
-exports.getAppointments = async (req, res) => {
+// Get appointment by ID
+exports.getAppointmentById = async (req, res) => {
     try {
-        const userId = req.user.id;
-        const userRole = req.user.role;
-        const { status, startDate, endDate } = req.query;
-
-        let appointments;
-        if (userRole === 'doctor') {
-            appointments = await Appointment.findByDoctorId(userId, { status, startDate, endDate });
-        } else {
-            appointments = await Appointment.findByPatientId(userId, { status, startDate, endDate });
-        }
-
-        res.json({
-            success: true,
-            data: appointments
+        const appointment = await MySQL.Appointment.findByPk(req.params.id, {
+            include: [
+                {
+                    model: MySQL.User,
+                    as: 'patient',
+                    attributes: ['id', 'first_name', 'last_name', 'image_url']
+                },
+                {
+                    model: MySQL.User,
+                    as: 'doctor',
+                    attributes: ['id', 'first_name', 'last_name', 'image_url'],
+                    include: [{
+                        model: MySQL.DoctorProfile,
+                        as: 'doctor_profile',
+                        attributes: ['specialty', 'rating']
+                    }]
+                }
+            ]
         });
-    } catch (error) {
-        console.error('Get appointments error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error fetching appointments',
-            error: error.message
-        });
-    }
-};
 
-// Get upcoming appointments
-exports.getUpcomingAppointments = async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const userRole = req.user.role;
-
-        const appointments = await Appointment.findUpcoming(userId, userRole);
-
-        res.json({
-            success: true,
-            data: appointments
-        });
-    } catch (error) {
-        console.error('Get upcoming appointments error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error fetching upcoming appointments',
-            error: error.message
-        });
-    }
-};
-
-// Get doctor's available time slots
-exports.getDoctorAvailability = async (req, res) => {
-    try {
-        const { doctorId } = req.params;
-        const { date } = req.query;
-
-        if (!doctorId || !date) {
-            return res.status(400).json({
+        if (!appointment) {
+            return res.status(404).json({
                 success: false,
-                message: 'Please provide doctor ID and date'
+                error: 'Appointment not found'
             });
         }
 
-        const availableSlots = await Appointment.getDoctorAvailability(doctorId, date);
+        res.json({
+            success: true,
+            data: appointment
+        });
+    } catch (error) {
+        console.error('Get appointment error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+};
+
+// Get doctor's appointments
+exports.getDoctorAppointments = async (req, res) => {
+    try {
+        const { status, startDate, endDate } = req.query;
+        const where = { doctor_id: req.params.doctorId };
+
+        if (status) {
+            where.status = status;
+        }
+
+        if (startDate) {
+            where.appointment_date = {
+                [MySQL.sequelize.Op.gte]: new Date(startDate)
+            };
+        }
+
+        if (endDate) {
+            where.appointment_date = {
+                ...where.appointment_date,
+                [MySQL.sequelize.Op.lte]: new Date(endDate)
+            };
+        }
+
+        const appointments = await MySQL.Appointment.findAll({
+            where,
+            include: [
+                {
+                    model: MySQL.User,
+                    as: 'patient',
+                    attributes: ['id', 'first_name', 'last_name', 'image_url']
+                }
+            ],
+            order: [['appointment_date', 'ASC']]
+        });
 
         res.json({
             success: true,
-            data: availableSlots
+            data: appointments
         });
     } catch (error) {
-        console.error('Get doctor availability error:', error);
+        console.error('Get doctor appointments error:', error);
         res.status(500).json({
             success: false,
-            message: 'Error fetching doctor availability',
+            error: error.message
+        });
+    }
+};
+
+// Get patient's appointments
+exports.getPatientAppointments = async (req, res) => {
+    try {
+        const { status } = req.query;
+        const where = { patient_id: req.params.patientId };
+
+        if (status) {
+            where.status = status;
+        }
+
+        const appointments = await MySQL.Appointment.findAll({
+            where,
+            include: [
+                {
+                    model: MySQL.User,
+                    as: 'doctor',
+                    attributes: ['id', 'first_name', 'last_name', 'image_url'],
+                    include: [{
+                        model: MySQL.DoctorProfile,
+                        as: 'doctor_profile',
+                        attributes: ['specialty', 'rating']
+                    }]
+                }
+            ],
+            order: [['appointment_date', 'DESC']]
+        });
+
+        res.json({
+            success: true,
+            data: appointments
+        });
+    } catch (error) {
+        console.error('Get patient appointments error:', error);
+        res.status(500).json({
+            success: false,
             error: error.message
         });
     }
@@ -138,143 +203,90 @@ exports.getDoctorAvailability = async (req, res) => {
 // Update appointment status
 exports.updateAppointmentStatus = async (req, res) => {
     try {
-        const { appointmentId } = req.params;
-        const { status } = req.body;
-        const userId = req.user.id;
-        const userRole = req.user.role;
+        const [updated] = await MySQL.Appointment.update({
+            status: req.body.status
+        }, {
+            where: { id: req.params.id }
+        });
 
-        // Validate status
-        const validStatuses = ['confirmed', 'cancelled', 'completed'];
-        if (!validStatuses.includes(status)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid appointment status'
-            });
-        }
-
-        // Check if user has permission to update this appointment
-        const appointment = await Appointment.findById(appointmentId);
-        if (!appointment) {
+        if (!updated) {
             return res.status(404).json({
                 success: false,
-                message: 'Appointment not found'
+                error: 'Appointment not found'
             });
         }
-
-        if (userRole === 'patient' && appointment.patient_id !== userId) {
-            return res.status(403).json({
-                success: false,
-                message: 'Not authorized to update this appointment'
-            });
-        }
-
-        if (userRole === 'doctor' && appointment.doctor_id !== userId) {
-            return res.status(403).json({
-                success: false,
-                message: 'Not authorized to update this appointment'
-            });
-        }
-
-        // Update appointment status
-        await Appointment.updateStatus(appointmentId, status);
 
         res.json({
             success: true,
-            message: 'Appointment status updated successfully',
-            data: {
-                appointmentId,
-                status
-            }
+            message: 'Appointment status updated successfully'
         });
     } catch (error) {
         console.error('Update appointment status error:', error);
         res.status(500).json({
             success: false,
-            message: 'Error updating appointment status',
             error: error.message
         });
     }
 };
 
-// Reschedule appointment
-exports.rescheduleAppointment = async (req, res) => {
+// Update appointment
+exports.updateAppointment = async (req, res) => {
     try {
-        const { appointmentId } = req.params;
-        const { newDate } = req.body;
-        const userId = req.user.id;
+        const [updated] = await MySQL.Appointment.update(req.body, {
+            where: { id: req.params.id }
+        });
 
-        // Verify appointment exists and belongs to user
-        const appointment = await Appointment.findById(appointmentId);
-        if (!appointment) {
+        if (!updated) {
             return res.status(404).json({
                 success: false,
-                message: 'Appointment not found'
+                error: 'Appointment not found'
             });
         }
-
-        // Check if user has permission to reschedule
-        if (appointment.patient_id !== userId && appointment.doctor_id !== userId) {
-            return res.status(403).json({
-                success: false,
-                message: 'Not authorized to reschedule this appointment'
-            });
-        }
-
-        // Check if new time slot is available
-        const isAvailable = await Appointment.checkAvailability(appointment.doctor_id, newDate);
-        if (!isAvailable) {
-            return res.status(400).json({
-                success: false,
-                message: 'Selected time slot is not available'
-            });
-        }
-
-        // Update appointment
-        await Appointment.update(appointmentId, {
-            appointment_date: newDate,
-            status: 'rescheduled'
-        });
 
         res.json({
             success: true,
-            message: 'Appointment rescheduled successfully'
+            message: 'Appointment updated successfully'
         });
     } catch (error) {
-        console.error('Reschedule appointment error:', error);
+        console.error('Update appointment error:', error);
         res.status(500).json({
             success: false,
-            message: 'Error rescheduling appointment',
             error: error.message
         });
     }
 };
 
-// Get available doctors
-exports.getDoctors = async (req, res) => {
+// Check doctor's availability
+exports.checkAvailability = async (req, res) => {
     try {
-        const doctors = await Appointment.getDoctors();
+        const { doctorId, appointmentDate } = req.query;
+        const date = new Date(appointmentDate);
         
-        // Transform data to match frontend expectations
-        const transformedDoctors = doctors.map(doctor => ({
-            id: doctor.id,
-            name: `${doctor.first_name} ${doctor.last_name}`,
-            specialty: doctor.specialty,
-            image: doctor.avatar || '/placeholder.svg?height=200&width=200',
-            rating: parseFloat(doctor.rating) || 4.5,
-            experience: parseInt(doctor.experience_years) || 0,
-            bio: doctor.bio || `Dr. ${doctor.last_name} is a specialist in treating various skin conditions including eczema.`,
-            availability: doctor.availability || []
-        }));
+        const appointmentsCount = await MySQL.Appointment.count({
+            where: {
+                doctor_id: doctorId,
+                appointment_date: {
+                    [MySQL.sequelize.Op.between]: [
+                        new Date(date.setHours(0, 0, 0, 0)),
+                        new Date(date.setHours(23, 59, 59, 999))
+                    ]
+                },
+                status: {
+                    [MySQL.sequelize.Op.notIn]: ['cancelled', 'completed']
+                }
+            }
+        });
 
         res.json({
             success: true,
-            data: transformedDoctors
+            data: {
+                isAvailable: appointmentsCount < 8
+            }
         });
     } catch (error) {
-        console.error('Get doctors error:', error);
+        console.error('Check availability error:', error);
         res.status(500).json({
             success: false,
-            message: 'Error fetching doctors',
             error: error.message
         });
     }

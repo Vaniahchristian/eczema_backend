@@ -236,7 +236,7 @@ async function seedDiagnoses(users) {
                         format: 'JPEG'
                     },
                     mlResults: {
-                        hasEczema: true,
+                        prediction: true,
                         confidence: Math.random() * (0.99 - 0.7) + 0.7,
                         severity: severityLevels[Math.floor(Math.random() * severityLevels.length)],
                         affectedAreas: [bodyParts[Math.floor(Math.random() * bodyParts.length)]],

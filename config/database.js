@@ -1,76 +1,83 @@
 const mysql = require('mysql2/promise');
 const mongoose = require('mongoose');
+const { Sequelize } = require('sequelize');
 
 // Determine environment
 const isTest = process.env.NODE_ENV === 'test';
+const isDev = process.env.NODE_ENV === 'development';
 
 // MySQL Configuration
 const mysqlConfig = {
-  host: process.env.MYSQL_HOST,
-  port: process.env.MYSQL_PORT || 3306,
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-  multipleStatements: true
+  host: process.env.MYSQL_HOST || 'centerbeam.proxy.rlwy.net',
+  port: 17053,  // Fixed port number without parsing
+  user: process.env.MYSQL_USER || 'root',
+  password: process.env.MYSQL_PASSWORD || 'xmFjYAcsjbnLaJXMdiuYhEnZDkpNerWy',
+  database: process.env.MYSQL_DATABASE || 'railway'
 };
 
 // Create MySQL connection pool
 const mysqlPool = mysql.createPool(mysqlConfig);
 
+// Create Sequelize instance
+const sequelize = new Sequelize(
+  mysqlConfig.database,
+  mysqlConfig.user,
+  mysqlConfig.password,
+  {
+    host: mysqlConfig.host,
+    port: mysqlConfig.port,
+    dialect: 'mysql',
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    },
+    dialectOptions: {
+      // Explicitly disable SSL for local development
+      ssl: isDev ? null : {
+        rejectUnauthorized: false
+      },
+      connectTimeout: 60000,
+      // Fix for datetime issues
+      dateStrings: true,
+      typeCast: function (field, next) {
+        if (field.type === 'DATETIME') {
+          return field.string();
+        }
+        return next();
+      }
+    },
+    define: {
+      // Add default timestamp handling
+      timestamps: true,
+      underscored: true,
+      createdAt: 'created_at',
+      updatedAt: 'updated_at'
+    },
+    logging: isDev ? console.log : false
+  }
+);
+
 // MongoDB Configuration
 const mongoConfig = {
-  url: process.env.MONGODB_URI || 'mongodb+srv://admin:0754092850@todoapp.aqby3.mongodb.net/TRY'
+  url: process.env.MONGODB_URI || 'mongodb+srv://admin:0754092850@todoapp.aqby3.mongodb.net/TRY?retryWrites=true&w=majority&ssl=true'
 };
-
-// Test MySQL connection and ensure database exists
-async function testMySQLConnection() {
-  try {
-    // Create database if it doesn't exist
-    const tempPool = mysql.createPool({
-      ...mysqlConfig,
-      database: undefined // Temporarily remove database to create it
-    });
-
-    await tempPool.query('CREATE DATABASE IF NOT EXISTS eczema');
-    await tempPool.end();
-
-    // Test connection with main pool
-    const connection = await mysqlPool.getConnection();
-    console.log('MySQL connected successfully');
-    connection.release();
-    return true;
-  } catch (error) {
-    console.error('MySQL connection error:', error);
-    return false;
-  }
-}
 
 // Connect to MongoDB
 async function connectMongoDB() {
   try {
     await mongoose.connect(mongoConfig.url);
     console.log('MongoDB connected successfully');
-    return true;
   } catch (error) {
     console.error('MongoDB connection error:', error);
-    return false;
+    process.exit(1);
   }
 }
 
-// Initialize databases
-async function initializeDatabases() {
-  await Promise.all([
-    testMySQLConnection(),
-    connectMongoDB()
-  ]);
-}
-
 module.exports = {
-  mysqlPool,
   connectMongoDB,
-  initializeDatabases,
-  mysqlConfig
+  mysqlPool,
+  sequelize,
+  isDev
 };

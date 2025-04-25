@@ -1,27 +1,32 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/auth');
-const messageController = require('../controllers/messageController');
+const {
+    getConversations,
+    getMessages,
+    sendMessage,
+    createConversation,
+    updateMessageStatus,
+    markConversationAsRead,
+    deleteMessage,
+    reactToMessage
+} = require('../controllers/messageController');
 
+// Conversation routes
+router.get('/conversations', protect, getConversations);
+router.post('/conversations', protect, createConversation);
 
-router.post('/upload', protect, messageController.uploadFile);
+// Message routes
+router.get('/conversations/:conversationId/messages', protect, getMessages);
+router.post('/conversations/:conversationId/messages', protect, sendMessage);
+router.put('/messages/:messageId/status', protect, updateMessageStatus);
+router.put('/messages/:messageId/reaction', protect, reactToMessage);
+router.delete('/messages/:messageId', protect, deleteMessage);
 
-// Get all conversations for the authenticated user
-router.get('/conversations', protect, messageController.getConversations);
+// Mark conversation as read (read receipts)
+router.post('/conversations/:conversationId/read', protect, require('../controllers/messageController').markConversationAsRead);
 
-// Get all messages in a conversation
-router.get('/conversations/:conversationId/messages', protect, messageController.getMessages);
-
-// Send a new message in a conversation
-router.post('/conversations/:conversationId/messages', protect, messageController.sendMessage);
-
-// Create a new conversation
-router.post('/conversations', protect, messageController.createConversation);
-
-// Update message status (read/delivered)
-router.put('/messages/:messageId/status', protect, messageController.updateMessageStatus);
-
-// Add reaction to a message
-router.put('/messages/:messageId/reaction', protect, messageController.addReaction);
+// Typing status (optional REST fallback)
+router.post('/conversations/:conversationId/typing', protect, require('../controllers/messageController').setTypingStatus);
 
 module.exports = router;

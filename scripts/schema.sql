@@ -6,28 +6,37 @@ CREATE DATABASE IF NOT EXISTS eczema_test;
 USE eczema;
 
 -- Users table
+-- Create users table
 CREATE TABLE IF NOT EXISTS users (
-    user_id VARCHAR(36) PRIMARY KEY,
+    id VARCHAR(36) PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
-    role ENUM('patient', 'doctor', 'admin') NOT NULL DEFAULT 'patient',
+    password VARCHAR(255) NOT NULL,
+    role ENUM('patient', 'doctor', 'researcher', 'admin') DEFAULT 'patient',
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
     date_of_birth DATE,
-    gender ENUM('male', 'female', 'other'),
+    gender VARCHAR(50),
     phone_number VARCHAR(20),
     address TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Doctor profiles table
+-- Create doctor_profiles table
 CREATE TABLE IF NOT EXISTS doctor_profiles (
-    user_id VARCHAR(36) PRIMARY KEY,
-    specialization VARCHAR(100),
-    license_number VARCHAR(50),
+    id VARCHAR(36) PRIMARY KEY,
+    user_id VARCHAR(36) NOT NULL,
+    specialty VARCHAR(100) NOT NULL,
+    bio TEXT,
+    rating DECIMAL(3,2) DEFAULT 5.0,
+    experience_years INT DEFAULT 0,
+    clinic_name VARCHAR(255),
+    clinic_address TEXT,
+    consultation_fee DECIMAL(10,2),
     available_hours JSON,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Appointments table
@@ -48,28 +57,37 @@ CREATE TABLE IF NOT EXISTS appointments (
 USE eczema_test;
 
 -- Users table
+-- Create users table
 CREATE TABLE IF NOT EXISTS users (
-    user_id VARCHAR(36) PRIMARY KEY,
+    id VARCHAR(36) PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
-    role ENUM('patient', 'doctor', 'admin') NOT NULL DEFAULT 'patient',
+    password VARCHAR(255) NOT NULL,
+    role ENUM('patient', 'doctor', 'researcher', 'admin') DEFAULT 'patient',
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
     date_of_birth DATE,
-    gender ENUM('male', 'female', 'other'),
+    gender VARCHAR(50),
     phone_number VARCHAR(20),
     address TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Doctor profiles table
+-- Create doctor_profiles table
 CREATE TABLE IF NOT EXISTS doctor_profiles (
-    user_id VARCHAR(36) PRIMARY KEY,
-    specialization VARCHAR(100),
-    license_number VARCHAR(50),
+    id VARCHAR(36) PRIMARY KEY,
+    user_id VARCHAR(36) NOT NULL,
+    specialty VARCHAR(100) NOT NULL,
+    bio TEXT,
+    rating DECIMAL(3,2) DEFAULT 5.0,
+    experience_years INT DEFAULT 0,
+    clinic_name VARCHAR(255),
+    clinic_address TEXT,
+    consultation_fee DECIMAL(10,2),
     available_hours JSON,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Appointments table

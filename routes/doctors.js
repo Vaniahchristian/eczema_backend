@@ -1,20 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/auth');
-const { MySQL } = require('../models');
-
 const { mysqlPool } = require('../config/database');
 
-// Get all available doctors
+// Get all available doctors (with optional search)
 router.get('/', protect, async (req, res) => {
     try {
-        const [doctors] = await mysqlPool.execute(`
+        const { search } = req.query;
+        let query = `
             SELECT 
                 u.id, 
                 u.first_name, 
                 u.last_name, 
                 u.email,
-                u.image_url,
                 dp.specialty,
                 dp.bio,
                 dp.rating,
@@ -25,23 +23,30 @@ router.get('/', protect, async (req, res) => {
             FROM users u
             INNER JOIN doctor_profiles dp ON u.id = dp.user_id
             WHERE u.role = 'doctor'
-        `);
+        `;
+        const params = [];
+        if (search) {
+            query += ` AND (u.first_name LIKE ? OR u.last_name LIKE ? OR u.email LIKE ?)`;
+            const like = `%${search}%`;
+            params.push(like, like, like);
+        }
+        query += ' ORDER BY u.first_name ASC LIMIT 20';
 
-        // Transform data for frontend
+        const [rows] = await mysqlPool.query(query, params);
+        const doctors = Array.isArray(rows) ? rows : [];
         const formattedDoctors = doctors.map(doctor => ({
             id: doctor.id,
-            name: `${doctor.first_name} ${doctor.last_name}`,
+            name: `${doctor.first_name} ${doctor.last_name}`.trim(),
             email: doctor.email,
             imageUrl: doctor.image_url || '/placeholder.svg?height=40&width=40',
-            specialty: doctor.specialty,
-            bio: doctor.bio,
+            specialty: doctor.specialty || 'General Practice',
+            bio: doctor.bio || '',
             rating: parseFloat(doctor.rating) || 5.0,
             experienceYears: doctor.experience_years || 0,
-            clinicName: doctor.clinic_name,
-            clinicAddress: doctor.clinic_address,
+            clinicName: doctor.clinic_name || '',
+            clinicAddress: doctor.clinic_address || '',
             consultationFee: parseFloat(doctor.consultation_fee) || 0
         }));
-
         res.json({
             success: true,
             data: formattedDoctors
@@ -68,8 +73,7 @@ router.get('/:doctorId/available-slots', protect, async (req, res) => {
             });
         }
 
-        // Get doctor's available hours
-        const [doctorProfiles] = await mysqlPool.execute(
+        const [doctorProfiles] = await mysqlPool.query(
             'SELECT available_hours FROM doctor_profiles WHERE user_id = ?',
             [doctorId]
         );
@@ -83,24 +87,19 @@ router.get('/:doctorId/available-slots', protect, async (req, res) => {
 
         const availableHours = JSON.parse(doctorProfiles[0].available_hours);
         const requestedDate = new Date(date);
-        
-        // Get day of week in lowercase
         const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
         const dayOfWeek = days[requestedDate.getDay()];
 
-        // Get all appointments for this doctor on the requested date
-        const [appointments] = await mysqlPool.execute(
+        const [appointments] = await mysqlPool.query(
             'SELECT appointment_date FROM appointments WHERE doctor_id = ? AND DATE(appointment_date) = DATE(?)',
             [doctorId, date]
         );
 
-        // Convert appointments to a Set of time strings for quick lookup
         const bookedSlots = new Set(appointments.map(app => {
             const appDate = new Date(app.appointment_date);
             return appDate.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
         }));
 
-        // If no hours available for this day
         if (!availableHours[dayOfWeek] || !availableHours[dayOfWeek].length) {
             return res.json({
                 success: true,
@@ -111,7 +110,6 @@ router.get('/:doctorId/available-slots', protect, async (req, res) => {
             });
         }
 
-        // Filter out booked slots
         const availableSlots = availableHours[dayOfWeek].filter(time => !bookedSlots.has(time));
 
         res.json({
