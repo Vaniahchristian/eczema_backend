@@ -1,0 +1,387 @@
+{
+  "info": {
+    "name": "Patient Analytics",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login as Patient",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"patient@example.com\",\n    \"password\": \"your_password\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login as Doctor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"doctor@example.com\",\n    \"password\": \"your_password\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Patient View (Me)",
+      "item": [
+        {
+          "name": "Get My Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/me/summary",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "me", "summary"]
+            }
+          }
+        },
+        {
+          "name": "Get My Severity Distribution",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/me/severity-distribution",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "me", "severity-distribution"]
+            }
+          }
+        },
+        {
+          "name": "Get My Body Part Frequency",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/me/body-part-frequency",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "me", "body-part-frequency"]
+            }
+          }
+        },
+        {
+          "name": "Get My Model Confidence Trend",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/me/model-confidence-trend",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "me", "model-confidence-trend"]
+            }
+          }
+        },
+        {
+          "name": "Get My Diagnosis Count Trend",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/me/diagnosis-count-trend",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "me", "diagnosis-count-trend"]
+            }
+          }
+        },
+        {
+          "name": "Get My Doctor Review Impact",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/me/doctor-review-impact",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "me", "doctor-review-impact"]
+            }
+          }
+        },
+        {
+          "name": "Get My Avg Confidence by Severity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/me/avg-confidence-by-severity",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "me", "avg-confidence-by-severity"]
+            }
+          }
+        },
+        {
+          "name": "Get My Recent Diagnoses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/me/recent-diagnoses",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "me", "recent-diagnoses"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Doctor/Admin View",
+      "item": [
+        {
+          "name": "Get Patient Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/patient/{{patientId}}/summary",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "patient", "{{patientId}}", "summary"]
+            }
+          }
+        },
+        {
+          "name": "Get Patient Severity Distribution",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/patient/{{patientId}}/severity-distribution",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "patient", "{{patientId}}", "severity-distribution"]
+            }
+          }
+        },
+        {
+          "name": "Get Patient Body Part Frequency",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/patient/{{patientId}}/body-part-frequency",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "patient", "{{patientId}}", "body-part-frequency"]
+            }
+          }
+        },
+        {
+          "name": "Get Patient Model Confidence Trend",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/patient/{{patientId}}/model-confidence-trend",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "patient", "{{patientId}}", "model-confidence-trend"]
+            }
+          }
+        },
+        {
+          "name": "Get Patient Diagnosis Count Trend",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/patient/{{patientId}}/diagnosis-count-trend",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "patient", "{{patientId}}", "diagnosis-count-trend"]
+            }
+          }
+        },
+        {
+          "name": "Get Patient Doctor Review Impact",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/patient/{{patientId}}/doctor-review-impact",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "patient", "{{patientId}}", "doctor-review-impact"]
+            }
+          }
+        },
+        {
+          "name": "Get Patient Avg Confidence by Severity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/patient/{{patientId}}/avg-confidence-by-severity",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "patient", "{{patientId}}", "avg-confidence-by-severity"]
+            }
+          }
+        },
+        {
+          "name": "Get Patient Recent Diagnoses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/analytics/patient/{{patientId}}/recent-diagnoses",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "analytics", "patient", "{{patientId}}", "recent-diagnoses"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "patientToken",
+      "value": "YOUR_PATIENT_JWT_TOKEN"
+    },
+    {
+      "key": "doctorToken",
+      "value": "YOUR_DOCTOR_JWT_TOKEN"
+    },
+    {
+      "key": "patientId",
+      "value": "PATIENT_ID_HERE"
+    }
+  ]
+}
