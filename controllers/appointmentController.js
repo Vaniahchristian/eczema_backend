@@ -54,6 +54,16 @@ exports.createAppointment = async (req, res) => {
 
         console.log('Appointment created successfully:', appointment);
 
+        // --- Notification Trigger ---
+        try {
+            const { notificationService } = require('../server');
+            await notificationService.sendAppointmentNotification(patient_id, appointment);
+            await notificationService.sendAppointmentNotification(doctor_id, appointment);
+        } catch (notifErr) {
+            console.error('Notification error (createAppointment):', notifErr);
+        }
+        // --- End Notification Trigger ---
+
         res.status(201).json({
             success: true,
             data: appointment,
@@ -220,6 +230,17 @@ exports.updateAppointmentStatus = async (req, res) => {
             success: true,
             message: 'Appointment status updated successfully'
         });
+        // --- Notification Trigger ---
+        try {
+            const { notificationService } = require('../server');
+            // Fetch updated appointment for notification
+            const updatedAppointment = await MySQL.Appointment.findByPk(req.params.id);
+            await notificationService.sendAppointmentNotification(updatedAppointment.patient_id, updatedAppointment);
+            await notificationService.sendAppointmentNotification(updatedAppointment.doctor_id, updatedAppointment);
+        } catch (notifErr) {
+            console.error('Notification error (updateAppointmentStatus):', notifErr);
+        }
+        // --- End Notification Trigger ---
     } catch (error) {
         console.error('Update appointment status error:', error);
         res.status(500).json({

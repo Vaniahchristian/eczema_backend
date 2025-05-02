@@ -3,6 +3,7 @@ const axios = require('axios');
 const FormData = require('form-data');
 const { uploadFile } = require('../config/storage');
 const { sequelize } = require('../models/index');
+const { notificationService } = require('../server');
 
 // Analyze eczema image using ML model
 const analyzeEczemaImage = async (fileBuffer) => {
@@ -130,38 +131,44 @@ exports.analyzeImage = async (req, res) => {
         severity: analysis.severity,
         confidence: analysis.confidence,
         areasAffected: analysis.areas_affected,
+        bodyPartConfidence: analysis.bodyPartConfidence,
         prediction: analysis.prediction,
+        recommendations: analysis.recommendations,
+        skincareTips: analysis.skincareTips,
         requiresDoctorReview: analysis.requiresDoctorReview
       },
-      symptoms: [],
-      analyzedAt: new Date()
+      status: analysis.requiresDoctorReview ? 'pending_review' : 'reviewed',
+      createdAt: new Date()
     });
 
-    // Update analytics
-    await Analytics.create({
-      diagnosis_id: diagnosis.diagnosisId,
-      patient_id: req.user.user_id,
-      severity: analysis.severity,
-      model_version: '1.0',
-      processing_time_ms: 1000,
-      confidence_score: analysis.confidence
-    });
+    // --- Notification Trigger ---
+    if (notificationService && notificationService.sendDiagnosisResult) {
+      try {
+        await notificationService.sendDiagnosisResult(
+          req.user.user_id,
+          diagnosis.diagnosisId,
+          diagnosis.mlResults
+        );
+      } catch (notifErr) {
+        console.error('Notification error (analyzeImage):', notifErr);
+      }
+    }
+    // --- End Notification Trigger ---
 
-    // Get relevant advisory content
-    const advisory = await Advisory.findOne({ severity: analysis.severity });
-
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       data: {
-        diagnosis_id: diagnosis.diagnosisId,
+        diagnosisId: diagnosis.diagnosisId,
+        isEczema: analysis.prediction,
         severity: analysis.severity,
         confidence: analysis.confidence,
-        areas_affected: analysis.areas_affected,
-        symptoms: [],
-        recommendations: advisory ? advisory.recommendations : [],
-        image_url: imageUrl,
-        prediction: analysis.prediction,
-        requiresDoctorReview: analysis.requiresDoctorReview
+        bodyPart: analysis.areas_affected[0],
+        bodyPartConfidence: analysis.bodyPartConfidence,
+        recommendations: analysis.recommendations,
+        needsDoctorReview: analysis.requiresDoctorReview,
+        imageUrl: imageUrl,
+        status: diagnosis.status,
+        createdAt: diagnosis.createdAt
       }
     });
   } catch (error) {

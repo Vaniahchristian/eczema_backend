@@ -101,6 +101,15 @@ const messageController = {
                 unreadCounts: new Map([[patientId, 0], [doctorId, 0]])
             });
 
+            // --- Notification Trigger ---
+            try {
+                const { notificationService } = require('../server');
+                await notificationService.sendDoctorMessage(doctorId, 'New Patient', 'A new conversation has been started.');
+            } catch (notifErr) {
+                console.error('Notification error (createConversation):', notifErr);
+            }
+            // --- End Notification Trigger ---
+
             res.json({ success: true, data: conversation });
         } catch (error) {
             console.error('Create conversation error:', error);
@@ -194,9 +203,9 @@ const messageController = {
     sendMessage: async (req, res) => {
         try {
             const startTime = Date.now();
-            const { conversationId } = req.params;
-            const { content } = req.body;
             const userId = req.user.id;
+            const conversationId = req.body.conversationId || req.params.conversationId;
+            const content = req.body.content;
 
             const sender = await getUserFromCache(userId);
             
@@ -261,6 +270,48 @@ const messageController = {
                 // Still emit to the conversation room for real-time updates
                 req.io.to(conversationId).emit('new_message', messageData);
             }
+
+            // --- Notification Trigger ---
+            const notificationService = require('../server').notificationService;
+            if (notificationService && notificationService.sendDoctorMessage) {
+                try {
+                    // Find conversation participants
+                    const conversation = await Conversation.findById(conversationId);
+                    // Get sender details
+                    const sender = await User.findByPk(userId);
+                    const senderName = sender ? `${sender.first_name} ${sender.last_name}` : 'Someone';
+                    const senderRole = sender ? sender.role : 'user';
+                    let title, message;
+                    if (senderRole === 'doctor') {
+                        title = 'New Message from Doctor';
+                        message = `Dr. ${senderName} has sent you a message`;
+                    } else if (senderRole === 'patient') {
+                        title = 'New Message from Patient';
+                        message = `${senderName} has sent you a message`;
+                    } else {
+                        title = 'New Message';
+                        message = `${senderName} has sent you a message`;
+                    }
+                    if (conversation) {
+                        for (const participant of conversation.participants) {
+                            if (participant.userId !== userId) {
+                                await notificationService.sendDoctorMessage(
+                                    participant.userId,
+                                    senderName,
+                                    content,
+                                    title,
+                                    message
+                                );
+                            }
+                        }
+                    }
+                } catch (notifErr) {
+                    console.error('Notification error (sendMessage):', notifErr);
+                }
+            } else {
+                console.error('NotificationService is not available in sendMessage');
+            }
+            // --- End Notification Trigger ---
 
             logger.info(`POST message completed in ${Date.now() - startTime}ms`);
             res.json({ success: true, data: messageData });

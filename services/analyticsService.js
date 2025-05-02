@@ -310,23 +310,77 @@ const getDoctorPerformance = async (doctorId, timeRange) => {
 const getAppointmentAnalytics = async (doctorId) => {
     try {
         logOperation('getAppointmentAnalytics', { doctorId });
-        const result = await MySQL.Appointment.findAll({
-            where: {
-                doctor_id: doctorId
-            },
+        
+        // Get total appointments
+        const totalAppointments = await MySQL.Appointment.count({
+            where: { doctor_id: doctorId }
+        });
+
+        // Get appointments by status
+        const appointmentsByStatus = await MySQL.Appointment.findAll({
+            where: { doctor_id: doctorId },
             attributes: [
-                [MySQL.sequelize.fn('COUNT', MySQL.sequelize.col('status')), 'count'],
-                [MySQL.sequelize.fn('AVG', MySQL.sequelize.col('duration')), 'avgDuration'],
-                [MySQL.sequelize.fn('AVG', MySQL.sequelize.col('status')), 'completionRate']
+                'status',
+                [MySQL.sequelize.fn('COUNT', MySQL.sequelize.col('id')), 'count']
             ],
             group: ['status']
         });
-        logOperation('getAppointmentAnalytics', { success: true, resultCount: result.length });
+
+        // Get average duration
+        const avgDuration = await MySQL.Appointment.findOne({
+            where: { doctor_id: doctorId },
+            attributes: [
+                [MySQL.sequelize.fn('AVG', MySQL.sequelize.col('duration')), 'avgDuration']
+            ]
+        });
+
+        // Get completion rate (completed appointments / total appointments)
+        const completedAppointments = await MySQL.Appointment.count({
+            where: { 
+                doctor_id: doctorId,
+                status: 'completed'
+            }
+        });
+
+        // Calculate statistics
+        const completionRate = totalAppointments > 0 ? (completedAppointments / totalAppointments) * 100 : 0;
+        
+        // Format response
+        const result = {
+            totalAppointments,
+            appointmentsByStatus: appointmentsByStatus.reduce((acc, curr) => {
+                acc[curr.status] = curr.get('count');
+                return acc;
+            }, {}),
+            avgDuration: avgDuration.get('avgDuration') || 0,
+            completionRate: Math.round(completionRate * 100) / 100, // Round to 2 decimal places
+            recentTrend: {
+                lastWeek: await getRecentAppointments(doctorId, 7),
+                lastMonth: await getRecentAppointments(doctorId, 30)
+            }
+        };
+
+        logOperation('getAppointmentAnalytics', { success: true, resultCount: appointmentsByStatus.length });
         return result;
     } catch (error) {
         logger.error('Error in getAppointmentAnalytics:', error);
         throw new Error('Error fetching appointment analytics: ' + error.message);
     }
+};
+
+// Helper function to get recent appointments count
+const getRecentAppointments = async (doctorId, days) => {
+    const date = new Date();
+    date.setDate(date.getDate() - days);
+    
+    return await MySQL.Appointment.count({
+        where: {
+            doctor_id: doctorId,
+            created_at: {
+                [MySQL.Sequelize.Op.gte]: date
+            }
+        }
+    });
 };
 
 const getClinicalInsights = async (doctorId) => {

@@ -41,3 +41,64 @@ Metadata: {
 Metadata: {
   "stack": "ReferenceError: Survey is not defined\n    at exports.getSurveyAnalytics (C:\\Users\\vc\\Desktop\\backend\\controllers\\analyticsController.js:169:24)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\vc\\Desktop\\backend\\middleware\\auth.js:115:5\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at exports.protect (C:\\Users\\vc\\Desktop\\backend\\middleware\\auth.js:80:7)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
 }
+2025-04-26T09:20:50.117Z [31merror[39m: Error in getDoctorPerformance: Operation timeout
+Metadata: {
+  "name": "SequelizeConnectionAcquireTimeoutError",
+  "parent": {},
+  "original": {},
+  "stack": "SequelizeConnectionAcquireTimeoutError: Operation timeout\n    at ConnectionManager.getConnection (C:\\Users\\vc\\Desktop\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:206:15)\n    at async C:\\Users\\vc\\Desktop\\backend\\node_modules\\sequelize\\lib\\sequelize.js:305:26\n    at async MySQLQueryInterface.select (C:\\Users\\vc\\Desktop\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\query-interface.js:407:12)\n    at async doctor_profiles.findAll (C:\\Users\\vc\\Desktop\\backend\\node_modules\\sequelize\\lib\\model.js:1140:21)\n    at async doctor_profiles.findOne (C:\\Users\\vc\\Desktop\\backend\\node_modules\\sequelize\\lib\\model.js:1240:12)\n    at async Promise.all (index 4)\n    at async exports.getDoctorPerformance (C:\\Users\\vc\\Desktop\\backend\\controllers\\analyticsController.js:816:114)"
+}
+2025-04-26T09:20:50.177Z [31merror[39m: Error in getAppointmentAnalytics: Operation timeout
+Metadata: {
+  "name": "SequelizeConnectionAcquireTimeoutError",
+  "parent": {},
+  "original": {},
+  "stack": "SequelizeConnectionAcquireTimeoutError: Operation timeout\n    at ConnectionManager.getConnection (C:\\Users\\vc\\Desktop\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:206:15)\n    at async C:\\Users\\vc\\Desktop\\backend\\node_modules\\sequelize\\lib\\sequelize.js:305:26\n    at async MySQLQueryInterface.rawSelect (C:\\Users\\vc\\Desktop\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\query-interface.js:434:18)\n    at async appointments.aggregate (C:\\Users\\vc\\Desktop\\backend\\node_modules\\sequelize\\lib\\model.js:1277:19)\n    at async appointments.count (C:\\Users\\vc\\Desktop\\backend\\node_modules\\sequelize\\lib\\model.js:1306:20)\n    at async exports.getAppointmentAnalytics (C:\\Users\\vc\\Desktop\\backend\\controllers\\analyticsController.js:857:36)"
+}
+2025-04-26T09:20:52.017Z [31merror[39m: Error in getSurveyAnalyticsNew: read ECONNRESET
+Metadata: {
+  "errno": -4077,
+  "code": "ECONNRESET",
+  "syscall": "read",
+  "stack": "Error: read ECONNRESET\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:216:20)"
+}
+2025-04-26T10:38:42.185Z [31merror[39m: Error sending message: Message validation failed: conversationId: Path `conversationId` is required.
+Metadata: {
+  "errors": {
+    "conversationId": {
+      "name": "ValidatorError",
+      "message": "Path `conversationId` is required.",
+      "properties": {
+        "message": "Path `conversationId` is required.",
+        "type": "required",
+        "path": "conversationId"
+      },
+      "kind": "required",
+      "path": "conversationId"
+    }
+  },
+  "_message": "Message validation failed",
+  "stack": "ValidationError: Message validation failed: conversationId: Path `conversationId` is required.\n    at Document.invalidate (C:\\Users\\vc\\Desktop\\backend\\node_modules\\mongoose\\lib\\document.js:3329:32)\n    at C:\\Users\\vc\\Desktop\\backend\\node_modules\\mongoose\\lib\\document.js:3090:17\n    at C:\\Users\\vc\\Desktop\\backend\\node_modules\\mongoose\\lib\\schemaType.js:1407:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)"
+}
+2025-04-26T10:38:42.211Z [31merror[39m: Error sending message: Message validation failed: conversationId: Path `conversationId` is required.
+Metadata: {
+  "errors": {
+    "conversationId": {
+      "name": "ValidatorError",
+      "message": "Path `conversationId` is required.",
+      "properties": {
+        "message": "Path `conversationId` is required.",
+        "type": "required",
+        "path": "conversationId"
+      },
+      "kind": "required",
+      "path": "conversationId"
+    }
+  },
+  "_message": "Message validation failed",
+  "stack": "ValidationError: Message validation failed: conversationId: Path `conversationId` is required.\n    at Document.invalidate (C:\\Users\\vc\\Desktop\\backend\\node_modules\\mongoose\\lib\\document.js:3329:32)\n    at C:\\Users\\vc\\Desktop\\backend\\node_modules\\mongoose\\lib\\document.js:3090:17\n    at C:\\Users\\vc\\Desktop\\backend\\node_modules\\mongoose\\lib\\schemaType.js:1407:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)"
+}
+2025-04-26T10:41:06.747Z [31merror[39m: Error sending message: startTime is not defined
+Metadata: {
+  "stack": "ReferenceError: startTime is not defined\n    at sendMessage (C:\\Users\\vc\\Desktop\\backend\\controllers\\messageController.js:315:67)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+}

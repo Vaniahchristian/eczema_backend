@@ -16,6 +16,7 @@ const { logger, requestLogger, errorLogger, captureResponseBody } = require('./m
  // Assuming this middleware is defined elsewhere
 const analyticsService = require('./services/analyticsService'); // Assuming this service is defined elsewhere
 const { protect } = require('./middleware/auth');
+const NotificationService = require('./services/notificationService'); // Added NotificationService import
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -70,6 +71,21 @@ if (process.env.NODE_ENV !== 'production') {
 
 const socketService = new SocketService(io);
 console.log('🚀 Socket.IO server initialized');
+
+// --- Notification Service Integration ---
+const notificationService = new NotificationService(io);
+
+io.on('connection', (socket) => {
+  // Expect the client to emit 'register' with their userId after connecting
+  socket.on('register', (userId) => {
+    notificationService.clients.set(userId, socket);
+    // Clean up on disconnect
+    socket.on('disconnect', () => {
+      notificationService.clients.delete(userId);
+    });
+  });
+});
+// --- End Notification Service Integration ---
 
 // Trust proxy - required for rate limiting behind reverse proxies
 app.set('trust proxy', 1);
@@ -303,3 +319,6 @@ server.listen(PORT, () => {
   console.log(`Health check: http://localhost:${PORT}/health`);
   console.log(`API base URL: http://localhost:${PORT}/api`);
 });
+
+// Export notificationService for use in controllers (avoid circular dependency issues)
+module.exports.notificationService = notificationService;

@@ -12,10 +12,13 @@ class NotificationService {
     try {
       const client = this.clients.get(userId);
       if (client && client.readyState === WebSocket.OPEN) {
+        console.log(`[NotificationService] Sent to user ${userId}:`, notification);
         client.send(JSON.stringify({
           type: 'notification',
           payload: notification
         }));
+      } else {
+        console.log(`[NotificationService] User ${userId} is offline. Notification queued:`, notification);
       }
     } catch (error) {
       console.error('Failed to send notification:', error);
@@ -53,11 +56,11 @@ class NotificationService {
   }
 
   // Send doctor message notification
-  async sendDoctorMessage(patientId, doctorName, messagePreview) {
+  async sendDoctorMessage(patientId, doctorName, messagePreview, title = null, message = null) {
     await this.sendToUser(patientId, {
       type: 'doctor_message',
-      title: 'New Message from Doctor',
-      message: `Dr. ${doctorName} has sent you a message`,
+      title: title || 'New Message from Doctor',
+      message: message || `Dr. ${doctorName} has sent you a message`,
       data: {
         preview: messagePreview.substring(0, 100),
         doctorName
@@ -78,6 +81,7 @@ class NotificationService {
       );
       
       connection.release();
+      console.log(`[NotificationService] Stored notification for user ${userId}:`, notification);
     } catch (error) {
       console.error('Failed to store notification:', error);
     }
