@@ -7,12 +7,23 @@ const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
 
 // MySQL Configuration
+// Production (commented out)
+/*
 const mysqlConfig = {
   host: process.env.MYSQL_HOST || 'centerbeam.proxy.rlwy.net',
   port: 17053,  // Fixed port number without parsing
   user: process.env.MYSQL_USER || 'root',
   password: process.env.MYSQL_PASSWORD || 'xmFjYAcsjbnLaJXMdiuYhEnZDkpNerWy',
   database: process.env.MYSQL_DATABASE || 'railway'
+};
+*/
+// Local XAMPP (active)
+const mysqlConfig = {
+  host: 'localhost',
+  port: 3306,
+  user: 'root',
+  password: '', // XAMPP default is empty password for root
+  database: 'eczema_dev'
 };
 
 // Create MySQL connection pool

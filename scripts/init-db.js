@@ -4,15 +4,24 @@ const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
 // Database configuration
+// const dbConfig = {
+//     host: process.env.MYSQL_HOST || 'localhost',
+//     port: process.env.MYSQL_PORT || 3306,
+//     user: process.env.MYSQL_USER || 'root',
+//     password: process.env.MYSQL_PASSWORD || '',
+//     database: process.env.MYSQL_DATABASE || 'eczema_dev',
+//     ssl: process.env.NODE_ENV === 'development' ? null : {
+//         rejectUnauthorized: false
+//     }
+// };
+
 const dbConfig = {
-    host: process.env.MYSQL_HOST || 'localhost',
-    port: process.env.MYSQL_PORT || 3306,
-    user: process.env.MYSQL_USER || 'root',
-    password: process.env.MYSQL_PASSWORD || '',
-    database: process.env.MYSQL_DATABASE || 'eczema_dev',
-    ssl: process.env.NODE_ENV === 'development' ? null : {
-        rejectUnauthorized: false
-    }
+    host: 'localhost',
+    port: 3306,
+    user: 'root',
+    password: '',
+    database: 'eczema_dev',
+    ssl: null
 };
 
 async function createDatabase() {
@@ -42,8 +51,12 @@ async function createTables() {
     try {
         console.log('Creating tables...');
 
+        // Disable foreign key checks before dropping tables
+        await connection.query('SET FOREIGN_KEY_CHECKS = 0');
+
         // Drop existing tables in reverse order of dependencies
         await connection.query('DROP TABLE IF EXISTS appointments');
+        await connection.query('DROP TABLE IF EXISTS treatments');
         await connection.query('DROP TABLE IF EXISTS diagnoses');
         await connection.query('DROP TABLE IF EXISTS doctor_profiles');
         await connection.query('DROP TABLE IF EXISTS patients');
@@ -76,6 +89,7 @@ async function createTables() {
                 gender VARCHAR(50),
                 medical_history TEXT,
                 allergies TEXT,
+                region VARCHAR(255),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -104,14 +118,14 @@ async function createTables() {
             CREATE TABLE IF NOT EXISTS doctor_profiles (
                 id VARCHAR(36) PRIMARY KEY,
                 user_id VARCHAR(36) NOT NULL,
-                specialty VARCHAR(100) NOT NULL,
+                specialty VARCHAR(100),
                 bio TEXT,
-                rating DECIMAL(3,2) DEFAULT 5.0,
-                experience_years INT,
+                rating FLOAT DEFAULT 5.0,
+                experience_years INT DEFAULT 0,
                 clinic_name VARCHAR(255),
                 clinic_address TEXT,
-                consultation_fee DECIMAL(10,2),
-                available_hours TEXT,
+                consultation_fee FLOAT DEFAULT 0,
+                available_hours TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -123,12 +137,30 @@ async function createTables() {
             CREATE TABLE IF NOT EXISTS diagnoses (
                 id VARCHAR(36) PRIMARY KEY,
                 user_id VARCHAR(36) NOT NULL,
-                severity VARCHAR(50) NOT NULL,
-                confidence DECIMAL(5,2) NOT NULL,
+                severity ENUM('mild', 'moderate', 'severe') NOT NULL,
+                confidence FLOAT NOT NULL,
                 notes TEXT,
                 image_url VARCHAR(255),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            )
+        `);
+
+        // Create treatments table
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS treatments (
+                id VARCHAR(36) PRIMARY KEY,
+                diagnosis_id VARCHAR(36),
+                user_id VARCHAR(36),
+                treatment_type VARCHAR(255) NOT NULL,
+                description TEXT,
+                outcome ENUM('improved', 'no_change', 'worsened') DEFAULT 'no_change',
+                start_date DATE,
+                end_date DATE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (diagnosis_id) REFERENCES diagnoses(id) ON DELETE CASCADE,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             )
         `);
@@ -140,18 +172,21 @@ async function createTables() {
                 doctor_id VARCHAR(36) NOT NULL,
                 patient_id VARCHAR(36) NOT NULL,
                 appointment_date DATETIME NOT NULL,
-                status ENUM('pending', 'confirmed', 'completed', 'cancelled') NOT NULL,
-                reason_for_visit TEXT NOT NULL,
-                appointment_type VARCHAR(20) NOT NULL,
-                mode VARCHAR(20),
-                duration INT,
+                reason TEXT,
+                status ENUM('pending', 'confirmed', 'cancelled', 'completed') DEFAULT 'pending',
+                appointment_type ENUM('regular', 'follow_up', 'emergency') DEFAULT 'regular',
+                mode ENUM('in_person', 'video', 'phone') DEFAULT 'in_person',
+                duration INT DEFAULT 30,
                 notes TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 FOREIGN KEY (patient_id) REFERENCES users(id) ON DELETE CASCADE,
-                FOREIGN KEY (doctor_id) REFERENCES doctor_profiles(id) ON DELETE CASCADE
+                FOREIGN KEY (doctor_id) REFERENCES users(id) ON DELETE CASCADE
             )
         `);
+
+        // Re-enable foreign key checks after tables are created
+        await connection.query('SET FOREIGN_KEY_CHECKS = 1');
 
         console.log('Tables created successfully');
     } catch (error) {
@@ -181,9 +216,9 @@ async function insertDummyData() {
         `, [patientUserId, 'patient@example.com', patientPassword, 'patient', 'Alex', 'Johnson', '1990-05-20', 'male', now, now]);
 
         await connection.query(`
-            INSERT INTO patients (id, user_id, date_of_birth, gender, medical_history, allergies, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `, [patientId, patientUserId, '1990-05-20', 'male', 'History of eczema', 'Peanuts, Pollen', now, now]);
+            INSERT INTO patients (id, user_id, date_of_birth, gender, medical_history, allergies, region, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [patientId, patientUserId, '1990-05-20', 'male', 'History of eczema', 'Peanuts, Pollen', 'North America', now, now]);
 
         await connection.query(`
             INSERT INTO patient_profiles (id, user_id, height, weight, blood_type, medical_history, allergies, medications, created_at, updated_at)
