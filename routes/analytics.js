@@ -6,6 +6,7 @@ const { sequelize } = require('../config/database');
 const { MySQL } = require('../models');
 const { Op } = require('sequelize');
 const analyticsController = require('../controllers/analyticsController');
+const { getDiagnosesCount } = require('../controllers/eczemaController');
 
 // All routes require authentication
 router.use(protect);
@@ -47,6 +48,14 @@ router.get('/doctor-performance', authorize('doctor', 'admin', 'researcher'), an
 router.get('/appointment-analytics', authorize('doctor', 'admin', 'researcher'), analyticsController.getAppointmentAnalytics);
 router.get('/surveys', authorize('doctor', 'admin', 'researcher'), analyticsController.getSurveyAnalyticsNew);
 
+// Admin dashboard endpoints
+router.get('/total-users', authorize('admin'), analyticsController.getTotalUsers);
+router.get('/system-uptime', authorize('admin'), analyticsController.getSystemUptime);
+router.get('/active-sessions', authorize('admin'), analyticsController.getActiveSessions);
+router.get('/error-rate', authorize('admin'), analyticsController.getErrorRate);
+router.get('/recent-activity', authorize('admin'), analyticsController.getRecentActivity);
+router.get('/alerts', authorize('admin'), analyticsController.getAlerts);
+
 // Patient-specific analytics endpoints (token-based)
 router.get('/me/summary', authorize('patient'), analyticsController.getMySummary);
 router.get('/me/severity-distribution', authorize('patient'), analyticsController.getMySeverityDistribution);
@@ -66,5 +75,7 @@ router.get('/patient/:patientId/diagnosis-count-trend', authorize('doctor', 'adm
 router.get('/patient/:patientId/doctor-review-impact', authorize('doctor', 'admin', 'researcher'), analyticsController.getPatientDoctorReviewImpact);
 router.get('/patient/:patientId/avg-confidence-by-severity', authorize('doctor', 'admin', 'researcher'), analyticsController.getPatientAvgConfidenceBySeverity);
 router.get('/patient/:patientId/recent-diagnoses', authorize('doctor', 'admin', 'researcher'), analyticsController.getPatientRecentDiagnoses);
+
+router.get('/analytics/diagnoses-count', getDiagnosesCount);
 
 module.exports = router;

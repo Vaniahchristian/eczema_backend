@@ -442,3 +442,45 @@ exports.logout = async (req, res) => {
     });
   }
 };
+
+// List all users (admin)
+exports.listUsers = async (req, res) => {
+  try {
+    const users = await MySQL.User.findAll({
+      attributes: { exclude: ['password'] },
+      include: [
+        { model: MySQL.Patient, as: 'patient' },
+        { model: MySQL.DoctorProfile, as: 'doctor_profile' }
+      ]
+    });
+    res.json({ success: true, users });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Failed to fetch users' });
+  }
+};
+
+// Update user (admin)
+exports.adminUpdateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+    const [updated] = await MySQL.User.update(updates, { where: { id } });
+    if (!updated) return res.status(404).json({ success: false, error: 'User not found' });
+    const updatedUser = await MySQL.User.findByPk(id, { attributes: { exclude: ['password'] } });
+    res.json({ success: true, user: updatedUser });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Failed to update user' });
+  }
+};
+
+// Delete user (admin)
+exports.adminDeleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await MySQL.User.destroy({ where: { id } });
+    if (!deleted) return res.status(404).json({ success: false, error: 'User not found' });
+    res.json({ success: true, message: 'User deleted' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Failed to delete user' });
+  }
+};

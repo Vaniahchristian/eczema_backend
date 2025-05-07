@@ -102,3 +102,98 @@ Metadata: {
 Metadata: {
   "stack": "ReferenceError: startTime is not defined\n    at sendMessage (C:\\Users\\vc\\Desktop\\backend\\controllers\\messageController.js:315:67)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
 }
+2025-05-05T11:47:20.453Z [31merror[39m: Cannot read properties of undefined (reading 'length')
+Metadata: {
+  "stack": "TypeError: Cannot read properties of undefined (reading 'length')\n    at C:\\Users\\vc\\Desktop\\backend\\server.js:281:52\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at cookieParser (C:\\Users\\vc\\Desktop\\backend\\node_modules\\cookie-parser\\index.js:71:5)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at urlencodedParser (C:\\Users\\vc\\Desktop\\backend\\node_modules\\body-parser\\lib\\types\\urlencoded.js:94:7)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)",
+  "path": "/health",
+  "method": "GET",
+  "body": {},
+  "params": {},
+  "query": {},
+  "headers": {
+    "user-agent": "PostmanRuntime/7.43.4",
+    "accept": "*/*",
+    "cache-control": "no-cache",
+    "postman-token": "4b136d87-d809-4202-916b-9d2dd42f6500",
+    "host": "localhost:5000",
+    "accept-encoding": "gzip, deflate, br",
+    "connection": "keep-alive",
+    "cookie": "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAzMDUzZjY3LTk2ZTEtNDUxMC04NDZkLTFjN2ZiNWY5OTM2YyIsImlhdCI6MTc0NjQ0MjgwOSwiZXhwIjoxNzQ3MDQ3NjA5fQ.r_9NmZVWJm4QLgtMjHy7XZT-Jj60QvFKgIVbHm9j3hA"
+  },
+  "userId": null
+}
+2025-05-05T11:47:20.455Z [31merror[39m: TypeError: Cannot read properties of undefined (reading 'length')
+    at C:\Users\vc\Desktop\backend\server.js:281:52
+    at Layer.handle [as handle_request] (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\vc\Desktop\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\index.js:280:10)
+    at cookieParser (C:\Users\vc\Desktop\backend\node_modules\cookie-parser\index.js:71:5)
+    at Layer.handle [as handle_request] (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\vc\Desktop\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\vc\Desktop\backend\node_modules\body-parser\lib\types\urlencoded.js:94:7)
+    at Layer.handle [as handle_request] (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-05-05T11:53:05.443Z [31merror[39m: Error in getActiveSessions: Unknown column 'users.last_active' in 'where clause'
+Metadata: {
+  "name": "SequelizeDatabaseError",
+  "parent": {
+    "code": "ER_BAD_FIELD_ERROR",
+    "errno": 1054,
+    "sqlState": "42S22",
+    "sqlMessage": "Unknown column 'users.last_active' in 'where clause'",
+    "sql": "SELECT count(*) AS `count` FROM `users` AS `users` WHERE `users`.`last_active` >= '2025-05-05 11:38:05';"
+  },
+  "original": {
+    "code": "ER_BAD_FIELD_ERROR",
+    "errno": 1054,
+    "sqlState": "42S22",
+    "sqlMessage": "Unknown column 'users.last_active' in 'where clause'",
+    "sql": "SELECT count(*) AS `count` FROM `users` AS `users` WHERE `users`.`last_active` >= '2025-05-05 11:38:05';"
+  },
+  "sql": "SELECT count(*) AS `count` FROM `users` AS `users` WHERE `users`.`last_active` >= '2025-05-05 11:38:05';",
+  "parameters": {},
+  "stack": "Error\n    at Query.run (C:\\Users\\vc\\Desktop\\backend\\node_modules\\sequelize\\lib\\dialects\\mysql\\query.js:52:25)\n    at C:\\Users\\vc\\Desktop\\backend\\node_modules\\sequelize\\lib\\sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async MySQLQueryInterface.rawSelect (C:\\Users\\vc\\Desktop\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\query-interface.js:434:18)\n    at async users.aggregate (C:\\Users\\vc\\Desktop\\backend\\node_modules\\sequelize\\lib\\model.js:1277:19)\n    at async users.count (C:\\Users\\vc\\Desktop\\backend\\node_modules\\sequelize\\lib\\model.js:1306:20)\n    at async exports.getActiveSessions (C:\\Users\\vc\\Desktop\\backend\\controllers\\analyticsController.js:1183:23)"
+}
+2025-05-05T15:08:51.148Z [31merror[39m: Cannot read properties of undefined (reading 'length')
+Metadata: {
+  "stack": "TypeError: Cannot read properties of undefined (reading 'length')\n    at C:\\Users\\vc\\Desktop\\backend\\server.js:281:52\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at cookieParser (C:\\Users\\vc\\Desktop\\backend\\node_modules\\cookie-parser\\index.js:71:5)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at urlencodedParser (C:\\Users\\vc\\Desktop\\backend\\node_modules\\body-parser\\lib\\types\\urlencoded.js:94:7)\n    at Layer.handle [as handle_request] (C:\\Users\\vc\\Desktop\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)",
+  "path": "/health",
+  "method": "GET",
+  "body": {},
+  "params": {},
+  "query": {},
+  "headers": {
+    "user-agent": "PostmanRuntime/7.43.4",
+    "accept": "*/*",
+    "cache-control": "no-cache",
+    "postman-token": "bb33ec9a-c929-4e9b-8540-544e83b56eb4",
+    "host": "localhost:5000",
+    "accept-encoding": "gzip, deflate, br",
+    "connection": "keep-alive",
+    "cookie": "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAzMDUzZjY3LTk2ZTEtNDUxMC04NDZkLTFjN2ZiNWY5OTM2YyIsImlhdCI6MTc0NjQ0MjgwOSwiZXhwIjoxNzQ3MDQ3NjA5fQ.r_9NmZVWJm4QLgtMjHy7XZT-Jj60QvFKgIVbHm9j3hA"
+  },
+  "userId": null
+}
+2025-05-05T15:08:51.151Z [31merror[39m: TypeError: Cannot read properties of undefined (reading 'length')
+    at C:\Users\vc\Desktop\backend\server.js:281:52
+    at Layer.handle [as handle_request] (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\vc\Desktop\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\index.js:280:10)
+    at cookieParser (C:\Users\vc\Desktop\backend\node_modules\cookie-parser\index.js:71:5)
+    at Layer.handle [as handle_request] (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\vc\Desktop\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\vc\Desktop\backend\node_modules\body-parser\lib\types\urlencoded.js:94:7)
+    at Layer.handle [as handle_request] (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\layer.js:95:5)

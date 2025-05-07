@@ -525,3 +525,14 @@ exports.getReviewedDiagnosesByDoctor = async (req, res) => {
     });
   }
 };
+
+// Count all diagnoses in MongoDB
+exports.getDiagnosesCount = async (req, res) => {
+  try {
+    const count = await Diagnosis.countDocuments({});
+    res.json({ success: true, count });
+  } catch (error) {
+    console.error('Error counting diagnoses:', error);
+    res.status(500).json({ success: false, message: 'Error counting diagnoses' });
+  }
+};

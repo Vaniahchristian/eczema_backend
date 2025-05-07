@@ -76,6 +76,13 @@ exports.protect = async (req, res, next) => {
           gender: user.patient.gender
         })
       };
+
+      // Update last_active timestamp
+      try {
+        await user.update({ last_active: new Date() });
+      } catch (updateErr) {
+        console.error('Failed to update last_active:', updateErr.message);
+      }
       
       next();
     } catch (err) {

@@ -26,6 +26,7 @@ const appointmentRoutes = require('./routes/appointments');
 const analyticsRoutes = require('./routes/analytics');
 const researchRoutes = require('./routes/research');
 const messageRoutes = require('./routes/messages');
+const usersRoutes = require('./routes/users');
 const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
@@ -232,6 +233,7 @@ app.use('/api/appointments', appointmentRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/research', researchRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/users', usersRoutes);
 
 // Add new analytics routes
 app.get('/api/analytics/daily-active-users', protect, async (req, res) => {
@@ -278,7 +280,7 @@ app.get('/api/analytics/user-activity', protect, async (req, res) => {
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
-    mysql: sequelize.connectionManager.connections.length > 0,
+    mysql: Array.isArray(sequelize?.connectionManager?.connections) && sequelize.connectionManager.connections.length > 0,
     mongodb: mongoose.connection.readyState === 1,
     websocket: io.engine.clientsCount
   });

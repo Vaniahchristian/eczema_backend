@@ -7,6 +7,8 @@ const { logOperation, logger } = require('../middleware/logger');
 
 const moment = require('moment');
 const { Op } = require('sequelize');
+const fs = require('fs');
+const path = require('path');
 
 // Get age distribution
 exports.getAgeDistribution = async (req, res) => {
@@ -1009,142 +1011,239 @@ exports.getMyDoctorReviewImpact = async (req, res) => {
 
 // --- ADMIN/DOCTOR WRAPPERS for patientId param endpoints ---
 exports.getPatientSeverityDistribution = async (req, res) => {
-  req.user = { id: req.params.patientId };
-  return exports.getMySeverityDistribution(req, res);
+    req.user = { id: req.params.patientId };
+    return exports.getMySeverityDistribution(req, res);
 };
 exports.getPatientAverageConfidence = async (req, res) => {
-  req.user = { id: req.params.patientId };
-  return exports.getMyAverageConfidence(req, res);
+    req.user = { id: req.params.patientId };
+    return exports.getMyAverageConfidence(req, res);
 };
 exports.getPatientAvgConfidenceBySeverity = async (req, res) => {
-  req.user = { id: req.params.patientId };
-  return exports.getMyAvgConfidenceBySeverity(req, res);
+    req.user = { id: req.params.patientId };
+    return exports.getMyAvgConfidenceBySeverity(req, res);
 };
 exports.getPatientDiagnosisTrends = async (req, res) => {
-  req.user = { id: req.params.patientId };
-  return exports.getMyDiagnosisTrends(req, res);
+    req.user = { id: req.params.patientId };
+    return exports.getMyDiagnosisTrends(req, res);
 };
 exports.getPatientDoctorReviewImpact = async (req, res) => {
-  req.user = { id: req.params.patientId };
-  return exports.getMyDoctorReviewImpact(req, res);
+    req.user = { id: req.params.patientId };
+    return exports.getMyDoctorReviewImpact(req, res);
 };
 
 // Patient Summary
 exports.getMySummary = async (req, res) => {
-  try {
-    const patientId = req.user.id;
-    const result = await Diagnosis.aggregate([
-      { $match: { patientId } },
-      {
-        $group: {
-          _id: null,
-          totalDiagnoses: { $sum: 1 },
-          averageModelConfidence: { $avg: '$mlResults.confidence' },
-          severities: { $push: '$mlResults.severity' }
+    try {
+        const patientId = req.user.id;
+        const result = await Diagnosis.aggregate([
+            { $match: { patientId } },
+            {
+                $group: {
+                    _id: null,
+                    totalDiagnoses: { $sum: 1 },
+                    averageModelConfidence: { $avg: '$mlResults.confidence' },
+                    severities: { $push: '$mlResults.severity' }
+                }
+            }
+        ]);
+
+        if (!result.length || !result[0].severities || result[0].severities.length === 0) {
+            return res.json({
+                success: true,
+                data: {
+                    totalDiagnoses: 0,
+                    averageModelConfidence: null,
+                    mostCommonSeverity: null
+                }
+            });
         }
-      }
-    ]);
 
-    if (!result.length || !result[0].severities || result[0].severities.length === 0) {
-      return res.json({ 
-        success: true, 
-        data: { 
-          totalDiagnoses: 0, 
-          averageModelConfidence: null, 
-          mostCommonSeverity: null 
-        } 
-      });
+        // Calculate most common severity
+        const severityCount = {};
+        result[0].severities.forEach(s => severityCount[s] = (severityCount[s] || 0) + 1);
+        const mostCommonSeverity = Object.entries(severityCount)
+            .sort((a, b) => b[1] - a[1])[0][0];
+
+        res.json({
+            success: true,
+            data: {
+                totalDiagnoses: result[0].totalDiagnoses,
+                averageModelConfidence: result[0].averageModelConfidence,
+                mostCommonSeverity
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error', error: error.message });
     }
-
-    // Calculate most common severity
-    const severityCount = {};
-    result[0].severities.forEach(s => severityCount[s] = (severityCount[s] || 0) + 1);
-    const mostCommonSeverity = Object.entries(severityCount)
-      .sort((a, b) => b[1] - a[1])[0][0];
-
-    res.json({
-      success: true,
-      data: {
-        totalDiagnoses: result[0].totalDiagnoses,
-        averageModelConfidence: result[0].averageModelConfidence,
-        mostCommonSeverity
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Error', error: error.message });
-  }
 };
 
 // Body Part Frequency
 exports.getMyBodyPartFrequency = async (req, res) => {
-  try {
-    const patientId = req.user.id;
-    const result = await Diagnosis.aggregate([
-      { $match: { patientId } },
-      { $group: { _id: '$mlResults.affectedAreas', count: { $sum: 1 } } },
-      { $unwind: '$_id' },
-      { $group: { _id: '$_id', count: { $sum: '$count' } } },
-      { $project: { bodyPart: '$_id', count: 1, _id: 0 } },
-      { $sort: { count: -1 } }
-    ]);
-    res.json({ success: true, data: result });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Error', error: error.message });
-  }
+    try {
+        const patientId = req.user.id;
+        const result = await Diagnosis.aggregate([
+            { $match: { patientId } },
+            { $group: { _id: '$mlResults.affectedAreas', count: { $sum: 1 } } },
+            { $unwind: '$_id' },
+            { $group: { _id: '$_id', count: { $sum: '$count' } } },
+            { $project: { bodyPart: '$_id', count: 1, _id: 0 } },
+            { $sort: { count: -1 } }
+        ]);
+        res.json({ success: true, data: result });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error', error: error.message });
+    }
 };
 
 // Model Confidence Trend
 exports.getMyModelConfidenceTrend = async (req, res) => {
-  try {
-    const patientId = req.user.id;
-    const result = await Diagnosis.aggregate([
-      { $match: { patientId } },
-      {
-        $project: {
-          date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
-          confidence: '$mlResults.confidence'
-        }
-      },
-      { $sort: { date: 1 } }
-    ]);
-    res.json({ success: true, data: result });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Error', error: error.message });
-  }
+    try {
+        const patientId = req.user.id;
+        const result = await Diagnosis.aggregate([
+            { $match: { patientId } },
+            {
+                $project: {
+                    date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+                    confidence: '$mlResults.confidence'
+                }
+            },
+            { $sort: { date: 1 } }
+        ]);
+        res.json({ success: true, data: result });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error', error: error.message });
+    }
 };
 
 // Recent Diagnoses
 exports.getMyRecentDiagnoses = async (req, res) => {
-  try {
-    const patientId = req.user.id;
-    const result = await Diagnosis.find({ patientId })
-      .select('diagnosisId mlResults.severity mlResults.confidence mlResults.affectedAreas recommendations needsDoctorReview imageUrl status createdAt doctorReview')
-      .sort({ createdAt: -1 })
-      .limit(10);
-    res.json({ success: true, data: result });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Error', error: error.message });
-  }
+    try {
+        const patientId = req.user.id;
+        const result = await Diagnosis.find({ patientId })
+            .select('diagnosisId mlResults.severity mlResults.confidence mlResults.affectedAreas recommendations needsDoctorReview imageUrl status createdAt doctorReview')
+            .sort({ createdAt: -1 })
+            .limit(10);
+        res.json({ success: true, data: result });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error', error: error.message });
+    }
 };
 
 // --- ADMIN/DOCTOR WRAPPERS for new endpoints ---
 exports.getPatientBodyPartFrequency = async (req, res) => {
-  req.user = { id: req.params.patientId };
-  return exports.getMyBodyPartFrequency(req, res);
+    req.user = { id: req.params.patientId };
+    return exports.getMyBodyPartFrequency(req, res);
 };
 
 exports.getPatientModelConfidenceTrend = async (req, res) => {
-  req.user = { id: req.params.patientId };
-  return exports.getMyModelConfidenceTrend(req, res);
+    req.user = { id: req.params.patientId };
+    return exports.getMyModelConfidenceTrend(req, res);
 };
 
 exports.getPatientRecentDiagnoses = async (req, res) => {
-  req.user = { id: req.params.patientId };
-  return exports.getMyRecentDiagnoses(req, res);
+    req.user = { id: req.params.patientId };
+    return exports.getMyRecentDiagnoses(req, res);
 };
 
 // --- ADMIN/DOCTOR WRAPPER ---
 exports.getPatientSummary = async (req, res) => {
-  req.user = { id: req.params.patientId };
-  return exports.getMySummary(req, res);
+    req.user = { id: req.params.patientId };
+    return exports.getMySummary(req, res);
+};
+
+// --- ADMIN DASHBOARD ENDPOINTS ---
+
+// Total Users
+exports.getTotalUsers = async (req, res) => {
+    try {
+        const count = await User.count();
+        res.json({ success: true, totalUsers: count });
+    } catch (err) {
+        res.status(500).json({ success: false, error: 'Failed to fetch total users' });
+    }
+};
+
+// System Uptime (returns process uptime in seconds)
+exports.getSystemUptime = async (req, res) => {
+    try {
+        const uptime = process.uptime();
+        res.json({ success: true, uptimeSeconds: uptime });
+    } catch (err) {
+        res.status(500).json({ success: false, error: 'Failed to fetch uptime' });
+    }
+};
+
+// Active Sessions
+exports.getActiveSessions = async (req, res) => {
+    try {
+        const FIFTEEN_MINUTES = 15 * 60 * 1000;
+        // Format date as YYYY-MM-DD HH:mm:ss for MySQL compatibility
+        const sinceDate = new Date(Date.now() - FIFTEEN_MINUTES);
+        const since = sinceDate.toISOString().slice(0, 19).replace('T', ' ');
+        const count = await User.count({
+            where: { last_active: { [Op.gte]: since } }
+        });
+        res.json({ success: true, activeSessions: count });
+    } catch (err) {
+        // Improved error logging
+        logger.error('Error in getActiveSessions:', err);
+        res.status(500).json({ success: false, error: 'Failed to fetch active sessions', details: err.message });
+    }
+};
+
+// Error Rate
+exports.getErrorRate = async (req, res) => {
+    try {
+        const logPath = path.join(__dirname, '../error.log');
+        if (!fs.existsSync(logPath)) return res.json({ success: true, errorRate: 0 });
+        const logData = fs.readFileSync(logPath, 'utf-8');
+        const lines = logData.split('\n').filter(Boolean);
+        const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+        // Count lines that start with an ISO timestamp in the last 24h
+        const recentErrors = lines.filter(line => {
+            // Match ISO timestamp at start of line: 2025-04-21T15:11:07.373Z ...
+            const match = line.match(/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z)/);
+            if (!match) return false;
+            const logDate = new Date(match[1]);
+            return logDate.getTime() >= oneDayAgo;
+        });
+        res.json({ success: true, errorRate: recentErrors.length });
+    } catch (err) {
+        res.status(500).json({ success: false, error: 'Failed to fetch error rate' });
+    }
+};
+
+// Recent Activity
+exports.getRecentActivity = async (req, res) => {
+    try {
+        const logPath = path.join(__dirname, '../combined.log');
+        if (!fs.existsSync(logPath)) return res.json({ success: true, activity: [] });
+        const logData = fs.readFileSync(logPath, 'utf-8');
+        const lines = logData.trim().split('\n').reverse();
+        const activity = lines.slice(0, 10).map(line => {
+            const match = line.match(/\[(.*?)\] (\w+) (.*)/);
+            return match
+                ? { date: match[1], level: match[2], event: match[3] }
+                : { raw: line };
+        });
+        res.json({ success: true, activity });
+    } catch (err) {
+        res.status(500).json({ success: false, error: 'Failed to fetch recent activity' });
+    }
+};
+
+// Alerts
+exports.getAlerts = async (req, res) => {
+    try {
+        res.json({
+            success: true,
+            alerts: [
+                { type: 'maintenance', message: 'Scheduled maintenance on Sunday', level: 'warning' },
+                { type: 'cpu', message: 'High CPU usage detected', level: 'danger' },
+                { type: 'database', message: 'Database optimization complete', level: 'success' }
+            ]
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, error: 'Failed to fetch alerts' });
+    }
 };
