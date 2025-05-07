@@ -1181,8 +1181,9 @@ exports.getTotalUsers = async (req, res) => {
 exports.getSystemUptime = async (req, res) => {
     try {
         const uptime = process.uptime();
-        res.json({ success: true, uptimeSeconds: uptime });
+        res.json({ success: true, systemUptime: uptime });
     } catch (err) {
+        logger.error('Error in getSystemUptime:', err);
         res.status(500).json({ success: false, error: 'Failed to fetch uptime' });
     }
 };
@@ -1208,21 +1209,32 @@ exports.getActiveSessions = async (req, res) => {
 // Error Rate
 exports.getErrorRate = async (req, res) => {
     try {
+        // Get error count from the last 24 hours from the database or logs
+        const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        const formattedDate = oneDayAgo.toISOString().slice(0, 19).replace('T', ' ');
+        
+        // First try to get from error.log if it exists
+        let errorCount = 0;
         const logPath = path.join(__dirname, '../error.log');
-        if (!fs.existsSync(logPath)) return res.json({ success: true, errorRate: 0 });
-        const logData = fs.readFileSync(logPath, 'utf-8');
-        const lines = logData.split('\n').filter(Boolean);
-        const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-        // Count lines that start with an ISO timestamp in the last 24h
-        const recentErrors = lines.filter(line => {
-            // Match ISO timestamp at start of line: 2025-04-21T15:11:07.373Z ...
-            const match = line.match(/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z)/);
-            if (!match) return false;
-            const logDate = new Date(match[1]);
-            return logDate.getTime() >= oneDayAgo;
+        
+        if (fs.existsSync(logPath)) {
+            const logData = fs.readFileSync(logPath, 'utf-8');
+            const lines = logData.split('\n').filter(Boolean);
+            errorCount = lines.filter(line => {
+                const match = line.match(/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z)/);
+                if (!match) return false;
+                const logDate = new Date(match[1]);
+                return logDate.getTime() >= oneDayAgo.getTime();
+            }).length;
+        }
+        
+        res.json({ 
+            success: true, 
+            errorRate: errorCount,
+            timeframe: '24h'
         });
-        res.json({ success: true, errorRate: recentErrors.length });
     } catch (err) {
+        logger.error('Error in getErrorRate:', err);
         res.status(500).json({ success: false, error: 'Failed to fetch error rate' });
     }
 };
@@ -1230,18 +1242,53 @@ exports.getErrorRate = async (req, res) => {
 // Recent Activity
 exports.getRecentActivity = async (req, res) => {
     try {
-        const logPath = path.join(__dirname, '../combined.log');
-        if (!fs.existsSync(logPath)) return res.json({ success: true, activity: [] });
-        const logData = fs.readFileSync(logPath, 'utf-8');
-        const lines = logData.trim().split('\n').reverse();
-        const activity = lines.slice(0, 10).map(line => {
-            const match = line.match(/\[(.*?)\] (\w+) (.*)/);
-            return match
-                ? { date: match[1], level: match[2], event: match[3] }
-                : { raw: line };
+        const activities = [];
+        
+        // Get recent user registrations
+        const recentUsers = await User.findAll({
+            attributes: ['id', 'email', 'role', 'created_at'],
+            where: {
+                created_at: {
+                    [Op.gte]: new Date(Date.now() - 24 * 60 * 60 * 1000)
+                }
+            },
+            limit: 5,
+            order: [['created_at', 'DESC']]
         });
-        res.json({ success: true, activity });
+        
+        // Get recent diagnoses
+        const recentDiagnoses = await Diagnosis.find()
+            .sort({ createdAt: -1 })
+            .limit(5);
+            
+        // Combine and format activities
+        recentUsers.forEach(user => {
+            activities.push({
+                type: 'user_registration',
+                date: user.created_at,
+                details: `New ${user.role} registered: ${user.email}`,
+                level: 'info'
+            });
+        });
+        
+        recentDiagnoses.forEach(diagnosis => {
+            activities.push({
+                type: 'diagnosis',
+                date: diagnosis.createdAt,
+                details: `New diagnosis created with severity: ${diagnosis.mlResults?.severity || 'unknown'}`,
+                level: 'info'
+            });
+        });
+        
+        // Sort by date descending
+        activities.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        res.json({ 
+            success: true, 
+            activities: activities.slice(0, 10)
+        });
     } catch (err) {
+        logger.error('Error in getRecentActivity:', err);
         res.status(500).json({ success: false, error: 'Failed to fetch recent activity' });
     }
 };
@@ -1249,15 +1296,51 @@ exports.getRecentActivity = async (req, res) => {
 // Alerts
 exports.getAlerts = async (req, res) => {
     try {
+        const alerts = [];
+        
+        // Check system health indicators
+        const uptime = process.uptime();
+        if (uptime < 300) { // 5 minutes
+            alerts.push({
+                type: 'system',
+                message: 'System recently restarted',
+                level: 'info',
+                timestamp: new Date()
+            });
+        }
+        
+        // Check active sessions
+        const activeSessions = await User.count({
+            where: {
+                last_active: {
+                    [Op.gte]: new Date(Date.now() - 15 * 60 * 1000) // 15 minutes
+                }
+            }
+        });
+        
+        if (activeSessions > 100) {
+            alerts.push({
+                type: 'traffic',
+                message: 'High user activity detected',
+                level: 'warning',
+                timestamp: new Date()
+            });
+        }
+        
+        // Add any scheduled maintenance alerts
+        alerts.push({
+            type: 'maintenance',
+            message: 'Regular system maintenance scheduled for Sunday 2AM UTC',
+            level: 'info',
+            timestamp: new Date()
+        });
+        
         res.json({
             success: true,
-            alerts: [
-                { type: 'maintenance', message: 'Scheduled maintenance on Sunday', level: 'warning' },
-                { type: 'cpu', message: 'High CPU usage detected', level: 'danger' },
-                { type: 'database', message: 'Database optimization complete', level: 'success' }
-            ]
+            alerts: alerts
         });
     } catch (err) {
+        logger.error('Error in getAlerts:', err);
         res.status(500).json({ success: false, error: 'Failed to fetch alerts' });
     }
 };
