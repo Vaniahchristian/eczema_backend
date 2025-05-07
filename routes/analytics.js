@@ -6,7 +6,7 @@ const { sequelize } = require('../config/database');
 const { MySQL } = require('../models');
 const { Op } = require('sequelize');
 const analyticsController = require('../controllers/analyticsController');
-const { getDiagnosesCount } = require('../controllers/eczemaController');
+// Analytics routes are handled by analyticsController
 
 // All routes require authentication
 router.use(protect);
@@ -76,6 +76,7 @@ router.get('/patient/:patientId/doctor-review-impact', authorize('doctor', 'admi
 router.get('/patient/:patientId/avg-confidence-by-severity', authorize('doctor', 'admin', 'researcher'), analyticsController.getPatientAvgConfidenceBySeverity);
 router.get('/patient/:patientId/recent-diagnoses', authorize('doctor', 'admin', 'researcher'), analyticsController.getPatientRecentDiagnoses);
 
-router.get('/analytics/diagnoses-count', getDiagnosesCount);
+// Analytics data routes - accessible to admins, doctors, and researchers
+router.get('/diagnoses-count', authorize('admin', 'doctor', 'researcher'), analyticsController.getDiagnosesCount);
 
 module.exports = router;

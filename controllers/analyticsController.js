@@ -1,7 +1,19 @@
 const { MySQL: { User, Patient, Treatment, Appointment, DoctorProfile }, sequelize } = require('../models/index');
-const Message = require('../models/mongodb/Message');
+const { MySQL } = require('../models');
 const Diagnosis = require('../models/mongodb/Diagnosis');
+const Message = require('../models/mongodb/Message');
 const analyticsService = require('../services/analyticsService');
+
+// Count all diagnoses in MongoDB
+exports.getDiagnosesCount = async (req, res) => {
+    try {
+        const count = await Diagnosis.countDocuments({});
+        res.json({ success: true, count });
+    } catch (error) {
+        console.error('Error counting diagnoses:', error);
+        res.status(500).json({ success: false, message: 'Error counting diagnoses' });
+    }
+};
 
 const { logOperation, logger } = require('../middleware/logger');
 
@@ -737,6 +749,8 @@ exports.getCombinedAnalytics = async (req, res) => {
         diagnosesByConfidenceAgg.forEach(item => {
             if (typeof item._id === 'number' || typeof item._id === 'string') diagnosesByConfidence[item._id] = item.count;
         });
+
+        // Diagnoses count is now handled at module level
 
         // --- Admin/Global Analytics: Reviews (check if model exists) ---
         let totalReviews = null;
