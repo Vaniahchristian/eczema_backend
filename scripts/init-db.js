@@ -4,25 +4,25 @@ const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
 // Database configuration
-// const dbConfig = {
-//     host: process.env.MYSQL_HOST || 'localhost',
-//     port: process.env.MYSQL_PORT || 3306,
-//     user: process.env.MYSQL_USER || 'root',
-//     password: process.env.MYSQL_PASSWORD || '',
-//     database: process.env.MYSQL_DATABASE || 'eczema_dev',
-//     ssl: process.env.NODE_ENV === 'development' ? null : {
-//         rejectUnauthorized: false
-//     }
-// };
-
 const dbConfig = {
-    host: 'localhost',
-    port: 3306,
-    user: 'root',
-    password: '',
-    database: 'eczema_dev',
-    ssl: null
+    host: process.env.MYSQL_HOST || 'localhost',
+    port: process.env.MYSQL_PORT || 3306,
+    user: process.env.MYSQL_USER || 'root',
+    password: process.env.MYSQL_PASSWORD || '',
+    database: process.env.MYSQL_DATABASE || 'eczema_dev',
+    ssl: process.env.NODE_ENV === 'development' ? null : {
+        rejectUnauthorized: false
+    }
 };
+
+// const dbConfig = {
+//     host: 'localhost',
+//     port: 3306,
+//     user: 'root',
+//     password: '',
+//     database: 'eczema_dev',
+//     ssl: null
+// };
 
 async function createDatabase() {
     const connection = await mysql.createConnection({

@@ -23,10 +23,10 @@
   },
   "production": {
     "username": "root",
-    "password": "xmFjYAcsjbnLaJXMdiuYhEnZDkpNerWy",
+    "password": "iloVnaEyMEYXFFknMevATgzYZpFCEobd",
     "database": "railway",
-    "host": "centerbeam.proxy.rlwy.net",
-    "port": 17053,
+    "host": "turntable.proxy.rlwy.net",
+    "port": 47914,
     "dialect": "mysql",
     "dialectOptions": {
       "ssl": {

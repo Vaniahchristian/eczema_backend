@@ -197,3 +197,15 @@ Metadata: {
     at next (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\index.js:280:10)
     at urlencodedParser (C:\Users\vc\Desktop\backend\node_modules\body-parser\lib\types\urlencoded.js:94:7)
     at Layer.handle [as handle_request] (C:\Users\vc\Desktop\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-05-07T14:23:54.763Z [31merror[39m: Error in getDatabaseStats: Diagnosis.db.stats is not a function
+Metadata: {
+  "stack": "TypeError: Diagnosis.db.stats is not a function\n    at exports.getDatabaseStats (C:\\Users\\vc\\Desktop\\backend\\controllers\\analyticsController.js:1267:47)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+}
+2025-05-07T14:26:44.289Z [31merror[39m: Error in getDatabaseStats: Diagnosis.db.stats is not a function
+Metadata: {
+  "stack": "TypeError: Diagnosis.db.stats is not a function\n    at exports.getDatabaseStats (C:\\Users\\vc\\Desktop\\backend\\controllers\\analyticsController.js:1267:47)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+}
+2025-05-07T14:27:05.726Z [31merror[39m: Error in getDatabaseStats: Diagnosis.db.stats is not a function
+Metadata: {
+  "stack": "TypeError: Diagnosis.db.stats is not a function\n    at exports.getDatabaseStats (C:\\Users\\vc\\Desktop\\backend\\controllers\\analyticsController.js:1267:47)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+}

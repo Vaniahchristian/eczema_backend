@@ -2,10 +2,10 @@ require('dotenv').config();
 const mysql = require('mysql2/promise');
 
 const dbConfig = {
-    host: process.env.MYSQL_HOST || 'localhost',
-    port: process.env.MYSQL_PORT || 3306,
+    host: process.env.MYSQL_HOST || 'turntable.proxy.rlwy.net',
+    port: process.env.MYSQL_PORT || 47914,
     user: process.env.MYSQL_USER || 'root',
-    password: process.env.MYSQL_PASSWORD || '',
+    password: process.env.MYSQL_PASSWORD || 'iloVnaEyMEYXFFknMevATgzYZpFCEobd',
     database: process.env.MYSQL_DATABASE || 'railway',
     ssl: {
         rejectUnauthorized: false

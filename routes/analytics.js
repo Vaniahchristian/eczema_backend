@@ -56,6 +56,13 @@ router.get('/error-rate', authorize('admin'), analyticsController.getErrorRate);
 router.get('/recent-activity', authorize('admin'), analyticsController.getRecentActivity);
 router.get('/alerts', authorize('admin'), analyticsController.getAlerts);
 
+// System monitoring endpoints
+router.get('/memory-usage', authorize('admin'), analyticsController.getMemoryUsage);
+router.get('/cpu-load', authorize('admin'), analyticsController.getCpuLoad);
+router.get('/api-response-times', authorize('admin'), analyticsController.getApiResponseTimes);
+router.get('/system-logs', authorize('admin'), analyticsController.getSystemLogs);
+router.get('/database-stats', authorize('admin'), analyticsController.getDatabaseStats);
+
 // Patient-specific analytics endpoints (token-based)
 router.get('/me/summary', authorize('patient'), analyticsController.getMySummary);
 router.get('/me/severity-distribution', authorize('patient'), analyticsController.getMySeverityDistribution);

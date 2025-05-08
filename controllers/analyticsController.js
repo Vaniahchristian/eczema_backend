@@ -1167,6 +1167,184 @@ exports.getPatientSummary = async (req, res) => {
 
 // --- ADMIN DASHBOARD ENDPOINTS ---
 
+// Get system memory usage
+exports.getMemoryUsage = async (req, res) => {
+    try {
+        const memoryUsage = process.memoryUsage();
+        res.json({
+            success: true,
+            memory: {
+                heapTotal: Math.round(memoryUsage.heapTotal / 1024 / 1024),  // MB
+                heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024),    // MB
+                rss: Math.round(memoryUsage.rss / 1024 / 1024),              // MB
+                external: Math.round(memoryUsage.external / 1024 / 1024)     // MB
+            }
+        });
+    } catch (err) {
+        logger.error('Error in getMemoryUsage:', err);
+        res.status(500).json({ success: false, error: 'Failed to fetch memory usage' });
+    }
+};
+
+// Get CPU load
+exports.getCpuLoad = async (req, res) => {
+    try {
+        const os = require('os');
+        const cpus = os.cpus();
+        const totalIdle = cpus.reduce((acc, cpu) => acc + cpu.times.idle, 0);
+        const totalTick = cpus.reduce((acc, cpu) => 
+            acc + Object.values(cpu.times).reduce((sum, time) => sum + time, 0), 0);
+        const cpuUsage = ((1 - totalIdle / totalTick) * 100).toFixed(2);
+
+        res.json({
+            success: true,
+            cpuLoad: {
+                usage: parseFloat(cpuUsage),
+                cores: cpus.length
+            }
+        });
+    } catch (err) {
+        logger.error('Error in getCpuLoad:', err);
+        res.status(500).json({ success: false, error: 'Failed to fetch CPU load' });
+    }
+};
+
+// Get API response times
+exports.getApiResponseTimes = async (req, res) => {
+    try {
+        const stats = await ApiStats.findAll({
+            order: [['createdAt', 'DESC']],
+            limit: 100
+        })
+
+        const endpointStats = {}
+        let totalTime = 0
+        let totalRequests = 0
+
+        stats.forEach(stat => {
+            if (!endpointStats[stat.endpoint]) {
+                endpointStats[stat.endpoint] = {
+                    count: 0,
+                    totalTime: 0,
+                    avgTime: 0
+                }
+            }
+
+            endpointStats[stat.endpoint].count++
+            endpointStats[stat.endpoint].totalTime += stat.responseTime
+            totalTime += stat.responseTime
+            totalRequests++
+        })
+
+        // Calculate averages
+        Object.keys(endpointStats).forEach(endpoint => {
+            endpointStats[endpoint].avgTime =
+                endpointStats[endpoint].totalTime / endpointStats[endpoint].count
+        })
+
+        res.json({
+            success: true,
+            overall: {
+                averageResponseTime: totalRequests ? totalTime / totalRequests : 0,
+                totalRequests
+            },
+            endpointStats
+        })
+    } catch (error) {
+        console.error('Error getting API response times:', error)
+        res.status(500).json({
+            success: false,
+            error: 'Failed to get API response times'
+        })
+    }
+};
+
+exports.getSystemLogs = async (req, res) => {
+    try {
+        // Get recent activity logs from the database
+        const recentActivity = await ActivityLog.findAll({
+            order: [['createdAt', 'DESC']],
+            limit: 50
+        })
+
+        // Format logs
+        const logs = recentActivity.map(activity => ({
+            timestamp: activity.createdAt.toISOString(),
+            level: activity.level || 'info',
+            message: activity.message,
+            source: activity.type
+        }))
+
+        res.json({
+            success: true,
+            logs
+        })
+    } catch (error) {
+        console.error('Error getting system logs:', error)
+        res.status(500).json({
+            success: false,
+            error: 'Failed to get system logs'
+        })
+    }
+};
+
+// Get database stats
+exports.getDatabaseStats = async (req, res) => {
+    try {
+        const stats = {
+            success: true,
+            mysql: {},
+            mongodb: {}
+        };
+
+        // MySQL stats
+        try {
+            const mysqlStats = await sequelize.query('SHOW GLOBAL STATUS', { type: sequelize.QueryTypes.SELECT });
+            stats.mysql = mysqlStats.filter(stat => 
+                ['Threads_connected', 'Max_used_connections', 'Queries'].includes(stat.Variable_name)
+            ).reduce((acc, stat) => {
+                acc[stat.Variable_name.toLowerCase()] = parseInt(stat.Value);
+                return acc;
+            }, {});
+
+            // Add additional MySQL stats
+            const tableStats = await sequelize.query('SELECT table_schema, COUNT(*) as table_count FROM information_schema.tables WHERE table_schema = DATABASE() GROUP BY table_schema', 
+                { type: sequelize.QueryTypes.SELECT });
+            stats.mysql.table_count = tableStats[0]?.table_count || 0;
+        } catch (mysqlErr) {
+            logger.error('Error fetching MySQL stats:', mysqlErr);
+            stats.mysql.error = 'Failed to fetch MySQL stats';
+        }
+
+        // MongoDB stats
+        try {
+            const mongoClient = Diagnosis.collection.conn.db;
+            const mongoStats = await mongoClient.stats();
+            stats.mongodb = {
+                collections: mongoStats.collections,
+                objects: mongoStats.objects,
+                avgObjSize: Math.round(mongoStats.avgObjSize || 0),
+                dataSize: Math.round((mongoStats.dataSize || 0) / 1024 / 1024), // MB
+                storageSize: Math.round((mongoStats.storageSize || 0) / 1024 / 1024), // MB
+                indexes: mongoStats.indexes,
+                totalIndexSize: Math.round((mongoStats.totalIndexSize || 0) / 1024 / 1024) // MB
+            };
+        } catch (mongoErr) {
+            logger.error('Error fetching MongoDB stats:', mongoErr);
+            stats.mongodb.error = 'Failed to fetch MongoDB stats';
+        }
+
+        res.json(stats);
+    } catch (err) {
+        logger.error('Error in getDatabaseStats:', err);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Failed to fetch database stats',
+            details: err.message
+        });
+    }
+};
+
 // Total Users
 exports.getTotalUsers = async (req, res) => {
     try {
