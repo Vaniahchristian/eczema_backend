@@ -39,10 +39,11 @@ const io = new Server(server, {
     origin: [
       "http://127.0.0.1:56776",
       "http://localhost:3000",
-      "https://eczema-dashboard-final.vercel.app"
+      "https://eczema-dashboard-final.vercel.app",
+      "https://eczema-backend.onrender.com"
     ],
     methods: ['GET', 'POST'],
-    credentials: true
+    credentials: true 
   },
   transports: ['websocket', 'polling'],
   debug: true // Enable debug mode
@@ -153,7 +154,8 @@ const corsOptions = {
   origin: [
     "http://localhost:3000",
     "https://eczema-dashboard-final.vercel.app",
-    "http://127.0.0.1:56776"
+    "http://127.0.0.1:56776",
+    "https://eczema-backend.onrender.com"
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
@@ -209,7 +211,8 @@ app.use(helmet({
         "'self'",
         "http://localhost:3000",
         "http://127.0.0.1:56776",
-        "https://eczema-dashboard-final.vercel.app"
+        "https://eczema-dashboard-final.vercel.app",
+        "https://eczema-backend.onrender.com"
       ]
     }
   },

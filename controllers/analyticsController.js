@@ -2,7 +2,9 @@ const { MySQL: { User, Patient, Treatment, Appointment, DoctorProfile }, sequeli
 const { MySQL } = require('../models');
 const Diagnosis = require('../models/mongodb/Diagnosis');
 const Message = require('../models/mongodb/Message');
+const ActivityLog = require('../models/mongodb/ActivityLog');
 const analyticsService = require('../services/analyticsService');
+const { Op } = require('sequelize');
 
 // Count all diagnoses in MongoDB
 exports.getDiagnosesCount = async (req, res) => {
@@ -1262,18 +1264,18 @@ exports.getApiResponseTimes = async (req, res) => {
 exports.getSystemLogs = async (req, res) => {
     try {
         // Get recent activity logs from the database
-        const recentActivity = await ActivityLog.findAll({
-            order: [['createdAt', 'DESC']],
-            limit: 50
-        })
+        const recentActivity = await ActivityLog.find()
+            .sort({ timestamp: -1 })
+            .limit(50)
+            .exec();
 
         // Format logs
         const logs = recentActivity.map(activity => ({
-            timestamp: activity.createdAt.toISOString(),
+            timestamp: activity.timestamp.toISOString(),
             level: activity.level || 'info',
             message: activity.message,
             source: activity.type
-        }))
+        }));
 
         res.json({
             success: true,
@@ -1370,16 +1372,19 @@ exports.getSystemUptime = async (req, res) => {
 exports.getActiveSessions = async (req, res) => {
     try {
         const FIFTEEN_MINUTES = 15 * 60 * 1000;
-        // Format date as YYYY-MM-DD HH:mm:ss for MySQL compatibility
         const sinceDate = new Date(Date.now() - FIFTEEN_MINUTES);
-        const since = sinceDate.toISOString().slice(0, 19).replace('T', ' ');
+        
         const count = await User.count({
-            where: { last_active: { [Op.gte]: since } }
+            where: {
+                last_active: {
+                    [Op.gte]: sinceDate
+                }
+            }
         });
+        
         res.json({ success: true, activeSessions: count });
     } catch (err) {
-        // Improved error logging
-        logger.error('Error in getActiveSessions:', err);
+        console.error('Error in getActiveSessions:', err);
         res.status(500).json({ success: false, error: 'Failed to fetch active sessions', details: err.message });
     }
 };

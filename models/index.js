@@ -61,7 +61,11 @@ const MySQL = {
     },
     date_of_birth: DataTypes.DATE,
     gender: DataTypes.STRING,
-    image_url: DataTypes.STRING
+    image_url: DataTypes.STRING,
+    last_active: {
+      type: DataTypes.DATE,
+      allowNull: true
+    }
   }, {
     tableName: 'users',
     timestamps: true,
