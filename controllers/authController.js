@@ -505,10 +505,11 @@ exports.resetPassword = async (req, res) => {
     if (!token || !newPassword) {
       return res.status(400).json({ success: false, message: 'Token and new password are required' });
     }
+    console.log('DEBUG: Op is', Op);
     const user = await MySQL.User.findOne({
       where: {
         reset_password_token: token,
-        reset_password_expires: { [MySQL.Sequelize.Op.gt]: new Date() }
+        reset_password_expires: { [Op.gt]: new Date() }
       }
     });
     if (!user) {
