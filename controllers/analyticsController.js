@@ -1,10 +1,8 @@
-const { MySQL: { User, Patient, Treatment, Appointment, DoctorProfile }, sequelize } = require('../models/index');
-const { MySQL } = require('../models');
+const { MySQL: { User, Patient, Treatment, Appointment, DoctorProfile, Op }, sequelize } = require('../models/index');
 const Diagnosis = require('../models/mongodb/Diagnosis');
 const Message = require('../models/mongodb/Message');
 const ActivityLog = require('../models/mongodb/ActivityLog');
 const analyticsService = require('../services/analyticsService');
-const { Op } = require('sequelize');
 
 // Count all diagnoses in MongoDB
 exports.getDiagnosesCount = async (req, res) => {
