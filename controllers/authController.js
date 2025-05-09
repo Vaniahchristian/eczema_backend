@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { MySQL, sequelize } = require('../models');
+const { Op } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
