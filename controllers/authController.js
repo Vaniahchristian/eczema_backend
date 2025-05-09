@@ -8,15 +8,19 @@ const nodemailer = require('nodemailer');
 // Configure nodemailer transporter using env variables
 // Required in .env:
 // SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM, FRONTEND_URL
+console.log('[SMTP DEBUG] SMTP_HOST:', process.env.SMTP_HOST);
+console.log('[SMTP DEBUG] SMTP_PORT:', process.env.SMTP_PORT);
+console.log('[SMTP DEBUG] SMTP_USER:', process.env.SMTP_USER);
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: process.env.SMTP_PORT == 465, // true for 465, false for other ports
+  port: Number(process.env.SMTP_PORT),
+  secure: Number(process.env.SMTP_PORT) === 465, // true for 465, false for other ports
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
   }
 });
+console.log('[SMTP DEBUG] Nodemailer transporter config:', transporter.options);
 
 
 const generateToken = (userId) => {
