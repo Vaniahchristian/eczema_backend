@@ -273,7 +273,29 @@ const MySQL = {
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
-  })
+  }),
+
+  ApiStats: sequelize.define('api_stats', {
+    id: {
+      type: DataTypes.STRING,
+      primaryKey: true
+    },
+    endpoint: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    responseTime: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
+    }
+  }, {
+    tableName: 'api_stats',
+    timestamps: false
+  }),
 };
 
 // Create associations

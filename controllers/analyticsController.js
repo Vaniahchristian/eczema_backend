@@ -1,7 +1,11 @@
 const { MySQL: { User, Patient, Treatment, Appointment, DoctorProfile }, sequelize } = require('../models/index');
+const { Op } = require('sequelize');
 const Diagnosis = require('../models/mongodb/Diagnosis');
 const Message = require('../models/mongodb/Message');
 const ActivityLog = require('../models/mongodb/ActivityLog');
+const MongoApiStats = require('../models/mongodb/ApiStats');
+const { MySQL } = require('../models');
+const SqlApiStats = MySQL.ApiStats;
 const analyticsService = require('../services/analyticsService');
 
 // Count all diagnoses in MongoDB
@@ -1208,38 +1212,50 @@ exports.getCpuLoad = async (req, res) => {
     }
 };
 
-// Get API response times
+// Get API response times aggregated from both MongoDB and MySQL
 exports.getApiResponseTimes = async (req, res) => {
     try {
-        const stats = await ApiStats.findAll({
+        // Fetch from MongoDB (last 100)
+        const mongoStats = await MongoApiStats.find({})
+            .sort({ createdAt: -1 })
+            .limit(100)
+            .lean();
+
+        // Fetch from MySQL (last 100)
+        const sqlStats = await SqlApiStats.findAll({
             order: [['createdAt', 'DESC']],
-            limit: 100
-        })
+            limit: 100,
+            raw: true
+        });
 
-        const endpointStats = {}
-        let totalTime = 0
-        let totalRequests = 0
+        // Combine both arrays
+        const allStats = [...mongoStats, ...sqlStats];
 
-        stats.forEach(stat => {
-            if (!endpointStats[stat.endpoint]) {
-                endpointStats[stat.endpoint] = {
+        // Aggregate by endpoint
+        const endpointStats = {};
+        let totalTime = 0;
+        let totalRequests = 0;
+
+        allStats.forEach(stat => {
+            const endpoint = stat.endpoint;
+            if (!endpointStats[endpoint]) {
+                endpointStats[endpoint] = {
                     count: 0,
                     totalTime: 0,
                     avgTime: 0
-                }
+                };
             }
-
-            endpointStats[stat.endpoint].count++
-            endpointStats[stat.endpoint].totalTime += stat.responseTime
-            totalTime += stat.responseTime
-            totalRequests++
-        })
+            endpointStats[endpoint].count++;
+            endpointStats[endpoint].totalTime += stat.responseTime;
+            totalTime += stat.responseTime;
+            totalRequests++;
+        });
 
         // Calculate averages
         Object.keys(endpointStats).forEach(endpoint => {
             endpointStats[endpoint].avgTime =
-                endpointStats[endpoint].totalTime / endpointStats[endpoint].count
-        })
+                endpointStats[endpoint].totalTime / endpointStats[endpoint].count;
+        });
 
         res.json({
             success: true,
@@ -1248,13 +1264,13 @@ exports.getApiResponseTimes = async (req, res) => {
                 totalRequests
             },
             endpointStats
-        })
+        });
     } catch (error) {
-        console.error('Error getting API response times:', error)
+        console.error('Error getting API response times:', error);
         res.status(500).json({
             success: false,
             error: 'Failed to get API response times'
-        })
+        });
     }
 };
 
