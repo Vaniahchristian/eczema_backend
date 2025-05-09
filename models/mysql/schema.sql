@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS users (
     last_name VARCHAR(100) NOT NULL,
     date_of_birth DATE,
     gender VARCHAR(50),
+    reset_password_token VARCHAR(255) NULL,
+    reset_password_expires DATETIME NULL,
     phone_number VARCHAR(20),
     address TEXT,
     last_active TIMESTAMP NULL,

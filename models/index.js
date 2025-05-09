@@ -47,6 +47,14 @@ const MySQL = {
       type: DataTypes.STRING,
       allowNull: false
     },
+    reset_password_token: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    reset_password_expires: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
     role: {
       type: DataTypes.ENUM('patient', 'doctor', 'researcher', 'admin'),
       defaultValue: 'patient'
