@@ -2,6 +2,22 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { MySQL, sequelize } = require('../models');
 const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+
+// Configure nodemailer transporter using env variables
+// Required in .env:
+// SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM, FRONTEND_URL
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  secure: process.env.SMTP_PORT == 465, // true for 465, false for other ports
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
+  }
+});
+
 
 const generateToken = (userId) => {
   if (!process.env.JWT_SECRET) {
@@ -440,6 +456,71 @@ exports.logout = async (req, res) => {
       message: 'Error during logout',
       error: error.message
     });
+  }
+};
+
+// Forgot Password
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Email is required' });
+    }
+    const user = await MySQL.User.findOne({ where: { email } });
+    if (!user) {
+      // For security, don't reveal if user exists
+      return res.json({ success: true, message: 'If the email is registered, a reset link has been sent.' });
+    }
+    // Generate token
+    const token = crypto.randomBytes(32).toString('hex');
+    const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    await user.update({
+      reset_password_token: token,
+      reset_password_expires: expires
+    });
+    // Send email
+    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM,
+      to: user.email,
+      subject: 'Password Reset Request',
+      html: `<p>You requested a password reset. Click the link below to reset your password:</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>If you did not request this, please ignore this email.</p>`
+    });
+    return res.json({ success: true, message: 'If the email is registered, a reset link has been sent.' });
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({ success: false, message: 'Error processing request' });
+  }
+};
+
+// Reset Password
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    if (!token || !newPassword) {
+      return res.status(400).json({ success: false, message: 'Token and new password are required' });
+    }
+    const user = await MySQL.User.findOne({
+      where: {
+        reset_password_token: token,
+        reset_password_expires: { [MySQL.Sequelize.Op.gt]: new Date() }
+      }
+    });
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired token' });
+    }
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    await user.update({
+      password: hashedPassword,
+      reset_password_token: null,
+      reset_password_expires: null
+    });
+    res.json({ success: true, message: 'Password has been reset successfully' });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({ success: false, message: 'Error processing request' });
   }
 };
 

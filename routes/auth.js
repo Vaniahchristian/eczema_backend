@@ -9,6 +9,10 @@ router.post('/register', authLimiter, register);
 router.post('/login', authLimiter, login);
 router.post('/logout', authLimiter, logout);
 
+// Forgot/reset password endpoints
+router.post('/forgot-password', authLimiter, require('../controllers/authController').forgotPassword);
+router.post('/reset-password', authLimiter, require('../controllers/authController').resetPassword);
+
 // Profile endpoints with more lenient rate limiting
 router.get('/profile', profileLimiter, protect, getProfile);
 router.put('/profile', profileLimiter, protect, updateProfile);
