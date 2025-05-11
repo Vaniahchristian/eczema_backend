@@ -2,15 +2,102 @@
 
 ## 3.1 Implementation (Coding and Compilation)
 
-The implementation of the Eczema Diagnosis and Management System represents a sophisticated integration of modern web technologies, machine learning capabilities, and healthcare-specific features. This comprehensive system has been carefully crafted to provide an efficient, secure, and user-friendly platform for both healthcare providers and patients.
+### Development Tools and Environment
 
-Our development approach leveraged cutting-edge tools and frameworks across three primary components: frontend, backend, and machine learning infrastructure. The frontend implementation utilizes Next.js, a powerful React-based framework that enables server-side rendering and optimal performance. This choice was driven by the need for fast page loads and excellent SEO capabilities, crucial for a healthcare platform. The frontend architecture incorporates TypeScript for enhanced type safety and code reliability, significantly reducing runtime errors and improving maintainability. The user interface is styled using Tailwind CSS, providing a responsive and consistent design system that adapts seamlessly across different devices and screen sizes.
+The Eczema Diagnosis and Management System consists of three main components:
 
-The backend infrastructure is built on a robust Node.js foundation, implementing a dual-database architecture that combines the structured reliability of MySQL with the flexibility of MongoDB. This hybrid approach allows us to efficiently handle both structured patient data and unstructured medical imaging information. The system employs Sequelize ORM for database operations, providing a clean and maintainable interface for data management while ensuring data integrity and type safety. Our RESTful API design follows industry best practices, with clearly defined endpoints and comprehensive documentation.
+1. **Backend API** (Node.js):
+   - Express.js for REST API endpoints
+   - MongoDB for patient data storage
+   - JWT-based authentication
+   - API testing with Postman
 
-Security and authentication form a cornerstone of our implementation. The system implements a sophisticated JWT-based authentication system with role-based access control (RBAC), ensuring that sensitive medical data is accessible only to authorized personnel. The authentication flow includes token verification for each request, user role-based authorization checks, and secure cookie management for maintaining user sessions.
+2. **Frontend Dashboard** (Next.js):
+   - TypeScript for type safety
+   - Tailwind CSS for styling
+   - PWA support for mobile access
+   - Real-time updates with WebSocket
 
-## 3.2 System Architecture and Integration
+3. **ML Service** (Python/Flask):
+   - TensorFlow for model inference
+   - VGG19 for feature extraction
+   - Custom eczema classification model
+   - Body part detection with TFLite
+
+### Device Interfaces and Equipment
+
+The system interfaces with:
+
+1. **Client Devices**:
+   - Modern web browsers (Chrome, Firefox, Safari, Edge)
+   - Minimum screen resolution: 1024x768
+   - Camera access for image capture
+
+2. **Mobile Support**:
+   - Progressive Web App (PWA) functionality
+   - Responsive design for various screen sizes
+   - Device camera integration for skin photos
+
+### Operating Environment
+
+1. **Server Environment**:
+   - Windows Server 2022 or Linux Ubuntu 22.04
+   - 16GB RAM minimum
+   - 4 CPU cores minimum
+   - 1TB storage for medical images and data
+
+2. **Network Requirements**:
+   - HTTPS for secure communication
+   - WebSocket support for real-time features
+   - Load balancer for high availability
+
+3. **Third-Party Integration**:
+   - Microsoft Office 365 for report generation
+   - SendGrid for email notifications
+   - AWS S3 for image storage
+
+## 3.4 Documentation
+
+### Design Documentation Details
+
+The following table outlines the key aspects of our implementation, demonstrating our adherence to good programming practices and comprehensive testing:
+
+| Topics | Design Output |
+|--------|---------------|
+| **Good Programming Practice** | **Source Code Structure:** |
+| *Efforts made to meet recommendations for good programming practice...* | ✓ Modularized - Backend routes, controllers, and services |
+| | ✓ Encapsulated - ML models with preprocessing pipelines |
+| | ✓ Functionally divided - Separate ML, API, and frontend services |
+| | ✓ Error handling - Try-catch blocks in critical sections |
+| | **Source Code Contains:** |
+| | ✓ Comments - Model loading, preprocessing steps |
+| | ✓ Meaningful names - eczema_model, body_part_class_names |
+| | ✓ Readable source code - Consistent Python and TypeScript formatting |
+| | ✓ Documentation - API endpoints and ML model usage |
+| **Dynamic Testing** | ✓ API endpoints tested via Postman collection |
+| *Step-by-step testing during implementation...* | ✓ ML model inference tested with sample images |
+| | ✓ Performance timing for model loading and inference |
+| | ✓ Health check endpoint for monitoring |
+| | Comments: Testing covers API, ML, and frontend integration |
+
+This documentation serves as:
+
+1. **Implementation Guide**:
+   - Details development standards
+   - Explains architectural decisions
+   - Provides setup instructions
+
+2. **Maintenance Reference**:
+   - Documents system components
+   - Describes error handling
+   - Lists configuration options
+
+3. **API Documentation**:
+   - Defines endpoints and methods
+   - Shows request/response formats
+   - Explains authentication flows
+
+## 3.5 System Architecture and Integration
 
 The system's architecture is designed for scalability and maintainability, with clear separation of concerns across different components. Our frontend components are organized in a modular structure, promoting code reuse and maintaining a consistent user experience across the application. The backend services are similarly modularized, with distinct controllers handling specific aspects of the system's functionality.
 

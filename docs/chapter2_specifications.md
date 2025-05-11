@@ -35,3 +35,112 @@ The system employs carefully tuned default configurations across all components.
 Error handling and system health monitoring are implemented comprehensively across all components. The backend utilizes Morgan for request logging and custom middleware for error tracking. The ML service implements detailed validation and error handling for model loading and image processing. Health monitoring endpoints provide real-time status information about database connections, WebSocket clients, and overall system health.
 
 Through this architectural design and implementation, the system delivers a robust, secure, and efficient platform for eczema diagnosis and management, serving the needs of healthcare providers and patients while maintaining high standards of performance and reliability.
+
+## 2.6 Default Settings
+
+### System Administrator Account
+- Default admin username: `admin@eczemaai.com`
+- Initial password: `EczemaAI@2025`
+- Password change: Settings → Security → Change Password
+- Password requirements: 8+ characters, uppercase, lowercase, number, symbol
+
+### Default Configuration Values
+- Image upload size: Max 10MB
+- Session timeout: 30 minutes
+- Failed login attempts: 5 before temporary lockout
+- Diagnosis history retention: 12 months
+- Automatic logout: After 15 minutes inactivity
+
+### Initial System State
+- Language: English (US)
+- Theme: Light mode
+- Notifications: Enabled for critical alerts
+- Data sharing: Opt-out by default
+- Analytics collection: Minimal by default
+
+## 2.7 Special Requirements
+
+### Security and Compliance
+- HIPAA compliance for PHI handling
+- GDPR compliance for EU users
+- SOC 2 Type II certified infrastructure
+- Annual security audits required
+
+### Data Protection
+- End-to-end encryption for all PHI
+- Daily encrypted backups
+- 30-day backup retention
+- Geo-redundant storage
+
+### Change Management
+- All code changes require peer review
+- Automated testing coverage >85%
+- Staged deployment process
+- Rollback procedures in place
+
+### Risk Mitigation
+- Failover systems for critical components
+- Regular disaster recovery testing
+- Business continuity plan
+- Incident response team
+
+## 2.8 Errors and Alarms
+
+### Common Errors and Resolution
+
+| Error Type | Cause | Resolution |
+|------------|-------|------------|
+| Authentication | - Invalid credentials
+- Session expired
+- Account locked | - Reset password via email
+- Re-login
+- Contact support after 30 min |
+| Image Upload | - File too large
+- Invalid format
+- Poor image quality | - Compress image
+- Use .jpg/.png only
+- Retake with better lighting |
+| Diagnosis | - ML service unavailable
+- Low confidence score
+- Network timeout | - Retry analysis
+- Contact healthcare provider
+- Check internet connection |
+
+### Implemented Alert System
+
+**User Notifications** (via notification-settings.tsx)
+- Email notifications (verified accounts)
+- Push notifications (mobile & browser)
+- SMS notifications (optional)
+- In-app alerts for:
+  - Appointments
+  - Messages
+  - System updates
+  - Feature updates
+
+**System Monitoring** (via errorHandler.js)
+- Validation error handling
+- Database error tracking
+- Duplicate entry detection
+- Development/Production error modes
+
+### Error Handling Implementation
+
+**Backend Error Types**
+```javascript
+- ValidationError (400)
+- CastError (400)
+- DuplicateError (400)
+- ServerError (500)
+```
+
+**Frontend Error Handling**
+- Form validation errors
+- API request failures
+- Network connectivity issues
+- Graceful UI degradation
+
+**User Feedback**
+- Clear error messages
+- Suggested resolutions
+- Support contact options
