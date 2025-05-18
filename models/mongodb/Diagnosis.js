@@ -57,8 +57,8 @@ const diagnosisSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending_review', 'in_review', 'reviewed'],
-    default: 'pending_review'
+    enum: ['not_reviewed', 'pending_review', 'in_review', 'reviewed'],
+    default: 'not_reviewed'
   },
   doctorReview: {
     doctorId: String,

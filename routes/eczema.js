@@ -108,7 +108,7 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
             mlResults: {
                 prediction: response.data.eczemaPrediction,
                 confidence: response.data.eczemaConfidence,
-                severity: response.data.eczemaSeverity.toLowerCase(),
+                severity: response.data.eczemaSeverity ? response.data.eczemaSeverity.toLowerCase() : null,
                 affectedAreas: [response.data.bodyPart],
                 bodyPartConfidence: response.data.bodyPartConfidence,
                 modelVersion: '1.0'
@@ -119,7 +119,7 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
                 triggers: [],
                 precautions: allRecommendations
             },
-            status: response.data.eczemaSeverity === 'Severe' || response.data.eczemaConfidence < 0.6 ? 'pending_review' : 'completed'
+            status: 'not_reviewed'
         });
 
         res.status(201).json({
@@ -154,7 +154,7 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
         }
         res.status(500).json({
             success: false,
-            message: 'The uploaded image does not predominantly feature human skin. Please upload a suitable image.'
+            message: 'Diagnosis failed'
         });
     }
 });
@@ -162,24 +162,61 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
 // Get all diagnoses for a patient
 router.get('/diagnoses', async (req, res) => {
     try {
+        console.log('GET /diagnoses - Fetching diagnoses for user:', req.user.id);
+        
         const diagnoses = await Diagnosis.find({ patientId: req.user.id })
             .sort('-createdAt')
             .select('-metadata');
 
-        const formattedDiagnoses = diagnoses.map(diagnosis => ({
-            diagnosisId: diagnosis.diagnosisId,
-            isEczema: diagnosis.mlResults.prediction,
-            severity: diagnosis.mlResults.severity,
-            confidence: diagnosis.mlResults.confidence,
-            bodyPart: diagnosis.mlResults.affectedAreas[0],
-            bodyPartConfidence: diagnosis.mlResults.bodyPartConfidence,
-            recommendations: diagnosis.recommendations.precautions,
-            needsDoctorReview: diagnosis.needsDoctorReview,
-            imageUrl: diagnosis.imageUrl,
-            status: diagnosis.status,
-            createdAt: diagnosis.createdAt,
-            doctorReview: diagnosis.doctorReview
-        }));
+        console.log('Found diagnoses count:', diagnoses.length);
+        
+        if (diagnoses.length === 0) {
+            console.log('No diagnoses found for user');
+            return res.json({
+                success: true,
+                data: []
+            });
+        }
+
+        console.log('Sample diagnosis data:', JSON.stringify(diagnoses[0], null, 2));
+
+        const formattedDiagnoses = diagnoses.map(diagnosis => {
+            try {
+                // Determine severity with fallbacks
+                let severity = 'unknown';
+                if (diagnosis.doctorReview?.updatedSeverity) {
+                    severity = diagnosis.doctorReview.updatedSeverity;
+                } else if (diagnosis.mlResults?.severity) {
+                    severity = diagnosis.mlResults.severity;
+                } else if (diagnosis.mlResults?.confidence) {
+                    // Determine severity based on confidence if no explicit severity
+                    const confidence = diagnosis.mlResults.confidence;
+                    if (confidence >= 0.8) severity = 'mild';
+                    else if (confidence >= 0.6) severity = 'moderate';
+                    else severity = 'severe';
+                }
+
+                const formatted = {
+                    diagnosisId: diagnosis.diagnosisId,
+                    isEczema: diagnosis.mlResults?.prediction || 'unknown',
+                    severity: severity,
+                    confidence: diagnosis.mlResults?.confidence || 0,
+                    bodyPart: diagnosis.mlResults?.affectedAreas?.[0] || 'unknown',
+                    recommendations: diagnosis.recommendations?.precautions || [],
+                    needsDoctorReview: diagnosis.needsDoctorReview || false,
+                    imageUrl: diagnosis.imageUrl,
+                    status: diagnosis.status || 'unknown',
+                    createdAt: diagnosis.createdAt,
+                    doctorReview: diagnosis.doctorReview
+                };
+                return formatted;
+            } catch (err) {
+                console.error('Error formatting diagnosis:', diagnosis.diagnosisId, err);
+                return null;
+            }
+        }).filter(Boolean);
+
+        console.log('Formatted diagnoses count:', formattedDiagnoses.length);
 
         res.json({
             success: true,
