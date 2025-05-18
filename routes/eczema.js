@@ -154,7 +154,7 @@ router.post('/diagnose', upload.single('image'), async (req, res) => {
         }
         res.status(500).json({
             success: false,
-            message: 'Failed to process diagnosis. Please check ML API connectivity.'
+            message: 'The uploaded image does not predominantly feature human skin. Please upload a suitable image.'
         });
     }
 });
