@@ -131,7 +131,16 @@ const messageController = {
 
             // For each conversation, fetch the latest message
             const conversationData = await Promise.all(conversations.map(async (conv) => {
+                // Defensive: check for missing participant before any property access
                 const otherParticipant = conv.participants.find(p => p.userId !== userId);
+                if (!otherParticipant) {
+                    if (typeof logger !== 'undefined' && logger.error) {
+                        logger.error(`No other participant found in conversation ${conv._id} for user ${userId}`);
+                    } else {
+                        console.error(`No other participant found in conversation ${conv._id} for user ${userId}`);
+                    }
+                    return null;
+                }
                 const [userRows] = await mysqlPool.query(
                     'SELECT first_name, last_name, role, image_url FROM users WHERE id = ?',
                     [otherParticipant.userId]
@@ -152,7 +161,9 @@ const messageController = {
                 };
             }));
 
-            res.json({ success: true, data: conversationData });
+            // Filter out null values and sort by updatedAt
+            const validConversations = conversationData.filter(conv => conv !== null);
+            res.json({ success: true, data: validConversations });
         } catch (error) {
             console.error('Get conversations error:', error);
             res.status(500).json({ success: false, message: 'Failed to fetch conversations' });
